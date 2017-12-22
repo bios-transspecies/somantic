@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jPanel1" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jPanel1" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[600, 300]"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jScrollPane1" max="32767" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="fileManagerToggle" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="liveToggleButton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="buttonLoginPassword" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="inputLogin" min="-2" pref="105" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="inputPassword" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="stimulateToggle" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="translateToggle" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="visualiseToggle" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jProgressBar1" min="-2" pref="214" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                  <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="inputLogin" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="buttonLoginPassword" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="inputPassword" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="fileManagerToggle" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="liveToggleButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" pref="220" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                          <Component id="translateToggle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="stimulateToggle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="visualiseToggle" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="jProgressBar1" alignment="1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JButton" name="buttonLoginPassword">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Login"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loginActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="inputLogin">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="plant@michalbrzezinski.org"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="inputLoginActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="stimulateToggle">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Stimulate"/>
+          </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
+          </AccessibilityProperties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="speakAndStimulate"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JProgressBar" name="jProgressBar1">
+          <Properties>
+            <Property name="value" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="0" type="code"/>
+            </Property>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
+                <BevelBorder/>
+              </Border>
+            </Property>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Default Cursor"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="UserInterface_jProgressBar1"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+          </AuxValues>
+        </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JTextArea" name="communicationBox">
+              <Properties>
+                <Property name="columns" type="int" value="20"/>
+                <Property name="lineWrap" type="boolean" value="true"/>
+                <Property name="rows" type="int" value="5"/>
+                <Property name="text" type="java.lang.String" value=" In the beginning when God created the heavens and the earth,&#xa; the earth was a formless void and darkness covered the face of the deep, while a wind from God swept over the face of the waters.&#xa; Then God said, &quot;Let there be light&quot;; and there was light.&#xa; And God saw that the light was good; and God separated the light from the darkness.&#xa; God called the light Day, and the darkness he called Night. And there was evening and there was morning, the first day.&#xa; And God said, &quot;Let there be a dome in the midst of the waters, and let it separate the waters from the waters.&quot;&#xa; So God made the dome and separated the waters that were under the dome from the waters that were above the dome. And it was so.&#xa; God called the dome Sky. And there was evening and there was morning, the second day.&#xa; And God said, &quot;Let the waters under the sky be gathered together into one place, and let the dry land appear.&quot; And it was so.&#xa; God called the dry land Earth, and the waters that were gathered together he called Seas. And God saw that it was good.&#xa; Then God said, &quot;Let the earth put forth vegetation plants yielding seed, and fruit trees of every kind on earth that bear fruit with the seed in it.&quot; And it was so.&#xa; The earth brought forth vegetation plants yielding seed of every kind, and trees of every kind bearing fruit with the seed in it. And God saw that it was good.&#xa; And there was evening and there was morning, the third day.&#xa; And God said, &quot;Let there be lights in the dome of the sky to separate the day from the night; and let them be for signs and for seasons and for days and years,&#xa; and let them be lights in the dome of the sky to give light upon the earth.&quot; And it was so.&#xa; God made the two great lights - the greater light to rule the day and the lesser light to rule the night - and the stars.&#xa; God set them in the dome of the sky to give light upon the earth,&#xa; to rule over the day and over the night, and to separate the light from the darkness. And God saw that it was good.&#xa; And there was evening and there was morning, the fourth day.&#xa; And God said, &quot;Let the waters bring forth swarms of living creatures, and let birds fly above the earth across the dome of the sky.&quot;&#xa; So God created the great sea monsters and every living creature that moves, of every kind, with which the waters swarm, and every winged bird of every kind. And God saw that it was good.&#xa; God blessed them, saying, &quot;Be fruitful and multiply and fill the waters in the seas, and let birds multiply on the earth.&quot;&#xa; And there was evening and there was morning, the fifth day.&#xa; And God said, &quot;Let the earth bring forth living creatures of every kind cattle and creeping things and wild animals of the earth of every kind.&quot; And it was so.&#xa; God made the wild animals of the earth of every kind, and the cattle of every kind, and everything that creeps upon the ground of every kind. And God saw that it was good.&#xa; Then God said, &quot;Let us make humankind in our image, according to our likeness; and let them have dominion over the fish of the sea, and over the birds of the air, and over the cattle, and over all the wild animals of the earth, and over every creeping thing that creeps upon the earth.&quot;&#xa; So God created humankind in his image, in the image of God he created them; male and female he created them.&#xa; God blessed them, and God said to them, &quot;Be fruitful and multiply, and fill the earth and subdue it; and have dominion over the fish of the sea and over the birds of the air and over every living thing that moves upon the earth.&quot;&#xa; God said, &quot;See, I have given you every plant yielding seed that is upon the face of all the earth, and every tree with seed in its fruit; you shall have them for food.&#xa; And to every beast of the earth, and to every bird of the air, and to everything that creeps on the earth, everything that has the breath of life, I have given every green plant for food.&quot; And it was so.&#xa; God saw everything that he had made, and indeed, it was very good. And there was evening and there was morning, the sixth day.&#xa;&#xa; &#xa;&#xa; Thus the heavens and the earth were finished, and all their multitude.&#xa; And on the seventh day God finished the work that he had done, and he rested on the seventh day from all the work that he had done.&#xa; So God blessed the seventh day and hallowed it, because on it God rested from all the work that he had done in creation.&#xa; These are the generations of the heavens and the earth when they were created. In the day that the LORD God made the earth and the heavens,&#xa; when no plant of the field was yet in the earth and no herb of the field had yet sprung up - for the LORD God had not caused it to rain upon the earth, and there was no one to till the ground;&#xa; but a stream would rise from the earth, and water the whole face of the ground -&#xa; then the LORD God formed man from the dust of the ground, and breathed into his nostrils the breath of life; and the man became a living being.&#xa; And the LORD God planted a garden in Eden, in the east; and there he put the man whom he had formed.&#xa; Out of the ground the LORD God made to grow every tree that is pleasant to the sight and good for food, the tree of life also in the midst of the garden, and the tree of the knowledge of good and evil.&#xa; A river flows out of Eden to water the garden, and from there it divides and becomes four branches.&#xa; The name of the first is Pishon; it is the one that flows around the whole land of Havilah, where there is gold;&#xa; and the gold of that land is good; bdellium and onyx stone are there.&#xa; The name of the second river is Gihon; it is the one that flows around the whole land of Cush.&#xa; The name of the third river is Tigris, which flows east of Assyria. And the fourth river is the Euphrates.&#xa; The LORD God took the man and put him in the garden of Eden to till it and keep it.&#xa; And the LORD God commanded the man, &quot;You may freely eat of every tree of the garden;&#xa; but of the tree of the knowledge of good and evil you shall not eat, for in the day that you eat of it you shall die.&quot;&#xa; Then the LORD God said, &quot;It is not good that the man should be alone; I will make him a helper as his partner.&quot;&#xa; So out of the ground the LORD God formed every animal of the field and every bird of the air, and brought them to the man to see what he would call them; and whatever the man called every living creature, that was its name.&#xa; The man gave names to all cattle, and to the birds of the air, and to every animal of the field; but for the man there was not found a helper as his partner.&#xa; So the LORD God caused a deep sleep to fall upon the man, and he slept; then he took one of his ribs and closed up its place with flesh.&#xa; And the rib that the LORD God had taken from the man he made into a woman and brought her to the man.&#xa; Then the man said, &quot;This at last is bone of my bones and flesh of my flesh; this one shall be called Woman, for out of Man this one was taken.&quot;&#xa; Therefore a man leaves his father and his mother and clings to his wife, and they become one flesh.&#xa; And the man and his wife were both naked, and were not ashamed.&#xa;&#xa; &#xa;&#xa; Now the serpent was more crafty than any other wild animal that the LORD God had made. He said to the woman, &quot;Did God say, &apos;You shall not eat from any tree in the garden&apos;?&quot;&#xa; The woman said to the serpent, &quot;We may eat of the fruit of the trees in the garden;&#xa; but God said, &apos;You shall not eat of the fruit of the tree that is in the middle of the garden, nor shall you touch it, or you shall die. &apos;&quot;&#xa; But the serpent said to the woman, &quot;You will not die;&#xa; for God knows that when you eat of it your eyes will be opened, and you will be like God, knowing good and evil.&quot;&#xa; So when the woman saw that the tree was good for food, and that it was a delight to the eyes, and that the tree was to be desired to make one wise, she took of its fruit and ate; and she also gave some to her husband, who was with her, and he ate.&#xa; Then the eyes of both were opened, and they knew that they were naked; and they sewed fig leaves together and made loincloths for themselves.&#xa; They heard the sound of the LORD God walking in the garden at the time of the evening breeze, and the man and his wife hid themselves from the presence of the LORD God among the trees of the garden.&#xa; But the LORD God called to the man, and said to him, &quot;Where are you?&quot;&#xa; He said, &quot;I heard the sound of you in the garden, and I was afraid, because I was naked; and I hid myself.&quot;&#xa; He said, &quot;Who told you that you were naked? Have you eaten from the tree of which I commanded you not to eat?&quot;&#xa; The man said, &quot;The woman whom you gave to be with me, she gave me fruit from the tree, and I ate.&quot;&#xa; Then the LORD God said to the woman, &quot;What is this that you have done?&quot; The woman said, &quot;The serpent tricked me, and I ate.&quot;&#xa; The LORD God said to the serpent, &quot;Because you have done this, cursed are you among all animals and among all wild creatures; upon your belly you shall go, and dust you shall eat all the days of your life.&#xa; I will put enmity between you and the woman, and between your offspring and hers; he will strike your head, and you will strike his heel.&quot;&#xa; To the woman he said, &quot;I will greatly increase your pangs in childbearing; in pain you shall bring forth children, yet your desire shall be for your husband, and he shall rule over you.&quot;&#xa; And to the man he said, &quot;Because you have listened to the voice of your wife, and have eaten of the tree about which I commanded you, &apos;You shall not eat of it,&apos; cursed is the ground because of you; in toil you shall eat of it all the days of your life;&#xa; thorns and thistles it shall bring forth for you; and you shall eat the plants of the field.&#xa; By the sweat of your face you shall eat bread until you return to the ground, for out of it you were taken; you are dust, and to dust you shall return.&quot;&#xa; The man named his wife Eve, because she was the mother of all living.&#xa; And the LORD God made garments of skins for the man and for his wife, and clothed them.&#xa; Then the LORD God said, &quot;See, the man has become like one of us, knowing good and evil; and now, he might reach out his hand and take also from the tree of life, and eat, and live forever&quot;--&#xa; therefore the LORD God sent him forth from the garden of Eden, to till the ground from which he was taken.&#xa; He drove out the man; and at the east of the garden of Eden he placed the cherubim, and a sword flaming and turning to guard the way to the tree of life.&#xa;&#xa; &#xa;&#xa; Now the man knew his wife Eve, and she conceived and bore Cain, saying, &quot;I have produced a man with the help of the LORD.&quot;&#xa; Next she bore his brother Abel. Now Abel was a keeper of sheep, and Cain a tiller of the ground.&#xa; In the course of time Cain brought to the LORD an offering of the fruit of the ground,&#xa; and Abel for his part brought of the firstlings of his flock, their fat portions. And the LORD had regard for Abel and his offering,&#xa; but for Cain and his offering he had no regard. So Cain was very angry, and his countenance fell.&#xa; The LORD said to Cain, &quot;Why are you angry, and why has your countenance fallen?&#xa; If you do well, will you not be accepted? And if you do not do well, sin is lurking at the door; its desire is for you, but you must master it.&quot;&#xa; Cain said to his brother Abel, &quot;Let us go out to the field.&quot; And when they were in the field, Cain rose up against his brother Abel, and killed him.&#xa; Then the LORD said to Cain, &quot;Where is your brother Abel?&quot; He said, &quot;I do not know; am I my brother&apos;s keeper?&quot;&#xa; And the LORD said, &quot;What have you done? Listen; your brother&apos;s blood is crying out to me from the ground!&#xa; And now you are cursed from the ground, which has opened its mouth to receive your brother&apos;s blood from your hand.&#xa; When you till the ground, it will no longer yield to you its strength; you will be a fugitive and a wanderer on the earth.&quot;&#xa; Cain said to the LORD, &quot;My punishment is greater than I can bear!&#xa; Today you have driven me away from the soil, and I shall be hidden from your face; I shall be a fugitive and a wanderer on the earth, and anyone who meets me may kill me.&quot;&#xa; Then the LORD said to him, &quot;Not so! Whoever kills Cain will suffer a sevenfold vengeance.&quot; And the LORD put a mark on Cain, so that no one who came upon him would kill him.&#xa; Then Cain went away from the presence of the LORD, and settled in the land of Nod, east of Eden.&#xa; Cain knew his wife, and she conceived and bore Enoch; and he built a city, and named it Enoch after his son Enoch.&#xa; To Enoch was born Irad; and Irad was the father of Mehujael, and Mehujael the father of Methushael, and Methushael the father of Lamech.&#xa; Lamech took two wives; the name of the one was Adah, and the name of the other Zillah.&#xa; Adah bore Jabal; he was the ancestor of those who live in tents and have livestock.&#xa; His brother&apos;s name was Jubal; he was the ancestor of all those who play the lyre and pipe.&#xa; Zillah bore Tubal-cain, who made all kinds of bronze and iron tools. The sister of Tubal-cain was Naamah.&#xa; Lamech said to his wives &quot;Adah and Zillah, hear my voice; you wives of Lamech, listen to what I say I have killed a man for wounding me, a young man for striking me.&#xa; If Cain is avenged sevenfold, truly Lamech seventy-sevenfold.&quot;&#xa; Adam knew his wife again, and she bore a son and named him Seth, for she said, &quot;God has appointed for me another child instead of Abel, because Cain killed him.&quot;&#xa; To Seth also a son was born, and he named him Enosh. At that time people began to invoke the name of the LORD.&#xa;&#xa; &#xa;&#xa; This is the list of the descendants of Adam. When God created humankind, he made them in the likeness of God.&#xa; Male and female he created them, and he blessed them and named them &quot;Humankind&quot; when they were created.&#xa; When Adam had lived one hundred thirty years, he became the father of a son in his likeness, according to his image, and named him Seth.&#xa; The days of Adam after he became the father of Seth were eight hundred years; and he had other sons and daughters.&#xa; Thus all the days that Adam lived were nine hundred thirty years; and he died.&#xa; When Seth had lived one hundred five years, he became the father of Enosh.&#xa; Seth lived after the birth of Enosh eight hundred seven years, and had other sons and daughters.&#xa; Thus all the days of Seth were nine hundred twelve years; and he died.&#xa; When Enosh had lived ninety years, he became the father of Kenan.&#xa; Enosh lived after the birth of Kenan eight hundred fifteen years, and had other sons and daughters.&#xa; Thus all the days of Enosh were nine hundred five years; and he died.&#xa; When Kenan had lived seventy years, he became the father of Mahalalel.&#xa; Kenan lived after the birth of Mahalalel eight hundred and forty years, and had other sons and daughters.&#xa; Thus all the days of Kenan were nine hundred and ten years; and he died.&#xa; When Mahalalel had lived sixty-five years, he became the father of Jared.&#xa; Mahalalel lived after the birth of Jared eight hundred thirty years, and had other sons and daughters.&#xa; Thus all the days of Mahalalel were eight hundred ninety-five years; and he died.&#xa; When Jared had lived one hundred sixty-two years he became the father of Enoch.&#xa; Jared lived after the birth of Enoch eight hundred years, and had other sons and daughters.&#xa; Thus all the days of Jared were nine hundred sixty-two years; and he died.&#xa; When Enoch had lived sixty-five years, he became the father of Methuselah.&#xa; Enoch walked with God after the birth of Methuselah three hundred years, and had other sons and daughters.&#xa; Thus all the days of Enoch were three hundred sixty-five years.&#xa; Enoch walked with God; then he was no more, because God took him.&#xa; When Methuselah had lived one hundred eighty-seven years, he became the father of Lamech.&#xa; Methuselah lived after the birth of Lamech seven hundred eighty- two years, and had other sons and daughters.&#xa; Thus all the days of Methuselah were nine hundred sixty-nine years; and he died.&#xa; When Lamech had lived one hundred eighty-two years, he became the father of a son;&#xa; he named him Noah, saying, &quot;Out of the ground that the LORD has cursed this one shall bring us relief from our work and from the toil of our hands.&quot;&#xa; Lamech lived after the birth of Noah five hundred ninety-five years, and had other sons and daughters.&#xa; Thus all the days of Lamech were seven hundred seventy-seven years; and he died.&#xa; After Noah was five hundred years old, Noah became the father of Shem, Ham, and Japheth.&#xa;&#xa; &#xa;&#xa; When people began to multiply on the face of the ground, and daughters were born to them,&#xa; the sons of God saw that they were fair; and they took wives for themselves of all that they chose.&#xa; Then the LORD said, &quot;My spirit shall not abide in mortals forever, for they are flesh; their days shall be one hundred twenty years.&quot;&#xa; The Nephilim were on the earth in those days - and also afterward - when the sons of God went in to the daughters of humans, who bore children to them. These were the heroes that were of old, warriors of renown.&#xa; The LORD saw that the wickedness of humankind was great in the earth, and that every inclination of the thoughts of their hearts was only evil continually.&#xa; And the LORD was sorry that he had made humankind on the earth, and it grieved him to his heart.&#xa; So the LORD said, &quot;I will blot out from the earth the human beings I have created - people together with animals and creeping things and birds of the air, for I am sorry that I have made them.&quot;&#xa; But Noah found favor in the sight of the LORD.&#xa; These are the descendants of Noah. Noah was a righteous man, blameless in his generation; Noah walked with God.&#xa; And Noah had three sons, Shem, Ham, and Japheth.&#xa; Now the earth was corrupt in God&apos;s sight, and the earth was filled with violence.&#xa; And God saw that the earth was corrupt; for all flesh had corrupted its ways upon the earth.&#xa; And God said to Noah, &quot;I have determined to make an end of all flesh, for the earth is filled with violence because of them; now I am going to destroy them along with the earth.&#xa; Make yourself an ark of cypress wood; make rooms in the ark, and cover it inside and out with pitch.&#xa; This is how you are to make it the length of the ark three hundred cubits, its width fifty cubits, and its height thirty cubits.&#xa; Make a roof for the ark, and finish it to a cubit above; and put the door of the ark in its side; make it with lower, second, and third decks.&#xa; For my part, I am going to bring a flood of waters on the earth, to destroy from under heaven all flesh in which is the breath of life; everything that is on the earth shall die.&#xa; But I will establish my covenant with you; and you shall come into the ark, you, your sons, your wife, and your sons&apos; wives with you.&#xa; And of every living thing, of all flesh, you shall bring two of every kind into the ark, to keep them alive with you; they shall be male and female.&#xa; Of the birds according to their kinds, and of the animals according to their kinds, of every creeping thing of the ground according to its kind, two of every kind shall come in to you, to keep them alive.&#xa; Also take with you every kind of food that is eaten, and store it up; and it shall serve as food for you and for them.&quot;&#xa; Noah did this; he did all that God commanded him."/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="wrapStyleWord" type="boolean" value="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JToggleButton" name="translateToggle">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Translate"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="translateToggleActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="inputPassword">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="PlantsPassword#1"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="inputPasswordActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="fileManagerToggle">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="hide file manager"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fileManagerToggleActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JSeparator" name="jSeparator1">
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Transspecies Language Translator 1.0"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="BIOSemiotic Art Project by Michal Brzezinski"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="liveToggleButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="live!"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="liveToggleButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="visualiseToggle">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Visualise"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="visualiseToggleActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>
