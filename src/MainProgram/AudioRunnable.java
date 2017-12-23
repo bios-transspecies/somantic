@@ -2,7 +2,6 @@ package MainProgram;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static MainProgram.Controller.jProgressBar1;
 
 public class AudioRunnable implements Runnable {
 
@@ -15,7 +14,7 @@ public class AudioRunnable implements Runnable {
     @Override
     public void run() {
         while (true) {
-            fft.analizuj(jProgressBar1);
+            fft.analizuj(Interface.getProgressBar());
             synchronized (this) {
                 try {
                     this.wait(10);

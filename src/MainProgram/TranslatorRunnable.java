@@ -74,36 +74,26 @@ public class TranslatorRunnable implements Runnable {
                                     && stopienPokrewienstwa < stopienPokrewienstwaMin) {
                                 rezultat = slowo;
                                 stopienPokrewienstwaMin = stopienPokrewienstwa;
-
-                                System.out.println(rezultat
-                                        + " stopień pokrewieństwa: "
-                                        + stopienPokrewienstwaMin);
-
                             } else if (stopienPokrewienstwaMin == 0) {
                                 stopienPokrewienstwaMin = stopienPokrewienstwa;
                             }
                         }
                     }
                 }
-                System.out.println(rezultat + " stopień pokrewieństwa: " + stopienPokrewienstwaMin);
                 if (rezultat.length() > 0) {
                     Interface.setWords(Interface.getWords() + " " + rezultat);
                     TTSimpl.start(rezultat);
                     Interface.setWord(rezultat);
-                    System.out.println(rezultat + " stopień pokrewieństwa: " + stopienPokrewienstwaMin);
                 }
                 communicationBox.setText(arranger.rewrite(Interface.getWords()));
             }
             synchronized (this) {
                 try {
-                    System.err.println("translator - czekam");
                     this.wait(1000);
-                    System.err.println("translator - ruszam");
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("matrix length: " + String.valueOf(matrix.length()));
         }
     }
 }

@@ -50,7 +50,7 @@ class AudioFFT {
             Interface.setVolume(band);
             matrix = matrix + " " + String.valueOf(band);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+           // System.err.println(e);
         }
         Interface.setIsListening(false);
     }

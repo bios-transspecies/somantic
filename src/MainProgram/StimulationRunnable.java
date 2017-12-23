@@ -18,7 +18,6 @@ public class StimulationRunnable implements Runnable {
     private final JToggleButton liveToggleButton;
 
     StimulationRunnable(RiTaRepo repo, JToggleButton stimulateToggle, Library library, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
-        TTSimpl.setRitaRepo(repo);
         this.words = wordsArr(repo);
         this.stimulateToggle = stimulateToggle;
         this.library = library;
@@ -39,7 +38,6 @@ public class StimulationRunnable implements Runnable {
     public void run() {
         Interface.setStimulatedAlready("");
         for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
-            System.err.println(words[i]);
             TTSimpl.start(words[i]);
             Interface.setWord(words[i]);
             synchronized (this) {

@@ -53,7 +53,6 @@ public class RiTaFactory {
                     repo.add(ritaWord);
                 }
             } else if(word.contains(".")){
-                System.err.println(word);
                 RiWoContext c = new RiWoContext();
                 for (RiTaWord riTaWord : sentence) {
                     c.setPostPennTags(sentence.subList(sentence.indexOf(riTaWord), sentence.size()).stream().map(w->w.getPennTag()).collect(Collectors.toList()));

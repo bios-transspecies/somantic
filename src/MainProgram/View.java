@@ -47,6 +47,10 @@ public class View {
     public void start(AudioFFT fft) {
         timer = new AnimationTimer() {
             ArrayList<Float> arrayOfAffectsArch = null;
+            private int doyA;
+            private int doxA;
+            private int odyA;
+            private int odxA;
 
             @Override
             public void handle(long now) {
@@ -69,6 +73,7 @@ public class View {
                     }
                     int[] arr = new int[4];
                     for (int i = 0; i < arrayOfAffects.size(); i++) {
+                        boolean even = i % 2 > 0;
                         int j = i % 4;
                         if (j == 0) {
                             arr = new int[4];
@@ -87,27 +92,36 @@ public class View {
                         int odx, ody, dox, doy;
                         if (j == 3) {
                             if (i % 3 == 0) {
-                                odx = (arr[0] % w + w / 2) % w;
-                                ody = (h - arr[1] % h) % h;
+                                odx = (odxA==0 ? w / 2 : odxA);
+                                ody = (odyA==0 ? h / 2 : odyA);
                                 dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
                                 doy = (h - arr[3] % h) % h;
                             } else {
-                                odx = (w / 2 - arr[0] % w) % w;
-                                ody = (h - arr[1] % h) % h;
+                                odx = (odxA==0 ? w / 2 : odxA);
+                                ody = (odyA==0 ? h / 2 : odyA);
                                 dox = (w / 2 - arr[2] % w) % w;
                                 doy = (h - arr[3] % h) % h;
                             }
+                            if(even){
+                            odxA = (odx + w / 2) /2; 
+                            odyA = (ody + h / 2) /2;
+                            doxA = dox; 
+                            doyA = doy;}
                             if (odx != w / 2 || dox != w / 2) {
-                                gc.strokeLine(odx, ody, dox, doy);
+                                gc.strokeLine((odx + odxA) / 2 , (ody + odyA) /2, dox, doy);
+                                dox = even ? dox : -dox ;
+                                dox = even ? doy : -doy ;
+                                gc.strokeLine(doxA , doyA, dox, doy);
                             }
                         }
                     }
                     gc.setFill(Color.WHITESMOKE);
                     gc.fillText("state: " + Interface.getState(), 100, 100);
-                    gc.setFont(Font.font("Arial", w / 10));
+                    gc.setFont(Font.font("Times New Roman", w / 10));
                     gc.fillText(Interface.getWord(), w / 2, h / 3);
                     gc.setFont(Font.font("Arial", w / 100));
                     for (int i = 0; i < arrayOfAffects.size() && i < Interface.getWords().split(" ").length; i++) {
+                        boolean even = i % 2 > 0;
                         String word = "";
                         if (Interface.getWords().contains(" ")) {
                             word = Interface.getWords().split(" ")[i];
@@ -115,22 +129,30 @@ public class View {
                         Float fa = 0f;
                         if (arrayOfAffects.size() >= i) {
                             try {
-                                fa = arrayOfAffects.get(i);
+                                fa = arrayOfAffects.get(i) * 2;
                             } catch (Exception e) {
                                 fa = 0f;
                             }
                         }
                         Float fz = 0f;
                         if (arrayOfAffects.size() >= i + 10) {
-                            fz = arrayOfAffects.get(i + 10);
+                            if (arrayOfAffects.get(i+10)>0)
+                                fz = arrayOfAffects.get(i+10) * 2;
                         }
                         try {
-                            gc.fillText(word, fa % w, fz % h);
+                            
+                            if(even){
+                                fa = -fa * 2; 
+                                fz = -fz * 2;
+                            }
+                            fa = ((w/2) + fa) % w;
+                            fz = ((h/2) + fz) % h;
+                            gc.fillText(word, fa * 1.2 , fz * 1.2);
                         } catch (Exception e) {
 
                         }
                     }
-                    gc.fillText(Interface.getWords(), 10, h - 100);
+                    gc.fillText(Interface.getWords(), 10 , h - 100);
                     if (Interface.getWords().length() > 200) {
                         Interface.setWords(" ");
                     }

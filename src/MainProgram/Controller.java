@@ -40,6 +40,7 @@ public class Controller extends javax.swing.JFrame {
         riact = new RiTaFactory();
         Interface.setDefaultString(communicationBox.getText());
         Interface.setRitaActions(riact);
+        Interface.setProgressBar(jProgressBar1);
     }
 
     private void listen() {
@@ -238,6 +239,17 @@ public class Controller extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void visualiseToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualiseToggleActionPerformed
+        Interface.setVisualisation(visualiseToggle.isSelected());
+        view.setVisualiseToggle(visualiseToggle);
+    }//GEN-LAST:event_visualiseToggleActionPerformed
+
+    private void liveToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveToggleButtonActionPerformed
+        if (liveToggleButton.isSelected()) {
+            liveActThread.start();
+        }
+    }//GEN-LAST:event_liveToggleButtonActionPerformed
+
     private void fileManagerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileManagerToggleActionPerformed
         javax.swing.JToggleButton button = ((javax.swing.JToggleButton) evt.getSource());
         button.setSelected(!button.isSelected());
@@ -312,27 +324,16 @@ public class Controller extends javax.swing.JFrame {
         isnetwork = true;
     }//GEN-LAST:event_loginActionPerformed
 
-    private void liveToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveToggleButtonActionPerformed
-        if (liveToggleButton.isSelected()) {
-            liveActThread.start();
-        }
-    }//GEN-LAST:event_liveToggleButtonActionPerformed
-
-    private void visualiseToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualiseToggleActionPerformed
-        Interface.setVisualisation(visualiseToggle.isSelected());
-        view.setVisualiseToggle(visualiseToggle);
-    }//GEN-LAST:event_visualiseToggleActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonLoginPassword;
-    private static javax.swing.JTextArea communicationBox;
+    private javax.swing.JTextArea communicationBox;
     private javax.swing.JToggleButton fileManagerToggle;
     private javax.swing.JTextField inputLogin;
     private javax.swing.JPasswordField inputPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    public static javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToggleButton liveToggleButton;

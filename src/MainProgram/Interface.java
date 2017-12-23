@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JProgressBar;
 
 public class Interface {
 
@@ -27,6 +28,7 @@ public class Interface {
     private static final String generatedSentencesFilePath = "generated_sentences.txt";
     private static boolean visualisation;
     private static RiTaFactory ritaActions;
+    private static JProgressBar jProgressBar;
 
     public static String getMessage() {
         return message;
@@ -178,6 +180,14 @@ public class Interface {
     
     public static RiTaFactory getRitaActions() {
         return Interface.ritaActions;
+    }
+
+    static void setProgressBar(JProgressBar jProgressBar) {
+       Interface.jProgressBar = jProgressBar;
+    }
+    
+    static JProgressBar getProgressBar(){
+        return jProgressBar;
     }
     
 }

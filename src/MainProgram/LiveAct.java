@@ -36,7 +36,6 @@ class LiveAct implements Runnable {
 
         while (liveToggleButton.isSelected()) {
 
-            System.err.println("Live Act Start");
             stimulateToggle.setSelected(!stimulateToggle.isSelected());
             translateToggle.setSelected(!stimulateToggle.isSelected());
 

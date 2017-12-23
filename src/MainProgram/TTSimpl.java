@@ -1,27 +1,39 @@
 package MainProgram;
 
-import RiTa.RiTaRepo;
 import guru.ttslib.TTS;
+import java.util.Locale;
+import javax.speech.Central;
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
 
 class TTSimpl {
 
     private static final TTS tts = new TTS();
-    private static RiTaRepo repo;
-    
+    private static Synthesizer synthesizer;
+
     static void start(String word) {
-        System.err.println(word);
-        if(word != null && word.length()>0){
+        TTSimpl.initiate();
+        if (word != null && word.length() > 0) {
             new Thread(() -> {
-               // repo.get(word).print();
                 Interface.setIsSpeaking(true);
-                tts.setPitch(Float.MIN_VALUE);
-                tts.speak(word);
+                synthesizer.speakPlainText(word, null);
                 Interface.setIsSpeaking(false);
             }).start();
         }
     }
 
-    static void setRitaRepo(RiTaRepo repo) {
-       TTSimpl.repo = repo;
+    public static void initiate() {
+        if (synthesizer == null) {
+            try {
+                System.setProperty("freetts.voices",
+                        "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+                Central.registerEngineCentral("com.sun.speech.freetts.jsapi.FreeTTSEngineCentral");
+                synthesizer = Central.createSynthesizer(new SynthesizerModeDesc(Locale.US));
+                synthesizer.allocate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 }
