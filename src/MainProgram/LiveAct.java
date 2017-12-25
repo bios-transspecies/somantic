@@ -1,5 +1,6 @@
 package MainProgram;
 
+import Persistence.Persistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
@@ -15,9 +16,8 @@ class LiveAct implements Runnable {
     private final boolean network;
     private int newsCounter;
     private int scheduler;
-    private final Library l;
 
-    LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, boolean network, int newsCounter, int scheduler, Library l) {
+    LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, boolean network, int newsCounter, int scheduler) {
         this.liveToggleButton = liveToggleButton;
         this.communicationBox = communicationBox;
         this.stimulateToggle = stimulateToggle;
@@ -26,7 +26,6 @@ class LiveAct implements Runnable {
         this.network = network;
         this.newsCounter = newsCounter;
         this.scheduler = scheduler;
-        this.l = l;
     }
 
     @Override
@@ -55,7 +54,7 @@ class LiveAct implements Runnable {
                     }
                 } else {
                     if (newsCounter > 0) {
-                        l.zapiszPlik(communicationBox.getText());
+                        Persistence.saveFile(communicationBox.getText());
                         communicationBox.setText(Interface.getDefaultWords());
                     }
                     newsCounter++;

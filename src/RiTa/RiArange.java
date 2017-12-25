@@ -60,32 +60,32 @@ public class RiArange {
                 }
             }
 
-            List<RiTaWord> sentenceContextualised = new ArrayList<>();
-            for (RiTaWord riTaWord : tmpReSentence) {
-                Set<RiWoContext> contexts = riTaWord.getContexts();
-                for (RiWoContext context : contexts) {
-                    List<String> tags = context.getPostSimpleTags();
-                    if (sentenceContextualised.isEmpty()) {
-                        for (String tag : tags) {
-                            for (RiTaWord riTaWordContextualised : tmpReSentence) {
-                                if (riTaWordContextualised.getPennTag() == tag) {
-                                    System.err.println(riTaWordContextualised);
-                                    sentenceContextualised.add(riTaWordContextualised);
-                                }
-                            }
-                        }
-                    }
-                    if (tags.size() > 3 && sentenceContextualised.size() == tags.size()) {
-                        sentenceContextualised = new ArrayList<>();
-                    }else{
-                        String res = sentenceContextualised.stream().map(w->w.getLemma()).collect(Collectors.joining(" "));
-                        System.err.println("-------------------------------------------------------------------");
-                        System.out.println("---"+ res +"---");
-                        System.err.println("-------------------------------------------------------------------");
-                        return res;
-                    }
-                }
-            }
+//            List<RiTaWord> sentenceContextualised = new ArrayList<>();
+//            for (RiTaWord riTaWord : tmpReSentence) {
+//                Set<RiWoContext> contexts = riTaWord.getContexts();
+//                for (RiWoContext context : contexts) {
+//                    List<String> tags = context.getPostSimpleTags();
+//                    if (sentenceContextualised.isEmpty()) {
+//                        for (String tag : tags) {
+//                            for (RiTaWord riTaWordContextualised : tmpReSentence) {
+//                                if (riTaWordContextualised.getPennTag() == tag) {
+//                                    System.err.println(riTaWordContextualised);
+//                                    sentenceContextualised.add(riTaWordContextualised);
+//                                }
+//                            }
+//                        }
+//                    }
+//                    if (tags.size() > 3 && sentenceContextualised.size() == tags.size()) {
+//                        sentenceContextualised = new ArrayList<>();
+//                    }else{
+//                        String res = sentenceContextualised.stream().map(w->w.getLemma()).collect(Collectors.joining(" "));
+//                        System.err.println("-------------------------------------------------------------------");
+//                        System.out.println("---"+ res +"---");
+//                        System.err.println("-------------------------------------------------------------------");
+//                        return res;
+//                    }
+//                }
+//            }
 
             // selecting most complex sentence
             Boolean add = true;

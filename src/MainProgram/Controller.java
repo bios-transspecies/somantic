@@ -1,10 +1,8 @@
 package MainProgram;
 
 import RiTa.RiTaFactory;
-import RiTa.RiTaWord;
 import java.awt.Component;
 import java.io.File;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -13,19 +11,17 @@ public class Controller extends javax.swing.JFrame {
 
     static boolean recording;
     private AudioFFT fft;
-    private Library library;
     private final View view;
     private final JFileChooser libraryFileChooser;
     private int scheduler = (1000 * 60 * 10); // (milisekundy, sekundy, minuty)
     private int newsCounter = 0;
     private boolean isnetwork = false;
     private final Thread liveActThread;
-    private final RiTaFactory riact;
+    private final RiTaFactory riTaFactory;
 
     public Controller() {
-        library = new Library();
-        riact = new RiTaFactory();
-        Interface.setRitaFactory(riact);
+        riTaFactory = new RiTaFactory();
+        Interface.setRitaFactory(riTaFactory);
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -37,7 +33,7 @@ public class Controller extends javax.swing.JFrame {
         listen();
         view = new View();
         view.start(fft);
-        LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, isnetwork, newsCounter, scheduler, library);
+        LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, isnetwork, newsCounter, scheduler);
         liveActThread = new Thread(liveAct);
         Interface.setBufferedText(communicationBox.getText());
         Interface.setProgressBar(jProgressBar1);
@@ -59,7 +55,7 @@ public class Controller extends javax.swing.JFrame {
         if (res.length() > 0) {
             Interface.setLibraryFile(res);
         }
-        library.load();
+        riTaFactory.loadRepo();
     }
 
     @SuppressWarnings("unchecked")
@@ -267,7 +263,7 @@ public class Controller extends javax.swing.JFrame {
         }
         stimulateToggle.setSelected(false);
         stimulateToggle.setText("Stimulate");
-        library.load();
+        riTaFactory.loadRepo();
         if (translateToggle.isSelected()) {
             translateToggle.setText("Translation");
             Interface.setIsVisualising(true);
@@ -276,7 +272,7 @@ public class Controller extends javax.swing.JFrame {
             communicationBox.setText("");
             communicationBox.setEditable(false);
             fft.getMatrix();
-            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, library, communicationBox, fft, riact);
+            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, riTaFactory);
             Thread translatorThread = new Thread(translatorRunnable);
             translatorThread.start();
         } else {
@@ -294,7 +290,7 @@ public class Controller extends javax.swing.JFrame {
         }
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
-        library.load();
+        riTaFactory.loadRepo();
         if (stimulateToggle.isSelected()) {
             stimulateToggle.setText("Stimulation");
             Interface.setState("Stimulate");
@@ -303,8 +299,8 @@ public class Controller extends javax.swing.JFrame {
             String already = Interface.getStimulatedAlready();
             Interface.setBufferedText(communicationBox.getText().replace(already.trim(), "").replace("\n", " ").replace("\r", " "));
             communicationBox.setText(Interface.getBufferedText());
-            riact.addToRepo(Interface.getBufferedText());
-            StimulationRunnable stimulationRunnable = new StimulationRunnable(riact.getListOfRiwords(), stimulateToggle, library, liveActThread, fft, liveToggleButton);
+            riTaFactory.addToRepo(Interface.getBufferedText());
+            StimulationRunnable stimulationRunnable = new StimulationRunnable(riTaFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable);
             stimulationThread.start();
         } else {

@@ -1,27 +1,27 @@
 package MainProgram;
 
+import static MainProgram.Controller.recording;
+import RiTa.RiTaFactory;
+import RiTa.RiTaWord;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
-import static MainProgram.Controller.recording;
-import RiTa.RiTaRepo;
-import RiTa.RiTaWord;
-import java.util.List;
 
 public class StimulationRunnable implements Runnable {
 
     String[] words;
     JToggleButton stimulateToggle;
-    Library library;
     String stimulatedAlready;
     private final Thread live;
     private final AudioFFT fft;
     private final JToggleButton liveToggleButton;
+    private final RiTaFactory riTaFactory;
 
-    StimulationRunnable(List<RiTaWord> words, JToggleButton stimulateToggle, Library library, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
-        this.words = wordsArr(words);
+    StimulationRunnable(RiTaFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
+        this.words = wordsArr(riTaFactory.getListOfRiwords());
+        this.riTaFactory = riTaFactory;
         this.stimulateToggle = stimulateToggle;
-        this.library = library;
         this.live = live;
         this.fft = fft;
         this.liveToggleButton = liveToggleButton;
@@ -48,7 +48,7 @@ public class StimulationRunnable implements Runnable {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            library.zapisz(words[i], fft.getMatrix());
+            riTaFactory.save(words[i], fft.getMatrix());
             Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
         }
         if (liveToggleButton.isSelected()) {

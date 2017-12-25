@@ -1,8 +1,9 @@
 package RiTa;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
  
-public class RiWoContext {
+public class RiWoContext implements Serializable{
     
     private RiTaWord word;
     private List<String> prePennTags = new ArrayList<>();

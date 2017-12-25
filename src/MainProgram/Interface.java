@@ -158,7 +158,7 @@ public class Interface {
         stimulatedAlready = aStimulatedAlready;
     }
 
-    static String getGeneratedSentencesFilePath() {
+    public static String getGeneratedSentencesFilePath() {
         return generatedSentencesFilePath;
     }
 
@@ -187,7 +187,7 @@ public class Interface {
        Interface.jProgressBar = jProgressBar;
     }
     
-    static JProgressBar getProgressBar(){
+    public static JProgressBar getProgressBar(){
         return jProgressBar;
     }
     

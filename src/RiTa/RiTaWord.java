@@ -1,12 +1,13 @@
 package RiTa;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class RiTaWord {
+public class RiTaWord implements Serializable{
 
     private Set<String> word = new HashSet<>();
     private String lemma = "";
@@ -18,6 +19,7 @@ public class RiTaWord {
     private List<RiTaWord> synonyms = new ArrayList<>();
     private List<RiTaWord> antonyms = new ArrayList<>();
     private List<RiTaWord> sentence = new ArrayList<>();
+    private Set<String> affects = new HashSet<>();
 
     public RiTaWord() {
     }
@@ -160,5 +162,17 @@ public class RiTaWord {
 
     public void print() {
         System.err.println("RiTaWord{" + "word=" + word.toString() + ", lemma=" + lemma + ", simpleTag=" + simpleTag + ", pennTag=" + pennTag + ", contexts=" + contexts.toString() + ", previous=" + previous.toString() + ", next=" + next.toString() + ", synonyms=" + synonyms + ", antonyms=" + antonyms + ", sentence=" + sentence.size() + '}');
+    }
+
+    public Set<String> getAffects() {
+        return affects;
+    }
+
+    public void setAffects(Set<String> affects) {
+        this.affects = affects;
+    }
+
+    void addAffect(String affect) {
+        this.affects.add(affect);
     }
 }

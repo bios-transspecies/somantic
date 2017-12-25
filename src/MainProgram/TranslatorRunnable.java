@@ -12,19 +12,17 @@ import javax.swing.JToggleButton;
 public class TranslatorRunnable implements Runnable {
 
     private final JToggleButton translateToggle;
-    private final Library library;
     private final JTextArea communicationBox;
     private final AudioFFT fft;
     private List<String> lines;
-    private RiArange arranger;
+    private final RiTaFactory riTaFactory;
     
 
-    TranslatorRunnable(JToggleButton translateToggle, Library library, JTextArea communicationBox, AudioFFT fft, RiTaFactory f) {
+    TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, RiTaFactory riTaFactory) {
         this.translateToggle = translateToggle;
-        this.library = library;
         this.communicationBox = communicationBox;
         this.fft = fft;
-        this.arranger = new RiArange(f);
+        this.riTaFactory = riTaFactory;
     }
 
     @Override
@@ -33,7 +31,7 @@ public class TranslatorRunnable implements Runnable {
             String matrix = fft.getMatrix();
             if (matrix.length() > 100) {
                 matrix = matrix.substring(0, 100);
-                lines = library.getLines();
+                lines = riTaFactory.getLines();
                 int stopienPokrewienstwaMin = 0;
                 int stopienPokrewienstwa = 0;
                 String rezultat = "";
@@ -44,23 +42,23 @@ public class TranslatorRunnable implements Runnable {
                         String[] fileAffects = null;
                         try {
                             if (linia.length() > 0 && linia.indexOf(":") > 0) {
-                                fileMatrix = linia.substring(linia.indexOf(":"), linia.length());
+                                fileMatrix = linia.substring(linia.indexOf(":"), linia.length()).trim().replace(",", "");
                             }
                             fileAffects = fileMatrix.split(" ");
                         } catch (Exception e) {
                             System.err.println(e);
                         }
                         if (fileAffects != null && fileAffects.length > 0) {
-                            String[] recentAffects = matrix.split(" ");
+                            String[] recentAffects = matrix.replace(",", "").split(" ");
                             int sizeDiff = Math.abs(fileAffects.length - recentAffects.length);
                             for (int i = 0; i < recentAffects.length; i++) {
                                 for (int a = 0; a < sizeDiff && sizeDiff > 0; a++) {
                                     if (recentAffects.length > i
                                             && fileAffects.length > i + a
-                                            && recentAffects[i].length() > 0
-                                            && fileAffects[i + a].length() > 0) {
-                                        Float recent = Float.parseFloat(recentAffects[i]);
-                                        Float fileValue = Float.parseFloat(fileAffects[i + a]);
+                                            && recentAffects[i].trim().length() > 0
+                                            && fileAffects[i + a].trim().length() > 0) {
+                                        Float recent = (float) Integer.parseInt(recentAffects[i].trim());
+                                        Float fileValue = (float) Integer.parseInt(fileAffects[i + a].trim());
                                         stopienPokrewienstwa = stopienPokrewienstwa + Math.abs((int) (recent - fileValue));
                                     }
                                 }
@@ -80,12 +78,15 @@ public class TranslatorRunnable implements Runnable {
                         }
                     }
                 }
-                if (rezultat.length() > 0) {
+                if (rezultat.trim().length() > 0) {
                     Interface.setWords(Interface.getWords() + " " + rezultat);
                     TTSimpl.start(rezultat);
                     Interface.setWord(rezultat);
+                    System.out.println("MainProgram.TranslatorRunnable.run() REZULTAT '"+rezultat+"'");
+                    String arranged = riTaFactory.getArranger().rewrite(Interface.getWords());
+                    System.out.println("arranged "+arranged);
+                    communicationBox.setText(arranged);
                 }
-                communicationBox.setText(arranger.rewrite(Interface.getWords()));
             }
             synchronized (this) {
                 try {

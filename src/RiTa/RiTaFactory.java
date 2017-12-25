@@ -14,6 +14,7 @@ public class RiTaFactory {
     RepositoryWordNet wordnetRepo = null;
     List<RiTaWord> sentence = null;
     List<RiTaWord> lastSentence = new ArrayList<>();
+    private RiArange arranger;
 
     public RiTaFactory() {
         wordnetRepo = new RepositoryWordNet();
@@ -23,12 +24,16 @@ public class RiTaFactory {
         return repo;
     }
     
+    public void loadRepo(){
+        RiTaRepo tmp = Persistence.Persistence.load();
+        if(tmp!=null)
+            repo = tmp;
+    }
+    
     public RiTaWord makeRiTaWord(String word) {
-        System.out.println("repo size "+ repo.size());
         if (RiTa.containsWord(word)) {
             RiTaWord res = repo.get(word);
             if (res != null) {
-                System.out.println(res.getLemma() + "EXISTS");
                 res.addWord(word);
                 return res;
             }
@@ -40,7 +45,6 @@ public class RiTaFactory {
                 res.setSimpleTag(RiTa.getPosTags(word)[0]);
             }
             res.setPennTag((new RiString(word)).posAt(0));
-            System.err.println(res.getLemma() + " <- CAN'T FIND IN REPO");
             return res;
         }
         return null;
@@ -84,5 +88,22 @@ public class RiTaFactory {
         List<RiTaWord> s = lastSentence;
         lastSentence = new ArrayList<>();
         return s;
+    }
+
+    public List<String> getLines() {
+        List<String> lines = new ArrayList<>();
+        repo.forEach((lemma, word) -> lines.add(lemma + ":" + word.getAffects()));
+        return lines;
+    }
+
+    public void save(String word, String affect) {
+        repo.get(word).addAffect(affect);
+        Persistence.Persistence.save(repo);
+    }
+
+    public RiArange getArranger() {
+        if(this.arranger == null)
+            return new RiArange(this);
+        return arranger;
     }
 }
