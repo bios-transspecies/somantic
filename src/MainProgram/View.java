@@ -135,14 +135,14 @@ public class View {
                             }
                         }
                         Float fz = 0f;
-                        if (arrayOfAffects.size() >= i + 10) {
+                        if (arrayOfAffects.size() > i + 10) {
                             if (arrayOfAffects.get(i+10)>0)
                                 fz = arrayOfAffects.get(i+10) * 2;
                         }
                         try {
                             
                             if(even){
-                                fa = -fa * 2; 
+                                fa = -fa * 2;
                                 fz = -fz * 2;
                             }
                             fa = ((w/2) + fa) % w;

@@ -1,9 +1,10 @@
 package MainProgram;
 
 import RiTa.RiTaFactory;
-import RiTa.RiTaRepo;
+import RiTa.RiTaWord;
 import java.awt.Component;
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -20,10 +21,11 @@ public class Controller extends javax.swing.JFrame {
     private boolean isnetwork = false;
     private final Thread liveActThread;
     private final RiTaFactory riact;
-    private RiTaRepo repo;
 
     public Controller() {
         library = new Library();
+        riact = new RiTaFactory();
+        Interface.setRitaFactory(riact);
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -37,9 +39,7 @@ public class Controller extends javax.swing.JFrame {
         view.start(fft);
         LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, isnetwork, newsCounter, scheduler, library);
         liveActThread = new Thread(liveAct);
-        riact = new RiTaFactory();
-        Interface.setDefaultString(communicationBox.getText());
-        Interface.setRitaActions(riact);
+        Interface.setBufferedText(communicationBox.getText());
         Interface.setProgressBar(jProgressBar1);
     }
 
@@ -301,10 +301,10 @@ public class Controller extends javax.swing.JFrame {
             recording = true;
             Interface.setIsVisualising(recording);
             String already = Interface.getStimulatedAlready();
-            Interface.setDefaultString(communicationBox.getText().replace(already.trim(), ""));
-            communicationBox.setText(Interface.getDefaultString());
-            repo = riact.explain(Interface.getDefaultString());
-            StimulationRunnable stimulationRunnable = new StimulationRunnable(repo, stimulateToggle, library, liveActThread, fft, liveToggleButton);
+            Interface.setBufferedText(communicationBox.getText().replace(already.trim(), "").replace("\n", " ").replace("\r", " "));
+            communicationBox.setText(Interface.getBufferedText());
+            riact.addToRepo(Interface.getBufferedText());
+            StimulationRunnable stimulationRunnable = new StimulationRunnable(riact.getListOfRiwords(), stimulateToggle, library, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable);
             stimulationThread.start();
         } else {

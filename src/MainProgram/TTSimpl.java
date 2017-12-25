@@ -3,6 +3,7 @@ package MainProgram;
 import guru.ttslib.TTS;
 import java.util.Locale;
 import javax.speech.Central;
+import javax.speech.EngineException;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
@@ -30,8 +31,7 @@ class TTSimpl {
                 Central.registerEngineCentral("com.sun.speech.freetts.jsapi.FreeTTSEngineCentral");
                 synthesizer = Central.createSynthesizer(new SynthesizerModeDesc(Locale.US));
                 synthesizer.allocate();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IllegalArgumentException | EngineException e) {
             }
         }
     }

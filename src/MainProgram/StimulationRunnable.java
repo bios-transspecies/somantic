@@ -6,6 +6,7 @@ import javax.swing.JToggleButton;
 import static MainProgram.Controller.recording;
 import RiTa.RiTaRepo;
 import RiTa.RiTaWord;
+import java.util.List;
 
 public class StimulationRunnable implements Runnable {
 
@@ -17,8 +18,8 @@ public class StimulationRunnable implements Runnable {
     private final AudioFFT fft;
     private final JToggleButton liveToggleButton;
 
-    StimulationRunnable(RiTaRepo repo, JToggleButton stimulateToggle, Library library, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
-        this.words = wordsArr(repo);
+    StimulationRunnable(List<RiTaWord> words, JToggleButton stimulateToggle, Library library, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
+        this.words = wordsArr(words);
         this.stimulateToggle = stimulateToggle;
         this.library = library;
         this.live = live;
@@ -26,7 +27,7 @@ public class StimulationRunnable implements Runnable {
         this.liveToggleButton = liveToggleButton;
     }
 
-    private String[] wordsArr(RiTaRepo repo){
+    private String[] wordsArr(List<RiTaWord> repo){
         String[]wordsArr = new String[repo.size()];
         int in=0;
         for (RiTaWord word : repo) {

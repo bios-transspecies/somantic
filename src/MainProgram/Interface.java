@@ -23,11 +23,11 @@ public class Interface {
     private static String login;
     private static String password;
     private static final String url = "https://art-hub.pl/webservice/tal";
-    private static String defaultString;
+    private static String bufferedText;
     private static String stimulatedAlready = "";
     private static final String generatedSentencesFilePath = "generated_sentences.txt";
     private static boolean visualisation;
-    private static RiTaFactory ritaActions;
+    private static RiTaFactory ritaFactory;
     private static JProgressBar jProgressBar;
 
     public static String getMessage() {
@@ -139,15 +139,15 @@ public class Interface {
     }
 
     static String getDefaultWords() {
-        return defaultString;
+        return bufferedText;
     }
 
-    public static String getDefaultString() {
-        return defaultString.trim();
+    public static String getBufferedText() {
+        return bufferedText.trim();
     }
 
-    public static void setDefaultString(String aDefaultString) {
-        defaultString = aDefaultString.trim();
+    public static void setBufferedText(String aDefaultString) {
+        bufferedText = aDefaultString.trim();
     }
 
     public static String getStimulatedAlready() {
@@ -174,12 +174,13 @@ public class Interface {
         return visualisation;
     }
 
-    public static void setRitaActions(RiTaFactory riact) {
-        Interface.ritaActions = riact;
+    public static void setRitaFactory(RiTaFactory riact) {
+        if(ritaFactory == null)
+        Interface.ritaFactory = riact;
     }
     
-    public static RiTaFactory getRitaActions() {
-        return Interface.ritaActions;
+    public static RiTaFactory getRitaFactory() {
+        return Interface.ritaFactory;
     }
 
     static void setProgressBar(JProgressBar jProgressBar) {
