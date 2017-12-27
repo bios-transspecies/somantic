@@ -90,13 +90,7 @@ public class RiTaFactory {
         return s;
     }
 
-    public List<String> getLines() {
-        List<String> lines = new ArrayList<>();
-        repo.forEach((lemma, word) -> lines.add(lemma + ":" + word.getAffects()));
-        return lines;
-    }
-
-    public void save(String word, String affect) {
+    public void save(String word, List<Integer> affect) {
         repo.get(word).addAffect(affect);
         Persistence.Persistence.save(repo);
     }

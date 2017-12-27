@@ -19,7 +19,7 @@ public class RiTaWord implements Serializable{
     private List<RiTaWord> synonyms = new ArrayList<>();
     private List<RiTaWord> antonyms = new ArrayList<>();
     private List<RiTaWord> sentence = new ArrayList<>();
-    private Set<String> affects = new HashSet<>();
+    private Set<List<Integer>> affects = new HashSet<>();
 
     public RiTaWord() {
     }
@@ -164,15 +164,15 @@ public class RiTaWord implements Serializable{
         System.err.println("RiTaWord{" + "word=" + word.toString() + ", lemma=" + lemma + ", simpleTag=" + simpleTag + ", pennTag=" + pennTag + ", contexts=" + contexts.toString() + ", previous=" + previous.toString() + ", next=" + next.toString() + ", synonyms=" + synonyms + ", antonyms=" + antonyms + ", sentence=" + sentence.size() + '}');
     }
 
-    public Set<String> getAffects() {
+    public Set<List<Integer>> getAffects() {
         return affects;
     }
 
-    public void setAffects(Set<String> affects) {
+    public void setAffects(Set<List<Integer>> affects) {
         this.affects = affects;
     }
 
-    void addAffect(String affect) {
+    void addAffect(List<Integer> affect) {
         this.affects.add(affect);
     }
 }

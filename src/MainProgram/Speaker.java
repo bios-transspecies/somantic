@@ -7,13 +7,13 @@ import javax.speech.EngineException;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
-class TTSimpl {
+class Speaker {
 
     private static final TTS tts = new TTS();
     private static Synthesizer synthesizer;
 
     static void start(String word) {
-        TTSimpl.initiate();
+        Speaker.initiate();
         if (word != null && word.length() > 0) {
             new Thread(() -> {
                 Interface.setIsSpeaking(true);

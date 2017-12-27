@@ -39,7 +39,7 @@ public class StimulationRunnable implements Runnable {
     public void run() {
         Interface.setStimulatedAlready("");
         for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
-            TTSimpl.start(words[i]);
+            Speaker.start(words[i]);
             Interface.setWord(words[i]);
             synchronized (this) {
                 try {

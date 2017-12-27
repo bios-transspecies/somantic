@@ -5,6 +5,7 @@ import ddf.minim.Minim;
 import ddf.minim.analysis.FFT;
 import ddf.minim.spi.AudioStream;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JProgressBar;
 
 /**
@@ -17,13 +18,13 @@ class AudioFFT {
     private final AudioInput in;
     private final FFT fft;
     private int band;
-    private String matrix;
+    private List<Integer> matrix;
     private final Algorytm a;
     private ArrayList<Float> arrayOfAffects;
 
     public AudioFFT() {
         this.band = 0;
-        matrix = "";
+        matrix = new ArrayList<Integer>();
         m = new Minim(this);
         AudioStream is = m.getInputStream(1, 8, 44.100f, 16);
         m.debugOff();
@@ -48,16 +49,16 @@ class AudioFFT {
             }
             jp.setValue(band);
             Interface.setVolume(band);
-            matrix = matrix + " " + String.valueOf(band);
+            matrix.add(band);
         } catch (Exception e) {
            // System.err.println(e);
         }
         Interface.setIsListening(false);
     }
 
-    public String getMatrix() {
-        String m = matrix;
-        matrix = "";
+    public List<Integer> getMatrix() {
+        List<Integer> m = matrix;
+        matrix = new ArrayList<>();
         return m;
     }
 
