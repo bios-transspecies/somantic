@@ -92,26 +92,27 @@ public class View {
                         int odx, ody, dox, doy;
                         if (j == 3) {
                             if (i % 3 == 0) {
-                                odx = (odxA==0 ? w / 2 : odxA);
-                                ody = (odyA==0 ? h / 2 : odyA);
+                                odx = (odxA == 0 ? w / 2 : odxA);
+                                ody = (odyA == 0 ? h / 2 : odyA);
                                 dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
                                 doy = (h - arr[3] % h) % h;
                             } else {
-                                odx = (odxA==0 ? w / 2 : odxA);
-                                ody = (odyA==0 ? h / 2 : odyA);
+                                odx = (odxA == 0 ? w / 2 : odxA);
+                                ody = (odyA == 0 ? h / 2 : odyA);
                                 dox = (w / 2 - arr[2] % w) % w;
                                 doy = (h - arr[3] % h) % h;
                             }
-                            if(even){
-                            odxA = (odx + w / 2) /2; 
-                            odyA = (ody + h / 2) /2;
-                            doxA = dox; 
-                            doyA = doy;}
+                            if (even) {
+                                odxA = (odx + w / 2) / 2;
+                                odyA = (ody + h / 2) / 2;
+                                doxA = dox;
+                                doyA = doy;
+                            }
                             if (odx != w / 2 || dox != w / 2) {
-                                gc.strokeLine((odx + odxA) / 2 , (ody + odyA) /2, dox, doy);
-                                dox = even ? dox : -dox ;
-                                dox = even ? doy : -doy ;
-                                gc.strokeLine(doxA , doyA, dox, doy);
+                                gc.strokeLine((odx + odxA) / 2, (ody + odyA) / 2, dox, doy);
+                                dox = even ? dox : -dox;
+                                dox = even ? doy : -doy;
+                                gc.strokeLine(doxA, doyA, dox, doy);
                             }
                         }
                     }
@@ -136,23 +137,24 @@ public class View {
                         }
                         Float fz = 0f;
                         if (arrayOfAffects.size() > i + 10) {
-                            if (arrayOfAffects.get(i+10)>0)
-                                fz = arrayOfAffects.get(i+10) * 2;
+                            if (arrayOfAffects.get(i + 10) > 0) {
+                                fz = arrayOfAffects.get(i + 10) * 2;
+                            }
                         }
                         try {
-                            
-                            if(even){
+
+                            if (even) {
                                 fa = -fa * 2;
                                 fz = -fz * 2;
                             }
-                            fa = ((w/2) + fa) % w;
-                            fz = ((h/2) + fz) % h;
-                            gc.fillText(word, fa * 1.2 , fz * 1.2);
+                            fa = ((w / 2) + fa) % w;
+                            fz = ((h / 2) + fz) % h;
+                            gc.fillText(word, fa * 1.2, fz * 1.2);
                         } catch (Exception e) {
 
                         }
                     }
-                    gc.fillText(Interface.getWords(), 10 , h - 100);
+                    gc.fillText(Interface.getWords(), 10, h - 100);
                     if (Interface.getWords().length() > 200) {
                         Interface.setWords(" ");
                     }

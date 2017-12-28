@@ -4,10 +4,8 @@ import RiTa.RiTaFactory;
 import RiTa.RiTaRepo;
 import RiTa.RiTaWord;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
@@ -31,12 +29,14 @@ public class TranslatorRunnable implements Runnable {
     public void run() {
         while (translateToggle.isSelected()) {
             List<Integer> recentAffects = fft.getMatrix();
+            Long stopienPokrewienstwa = 0L;
+            Long stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
             if (recentAffects.size() > 100) {
                 RiTaRepo repo = riTaFactory.getRitaRepo();
                 RiTaWord rezultat = null;
                 for (Map.Entry<String, RiTaWord> entry : repo.entrySet()) {
-                    int stopienPokrewienstwaMin = 0;
-                    int stopienPokrewienstwa = 0;
+                    stopienPokrewienstwa = 0L;
+                    stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
                     RiTaWord riWord = entry.getValue();
                     List<List<Integer>> affectsInRepo = new ArrayList<>();
                     affectsInRepo.addAll(riWord.getAffects());
@@ -45,19 +45,17 @@ public class TranslatorRunnable implements Runnable {
                             int sizeDiff = Math.abs(affectInRepo.size() - recentAffects.size());
                             for (int i = 0; i < recentAffects.size(); i++) {
                                 for (int j = 0; j < sizeDiff && sizeDiff > 0; j++) {
-                                    if (recentAffects.size() > i + j&& affectInRepo.size() > i) {
-                                        stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i+ j) - affectInRepo.get(i));
+                                    if (recentAffects.size() > i + j && affectInRepo.size() > i) {
+                                        stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i + j) - affectInRepo.get(i));
                                     }
                                 }
                             }
                         }
                     }
-                    
-                    int threshold = Interface.getWords().contains(entry.getKey()) ? stopienPokrewienstwaMin *1000 : stopienPokrewienstwaMin;
-                    if ( stopienPokrewienstwa > threshold && !Interface.getWords().contains(entry.getKey())) {
+
+                    Long threshold = Interface.getWords().contains(entry.getKey()) ? stopienPokrewienstwaMin * 1000 : stopienPokrewienstwaMin;
+                    if (stopienPokrewienstwa > threshold && !Interface.getWords().contains(entry.getKey())) {
                         rezultat = riWord;
-                        stopienPokrewienstwaMin = stopienPokrewienstwa;
-                    } else if (stopienPokrewienstwaMin == 0) {
                         stopienPokrewienstwaMin = stopienPokrewienstwa;
                     }
                 }
@@ -65,12 +63,12 @@ public class TranslatorRunnable implements Runnable {
                     Interface.setWords(Interface.getWords() + " " + rezultat);
                     Speaker.start(rezultat.getWords().toString());
                     Interface.setWord(rezultat.getWords().toString());
-                    System.out.println("MainProgram.TranslatorRunnable.run() REZULTAT '" + rezultat + "'");
                     String arranged = riTaFactory.getArranger().rewrite(Interface.getWords());
                     System.out.println("arranged " + arranged);
                     communicationBox.setText(arranged);
                 }
             }
+            Interface.setMinimalSimilarity((9 * Interface.getMinimalSimilarity() + stopienPokrewienstwaMin) / 10);
             synchronized (this) {
                 try {
                     this.wait(1500);

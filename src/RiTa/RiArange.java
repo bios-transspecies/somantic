@@ -75,18 +75,15 @@ public class RiArange {
 //                            }
 //                        }
 //                    }
-//                    if (tags.size() > 3 && sentenceContextualised.size() == tags.size()) {
-//                        sentenceContextualised = new ArrayList<>();
-//                    }else{
+//                    if (tags.size() > 3 && tags.size() - sentenceContextualised.size() < 5) {
 //                        String res = sentenceContextualised.stream().map(w->w.getLemma()).collect(Collectors.joining(" "));
 //                        System.err.println("-------------------------------------------------------------------");
-//                        System.out.println("---"+ res +"---");
+//                        System.err.println("---"+ res +"---");
 //                        System.err.println("-------------------------------------------------------------------");
 //                        return res;
 //                    }
 //                }
 //            }
-
             // selecting most complex sentence
             Boolean add = true;
             if (!tmpReSentences.contains(tmpReSentence)) {

@@ -1,15 +1,16 @@
 package RiTa;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
- 
-public class RiWoContext implements Serializable{
-    
+
+public class RiWoContext implements Serializable {
+
     private RiTaWord word;
     private List<String> prePennTags = new ArrayList<>();
     private List<String> preSimpleTags = new ArrayList<>();
-    private List<String>postPennTags = new ArrayList<>();
-    private List<String>postSimpleTags = new ArrayList<>();
+    private List<String> postPennTags = new ArrayList<>();
+    private List<String> postSimpleTags = new ArrayList<>();
 
     public RiWoContext() {
     }
@@ -45,7 +46,7 @@ public class RiWoContext implements Serializable{
     public void setPostPennTags(List<String> postTags) {
         this.postPennTags = postTags;
     }
-    
+
     public List<String> getPostSimpleTags() {
         return postSimpleTags;
     }

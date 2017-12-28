@@ -19,15 +19,23 @@ import java.util.logging.Logger;
 
 public class Persistence {
 
+    private static boolean saving = false;
+
     public static void save(RiTaRepo e) {
-        try {
-            FileOutputStream fileOut = new FileOutputStream(Interface.getLibraryFile());
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(e);
-            out.close();
-            fileOut.close();
-        } catch (IOException i) {
-            i.printStackTrace();
+        if (!saving) {
+            try {
+                saving = true;
+                FileOutputStream fileOut = new FileOutputStream(Interface.getLibraryFile());
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(e);
+                out.close();
+                System.out.println("saved " + fileOut.getClass() + " to file " + Interface.getLibraryFile());
+                fileOut.close();
+            } catch (IOException i) {
+                System.err.println("saving error " + i.getMessage());
+                i.printStackTrace();
+            }
+            saving = false;
         }
     }
 
@@ -39,8 +47,10 @@ public class Persistence {
             riTaRepo = (RiTaRepo) in.readObject();
             in.close();
             fileIn.close();
+            System.out.println("loaded repo successfully from file" + Interface.getLibraryFile());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            System.err.println(" error " + e.getLocalizedMessage());
         }
         return riTaRepo;
     }

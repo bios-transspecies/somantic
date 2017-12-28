@@ -1,10 +1,6 @@
 package MainProgram;
 
 import RiTa.RiTaFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 
 public class Interface {
@@ -29,6 +25,7 @@ public class Interface {
     private static boolean visualisation;
     private static RiTaFactory ritaFactory;
     private static JProgressBar jProgressBar;
+    private static Long minimalSimilarity = 0L;
 
     public static String getMessage() {
         return message;
@@ -175,20 +172,29 @@ public class Interface {
     }
 
     public static void setRitaFactory(RiTaFactory riact) {
-        if(ritaFactory == null)
-        Interface.ritaFactory = riact;
+        if (ritaFactory == null) {
+            Interface.ritaFactory = riact;
+        }
     }
-    
+
     public static RiTaFactory getRitaFactory() {
         return Interface.ritaFactory;
     }
 
     static void setProgressBar(JProgressBar jProgressBar) {
-       Interface.jProgressBar = jProgressBar;
+        Interface.jProgressBar = jProgressBar;
     }
-    
-    public static JProgressBar getProgressBar(){
+
+    public static JProgressBar getProgressBar() {
         return jProgressBar;
     }
-    
+
+    public static Long getMinimalSimilarity() {
+        return minimalSimilarity;
+    }
+
+    public static void setMinimalSimilarity(Long aMinimalSimilarity) {
+        minimalSimilarity = aMinimalSimilarity;
+    }
+
 }

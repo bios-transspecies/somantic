@@ -3,14 +3,13 @@ package RiTa;
 import WordNet.RepositoryWordNet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import rita.*;
 
 public class RiTaFactory {
 
     RiTaWord previous = null;
-    RiTaRepo repo = new RiTaRepo();
+    RiTaRepo repo = null;
     RepositoryWordNet wordnetRepo = null;
     List<RiTaWord> sentence = null;
     List<RiTaWord> lastSentence = new ArrayList<>();
@@ -20,23 +19,36 @@ public class RiTaFactory {
         wordnetRepo = new RepositoryWordNet();
     }
 
-    public RiTaRepo getRitaRepo(){
+    public RiTaRepo getRitaRepo() {
         return repo;
     }
-    
-    public void loadRepo(){
-        RiTaRepo tmp = Persistence.Persistence.load();
-        if(tmp!=null)
-            repo = tmp;
+
+    public void saveRepo() {
+        (new Thread(() -> Persistence.Persistence.save(repo))).run();
     }
-    
-    public RiTaWord makeRiTaWord(String word) {
-        if (RiTa.containsWord(word)) {
-            RiTaWord res = repo.get(word);
-            if (res != null) {
-                res.addWord(word);
-                return res;
+
+    public void loadRepo() {
+        (new Thread(() -> repo = Persistence.Persistence.load())).run();
+    }
+
+    public void loadRepoIfNotExists() {
+        if (repo == null) {
+            RiTaRepo tmp = Persistence.Persistence.load();
+            if (tmp != null) {
+                repo = tmp;
+            } else {
+                repo = new RiTaRepo();
             }
+        }
+    }
+
+    public RiTaWord makeRiTaWord(String word) {
+        RiTaWord res = repo.get(RiTa.stem(word));
+        if (res != null) {
+            res.addWord(word);
+            return res;
+        }
+        if (RiTa.containsWord(word)) {
             word = word.trim();
             res = new RiTaWord();
             res.addWord(word);
@@ -50,15 +62,15 @@ public class RiTaFactory {
         return null;
     }
 
-    public void addToRepo(String textToUnderstand) {
-        String[] words = RiTa.tokenize(textToUnderstand.toLowerCase());
+    public void addTextToRepo(String textToSplit) {
+        String[] words = RiTa.tokenize(textToSplit.toLowerCase());
         sentence = new ArrayList<>();
         for (String word : words) {
             if (RiTa.containsWord(word)) {
                 RiTaWord ritaWord = makeRiTaWord(word);
                 sentence.add(ritaWord);
                 lastSentence.add(ritaWord);
-                if (previous != null) { 
+                if (previous != null) {
                     previous.addNext(ritaWord);
                     ritaWord.addPrevious(previous);
                 }
@@ -74,9 +86,7 @@ public class RiTaFactory {
                     c.setPrePennTags(sentence.subList(0, sentence.indexOf(riTaWord)).stream().map(w -> w.getPennTag()).collect(Collectors.toList()));
                     c.setPreSimpleTags(sentence.subList(0, sentence.indexOf(riTaWord)).stream().map(w -> w.getSimpleTag()).collect(Collectors.toList()));
                     c.setWord(riTaWord);
-                    Set<RiWoContext> cs = riTaWord.getContexts();
-                    cs.add(c);
-                    riTaWord.setContexts(cs);
+                    riTaWord.addContext(c);
                     riTaWord.addSentence(sentence);
                 }
                 sentence = new ArrayList<RiTaWord>();
@@ -90,14 +100,14 @@ public class RiTaFactory {
         return s;
     }
 
-    public void save(String word, List<Integer> affect) {
+    public void addAffectToWord(String word, List<Integer> affect) {
         repo.get(word).addAffect(affect);
-        Persistence.Persistence.save(repo);
     }
 
     public RiArange getArranger() {
-        if(this.arranger == null)
+        if (this.arranger == null) {
             return new RiArange(this);
+        }
         return arranger;
     }
 }

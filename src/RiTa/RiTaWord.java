@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class RiTaWord implements Serializable{
+public class RiTaWord implements Serializable {
 
     private Set<String> word = new HashSet<>();
     private String lemma = "";
@@ -18,7 +18,7 @@ public class RiTaWord implements Serializable{
     private Set<RiTaWord> next = new HashSet<>();
     private List<RiTaWord> synonyms = new ArrayList<>();
     private List<RiTaWord> antonyms = new ArrayList<>();
-    private List<RiTaWord> sentence = new ArrayList<>();
+    private Set<List<RiTaWord>> sentence = new HashSet<>();
     private Set<List<Integer>> affects = new HashSet<>();
 
     public RiTaWord() {
@@ -152,11 +152,15 @@ public class RiTaWord implements Serializable{
         this.contexts = contexts;
     }
 
-    public void addSentence(List<RiTaWord> sentence) {
-       this.sentence = sentence;
+    public void addContext(RiWoContext context) {
+        this.contexts.add(context);
     }
 
-    public List<RiTaWord> getSentence() {
+    public void addSentence(List<RiTaWord> sentence) {
+        this.sentence.add(sentence);
+    }
+
+    public Set<List<RiTaWord>> getSentence() {
         return sentence;
     }
 

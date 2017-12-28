@@ -27,15 +27,15 @@ public class StimulationRunnable implements Runnable {
         this.liveToggleButton = liveToggleButton;
     }
 
-    private String[] wordsArr(List<RiTaWord> repo){
-        String[]wordsArr = new String[repo.size()];
-        int in=0;
+    private String[] wordsArr(List<RiTaWord> repo) {
+        String[] wordsArr = new String[repo.size()];
+        int in = 0;
         for (RiTaWord word : repo) {
             wordsArr[in++] = word.getLemma();
         }
         return wordsArr;
     }
-    
+
     public void run() {
         Interface.setStimulatedAlready("");
         for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
@@ -48,7 +48,7 @@ public class StimulationRunnable implements Runnable {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            riTaFactory.save(words[i], fft.getMatrix());
+            riTaFactory.addAffectToWord(words[i], fft.getMatrix());
             Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
         }
         if (liveToggleButton.isSelected()) {
