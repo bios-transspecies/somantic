@@ -29,9 +29,9 @@ public class TranslatorRunnable implements Runnable {
     public void run() {
         while (translateToggle.isSelected()) {
             List<Integer> recentAffects = fft.getMatrix();
-            Long stopienPokrewienstwa = 0L;
+            Long stopienPokrewienstwa;
             Long stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
-            if (recentAffects.size() > 100) {
+            if (recentAffects.size() > 99) {
                 RiTaRepo repo = riTaFactory.getRitaRepo();
                 RiTaWord rezultat = null;
                 for (Map.Entry<String, RiTaWord> entry : repo.entrySet()) {
@@ -42,22 +42,22 @@ public class TranslatorRunnable implements Runnable {
                     affectsInRepo.addAll(riWord.getAffects());
                     if (affectsInRepo.size() > 0) {
                         for (List<Integer> affectInRepo : affectsInRepo) {
-                            int sizeDiff = Math.abs(affectInRepo.size() - recentAffects.size());
                             for (int i = 0; i < recentAffects.size(); i++) {
-                                for (int j = 0; j < sizeDiff && sizeDiff > 0; j++) {
-                                    if (recentAffects.size() > i + j && affectInRepo.size() > i) {
-                                        stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i + j) - affectInRepo.get(i));
+                                    if (recentAffects.size() > i && affectInRepo.size() > i) {
+                                        stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i) - affectInRepo.get(i));
                                     }
                                 }
-                            }
                         }
                     }
 
-                    Long threshold = Interface.getWords().contains(entry.getKey()) ? stopienPokrewienstwaMin * 1000 : stopienPokrewienstwaMin;
+                    Long threshold = Interface.getWords().contains(entry.getKey()) ? stopienPokrewienstwaMin * 2 : stopienPokrewienstwaMin;
+                    //System.err.println(" stopienPokrewienstwa "+stopienPokrewienstwa+ " threshold "+threshold+ " stopienPokrewienstwaMin " + stopienPokrewienstwaMin);
                     if (stopienPokrewienstwa > threshold && !Interface.getWords().contains(entry.getKey())) {
                         rezultat = riWord;
                         stopienPokrewienstwaMin = stopienPokrewienstwa;
                     }
+                    if(stopienPokrewienstwa > 0)
+                        Interface.setMinimalSimilarity((9 * Interface.getMinimalSimilarity() + stopienPokrewienstwaMin) / 10);
                 }
                 if (rezultat != null) {
                     Interface.setWords(Interface.getWords() + " " + rezultat);
@@ -68,7 +68,7 @@ public class TranslatorRunnable implements Runnable {
                     communicationBox.setText(arranged);
                 }
             }
-            Interface.setMinimalSimilarity((9 * Interface.getMinimalSimilarity() + stopienPokrewienstwaMin) / 10);
+            
             synchronized (this) {
                 try {
                     this.wait(1500);

@@ -46,7 +46,7 @@ public class View {
 
     public void start(AudioFFT fft) {
         timer = new AnimationTimer() {
-            ArrayList<Float> arrayOfAffectsArch = null;
+            ArrayList<Integer> arrayOfAffectsArch = null;
             private int doyA;
             private int doxA;
             private int odyA;
@@ -65,7 +65,7 @@ public class View {
                     gc.setGlobalAlpha(0.20);
                     gc.setStroke(Color.ALICEBLUE);
                     root.getChildren().add(canvas);
-                    ArrayList<Float> arrayOfAffects = fft.getArrayOfAffects();
+                    ArrayList<Integer> arrayOfAffects = fft.getArrayOfAffects();
                     if (arrayOfAffects.size() > 0) {
                         arrayOfAffectsArch = arrayOfAffects;
                     } else if (arrayOfAffectsArch != null) {
@@ -78,41 +78,40 @@ public class View {
                         if (j == 0) {
                             arr = new int[4];
                         }
-                        Float r = arrayOfAffects.get(i);
-                        if (r == null) {
-                            arr[j] = 0;
-                        } else {
+
+                        if (arrayOfAffects.get(i) != null) {
+                            int r = arrayOfAffects.get(i);
                             try {
-                                arr[j] = (int) r.intValue() * j * 2;
+                                arr[j] = r * j * 2;
                             } catch (Exception e) {
                                 arr[j] = 0;
                                 System.err.println(e);
                             }
-                        }
-                        int odx, ody, dox, doy;
-                        if (j == 3) {
-                            if (i % 3 == 0) {
-                                odx = (odxA == 0 ? w / 2 : odxA);
-                                ody = (odyA == 0 ? h / 2 : odyA);
-                                dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
-                                doy = (h - arr[3] % h) % h;
-                            } else {
-                                odx = (odxA == 0 ? w / 2 : odxA);
-                                ody = (odyA == 0 ? h / 2 : odyA);
-                                dox = (w / 2 - arr[2] % w) % w;
-                                doy = (h - arr[3] % h) % h;
-                            }
-                            if (even) {
-                                odxA = (odx + w / 2) / 2;
-                                odyA = (ody + h / 2) / 2;
-                                doxA = dox;
-                                doyA = doy;
-                            }
-                            if (odx != w / 2 || dox != w / 2) {
-                                gc.strokeLine((odx + odxA) / 2, (ody + odyA) / 2, dox, doy);
-                                dox = even ? dox : -dox;
-                                dox = even ? doy : -doy;
-                                gc.strokeLine(doxA, doyA, dox, doy);
+                            int odx, ody, dox, doy;
+                            if (j == 3) {
+                                if (i % 3 == 0) {
+                                    odx = (odxA == 0 ? w / 2 : odxA);
+                                    ody = (odyA == 0 ? h / 2 : odyA);
+                                    dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
+                                    doy = (h - arr[3] % h) % h;
+                                } else {
+                                    odx = (odxA == 0 ? w / 2 : odxA);
+                                    ody = (odyA == 0 ? h / 2 : odyA);
+                                    dox = (w / 2 - arr[2] % w) % w;
+                                    doy = (h - arr[3] % h) % h;
+                                }
+                                if (even) {
+                                    odxA = (odx + w / 2) / 2;
+                                    odyA = (ody + h / 2) / 2;
+                                    doxA = dox;
+                                    doyA = doy;
+                                }
+                                if (odx != w / 2 || dox != w / 2) {
+                                    gc.strokeLine((odx + odxA) / 2, (ody + odyA) / 2, dox, doy);
+                                    dox = even ? dox : -dox;
+                                    dox = even ? doy : -doy;
+                                    gc.strokeLine(doxA, doyA, dox, doy);
+                                }
                             }
                         }
                     }
@@ -127,16 +126,16 @@ public class View {
                         if (Interface.getWords().contains(" ")) {
                             word = Interface.getWords().split(" ")[i];
                         }
-                        Float fa = 0f;
+                        int fa = 0;
                         if (arrayOfAffects.size() >= i) {
                             try {
                                 fa = arrayOfAffects.get(i) * 2;
                             } catch (Exception e) {
-                                fa = 0f;
+                                fa = 0;
                             }
                         }
-                        Float fz = 0f;
-                        if (arrayOfAffects.size() > i + 10) {
+                        int fz = 0;
+                        if (arrayOfAffects.size() > i + 10 && arrayOfAffects.get(i + 10) !=null) {
                             if (arrayOfAffects.get(i + 10) > 0) {
                                 fz = arrayOfAffects.get(i + 10) * 2;
                             }

@@ -101,7 +101,8 @@ public class RiTaFactory {
     }
 
     public void addAffectToWord(String word, List<Integer> affect) {
-        repo.get(word).addAffect(affect);
+        RiTaWord riWord = repo.get(RiTa.stem(word));
+        if(riWord!=null) riWord.addAffect(affect);
     }
 
     public RiArange getArranger() {

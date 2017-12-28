@@ -1,6 +1,7 @@
 package MainProgram;
 
 import RiTa.RiTaFactory;
+import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.util.logging.Level;
@@ -33,6 +34,7 @@ public class Controller extends javax.swing.JFrame {
         listen();
         view = new View();
         view.start(fft);
+        messages.setBackground(Color.GRAY);
         LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, isnetwork, newsCounter, scheduler);
         liveActThread = new Thread(liveAct);
         Interface.setBufferedText(communicationBox.getText());
@@ -55,6 +57,7 @@ public class Controller extends javax.swing.JFrame {
         if (res.length() > 0) {
             Interface.setLibraryFile(res);
         }
+        messages.setText("You are using file '" + Interface.getLibraryFile() + "' as database.");
     }
 
     @SuppressWarnings("unchecked")
@@ -78,6 +81,8 @@ public class Controller extends javax.swing.JFrame {
         saveButton = new javax.swing.JButton();
         loadButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        messages = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -168,7 +173,24 @@ public class Controller extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("       ::SOMANTIC::");
+        jLabel1.setText("::SOMANTIC::");
+
+        messages.setText("Welcome to :: SOMANTIC ::  [SOMATIC / SEMANTIC] translator for affects to the English that could let to speak the plants, or tissues.");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(messages, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(messages)
+                .addGap(0, 6, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -180,7 +202,6 @@ public class Controller extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(fileManagerToggle)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -206,7 +227,9 @@ public class Controller extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -225,7 +248,9 @@ public class Controller extends javax.swing.JFrame {
                     .addComponent(loadButton)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -257,12 +282,14 @@ public class Controller extends javax.swing.JFrame {
     private void visualiseToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualiseToggleActionPerformed
         Interface.setVisualisation(visualiseToggle.isSelected());
         view.setVisualiseToggle(visualiseToggle);
+        messages.setText("Visuals are fine for fine art.");
     }//GEN-LAST:event_visualiseToggleActionPerformed
 
     private void liveToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveToggleButtonActionPerformed
         if (liveToggleButton.isSelected()) {
             liveActThread.start();
         }
+        messages.setText("Live mode auto-switch between stimulation and translation mode.");
     }//GEN-LAST:event_liveToggleButtonActionPerformed
 
     private void fileManagerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileManagerToggleActionPerformed
@@ -286,6 +313,7 @@ public class Controller extends javax.swing.JFrame {
         Interface.setWords("");
         if (translateToggle.isSelected()) {
             translateToggle.setText("Translation");
+            messages.setText("Translating the affests into words and trying to find some sentences.");
             Interface.setIsVisualising(true);
             Interface.setState("translate");
             recording = true;
@@ -297,6 +325,7 @@ public class Controller extends javax.swing.JFrame {
             translatorThread.start();
         } else {
             translateToggle.setText("Translate");
+            messages.setText("Maybe we should to expand vocabulary and stimulate more?");
             Interface.setState("stopped");
             recording = false;
             Interface.setIsVisualising(false);
@@ -312,6 +341,7 @@ public class Controller extends javax.swing.JFrame {
         translateToggle.setText("Translate");
         riTaFactory.loadRepoIfNotExists();
         if (stimulateToggle.isSelected()) {
+            messages.setText("Building relations between words and affects in progress.");
             stimulateToggle.setText("Stimulation");
             Interface.setState("Stimulate");
             recording = true;
@@ -325,6 +355,11 @@ public class Controller extends javax.swing.JFrame {
             stimulationThread.start();
         } else {
             stimulateToggle.setText("Stimulate");
+            if (riTaFactory.getRitaRepo() != null) {
+                messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
+            } else {
+                messages.setText("Something went wrong. Library of affects still is empty. Try again!");
+            }
             Interface.setState("stopped");
             recording = false;
         }
@@ -341,11 +376,24 @@ public class Controller extends javax.swing.JFrame {
     }//GEN-LAST:event_loginActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        riTaFactory.saveRepo();
+        if (riTaFactory.getRitaRepo() != null) {
+            riTaFactory.saveRepo();
+            messages.setBackground(Color.GRAY);
+            messages.setText("OK! Saved.");
+        } else {
+            messages.setBackground(Color.red);
+            messages.setText("Repossitory is empty. Could not be saved.");
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
         riTaFactory.loadRepo();
+        if (riTaFactory.getRitaRepo() == null) {
+            messages.setBackground(Color.red);
+            messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
+        } else {
+            messages.setText("Loaded successfully!");
+        }
     }//GEN-LAST:event_loadButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -357,11 +405,13 @@ public class Controller extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     public static javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToggleButton liveToggleButton;
     private javax.swing.JButton loadButton;
+    private javax.swing.JLabel messages;
     private javax.swing.JButton saveButton;
     private javax.swing.JToggleButton stimulateToggle;
     private javax.swing.JToggleButton translateToggle;
