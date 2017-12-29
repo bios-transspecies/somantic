@@ -99,7 +99,7 @@ public class RiArange {
         }
 
         if (!tmpReSentences.isEmpty()) {
-            reString = tmpReSentences.get(tmpReSentences.size() - 1).stream().map(w -> w.getLemma()).collect(Collectors.joining(" "));
+            reString = tmpReSentences.get(tmpReSentences.size() - 1).stream().map(w -> w.getWord().iterator().next()).collect(Collectors.joining(" "));
         } else {
             return sentence;
         }

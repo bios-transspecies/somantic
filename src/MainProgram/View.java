@@ -135,7 +135,7 @@ public class View {
                             }
                         }
                         int fz = 0;
-                        if (arrayOfAffects.size() > i + 10 && arrayOfAffects.get(i + 10) !=null) {
+                        if (arrayOfAffects.size() > i + 10 && arrayOfAffects.get(i + 10) != null) {
                             if (arrayOfAffects.get(i + 10) > 0) {
                                 fz = arrayOfAffects.get(i + 10) * 2;
                             }

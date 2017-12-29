@@ -43,10 +43,10 @@ public class TranslatorRunnable implements Runnable {
                     if (affectsInRepo.size() > 0) {
                         for (List<Integer> affectInRepo : affectsInRepo) {
                             for (int i = 0; i < recentAffects.size(); i++) {
-                                    if (recentAffects.size() > i && affectInRepo.size() > i) {
-                                        stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i) - affectInRepo.get(i));
-                                    }
+                                if (recentAffects.size() > i+1 && affectInRepo.size() > i+1) {
+                                    stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i) - affectInRepo.get(i));
                                 }
+                            }
                         }
                     }
 
@@ -56,8 +56,9 @@ public class TranslatorRunnable implements Runnable {
                         rezultat = riWord;
                         stopienPokrewienstwaMin = stopienPokrewienstwa;
                     }
-                    if(stopienPokrewienstwa > 0)
-                        Interface.setMinimalSimilarity((9 * Interface.getMinimalSimilarity() + stopienPokrewienstwaMin) / 10);
+                    if (stopienPokrewienstwa > 0) {
+                        Interface.setMinimalSimilarity((10 * Interface.getMinimalSimilarity() + stopienPokrewienstwaMin) / 11);
+                    }
                 }
                 if (rezultat != null) {
                     Interface.setWords(Interface.getWords() + " " + rezultat);
@@ -68,7 +69,7 @@ public class TranslatorRunnable implements Runnable {
                     communicationBox.setText(arranged);
                 }
             }
-            
+
             synchronized (this) {
                 try {
                     this.wait(1500);

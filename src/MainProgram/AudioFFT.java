@@ -3,14 +3,13 @@ package MainProgram;
 import ddf.minim.AudioInput;
 import ddf.minim.Minim;
 import ddf.minim.analysis.FFT;
-import ddf.minim.spi.AudioStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JProgressBar;
 
 /**
- * Object of this class audioInputStream able to deliver FFT results for sound, also like
- array of affects based on 35hZ freq. *
+ * Object of this class audioInputStream able to deliver FFT results for sound,
+ * also like array of affects based on 35hZ freq. *
  */
 class AudioFFT {
 
@@ -49,7 +48,9 @@ class AudioFFT {
             jp.setValue(band);
             Interface.setVolume(band);
             matrix.add(band);
-            for(int i=0; matrix.size() > 100; i++) matrix.remove(0);
+            for (int i = 0; matrix.size() > 100; i++) {
+                matrix.remove(0);
+            }
         } catch (Exception e) {
             //System.err.println(e);
         }
