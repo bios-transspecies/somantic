@@ -1,7 +1,7 @@
 package Persistence;
 
 import MainProgram.Interface;
-import RiTa.RiTaRepo;
+import WNprocess.SomanticRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ public class Persistence {
 
     private static boolean saving = false;
 
-    public static void save(RiTaRepo e) {
+    public static void save(SomanticRepository e) {
         if (!saving) {
             try {
                 saving = true;
@@ -39,18 +39,20 @@ public class Persistence {
         }
     }
 
-    public static RiTaRepo load() {
-        RiTaRepo riTaRepo = null;
-        try {
-            FileInputStream fileIn = new FileInputStream(Interface.getLibraryFile());
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            riTaRepo = (RiTaRepo) in.readObject();
-            in.close();
-            fileIn.close();
-            System.out.println("loaded repo successfully from file" + Interface.getLibraryFile());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            System.err.println(" error " + e.getLocalizedMessage());
+    public static SomanticRepository load() {
+        SomanticRepository riTaRepo = null;
+        File f = new File(Interface.getLibraryFile());
+        if (f.exists()) {
+            try {
+                FileInputStream fileIn = new FileInputStream(Interface.getLibraryFile());
+                ObjectInputStream in = new ObjectInputStream(fileIn);
+                riTaRepo = (SomanticRepository) in.readObject();
+                in.close();
+                fileIn.close();
+                System.out.println("loaded repo successfully from file" + Interface.getLibraryFile());
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println(" error " + e.getLocalizedMessage());
+            }
         }
         return riTaRepo;
     }

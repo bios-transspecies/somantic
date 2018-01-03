@@ -1,6 +1,6 @@
 package MainProgram;
 
-import RiTa.RiTaFactory;
+import WNprocess.SomanticFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
@@ -18,11 +18,11 @@ public class Controller extends javax.swing.JFrame {
     private int newsCounter = 0;
     private boolean isnetwork = false;
     private final Thread liveActThread;
-    private final RiTaFactory riTaFactory;
+    private final SomanticFactory wNFactory;
 
     public Controller() {
-        riTaFactory = new RiTaFactory();
-        Interface.setRitaFactory(riTaFactory);
+        wNFactory = new SomanticFactory();
+        Interface.setRitaFactory(wNFactory);
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -309,7 +309,6 @@ public class Controller extends javax.swing.JFrame {
         }
         stimulateToggle.setSelected(false);
         stimulateToggle.setText("Stimulate");
-        riTaFactory.loadRepoIfNotExists();
         Interface.setWords("");
         if (translateToggle.isSelected()) {
             translateToggle.setText("Translation");
@@ -319,8 +318,7 @@ public class Controller extends javax.swing.JFrame {
             recording = true;
             communicationBox.setText("");
             communicationBox.setEditable(false);
-            fft.getMatrix();
-            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, riTaFactory);
+            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, wNFactory);
             Thread translatorThread = new Thread(translatorRunnable);
             translatorThread.start();
         } else {
@@ -339,23 +337,22 @@ public class Controller extends javax.swing.JFrame {
         }
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
-        riTaFactory.loadRepoIfNotExists();
         if (stimulateToggle.isSelected()) {
             messages.setText("Building relations between words and affects in progress.");
             stimulateToggle.setText("Stimulation");
             Interface.setState("Stimulate");
             recording = true;
-            Interface.setIsVisualising(recording);
+            Interface.setIsVisualising(visualiseToggle.isSelected());
             String already = Interface.getStimulatedAlready();
             Interface.setBufferedText(communicationBox.getText().replace(already.trim(), "").replace("\n", " ").replace("\r", " "));
             communicationBox.setText(Interface.getBufferedText());
-            riTaFactory.addTextToRepo(Interface.getBufferedText());
-            StimulationRunnable stimulationRunnable = new StimulationRunnable(riTaFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
+            wNFactory.addTextToRepo(Interface.getBufferedText());
+            StimulationRunnable stimulationRunnable = new StimulationRunnable(wNFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable);
             stimulationThread.start();
         } else {
             stimulateToggle.setText("Stimulate");
-            if (riTaFactory.getRitaRepo() != null) {
+            if (wNFactory.getRitaRepo() != null) {
                 messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
             } else {
                 messages.setText("Something went wrong. Library of affects still is empty. Try again!");
@@ -376,23 +373,31 @@ public class Controller extends javax.swing.JFrame {
     }//GEN-LAST:event_loginActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        if (riTaFactory.getRitaRepo() != null) {
-            riTaFactory.saveRepo();
-            messages.setBackground(Color.GRAY);
-            messages.setText("OK! Saved.");
+        if (stimulateToggle.isSelected()) {
+            messages.setText("Please stop the stimulation process to avoid errors.");
+        } else if (wNFactory.getRitaRepo() != null) {
+            try {
+                wNFactory.saveRepo();
+                messages.setBackground(Color.GRAY);
+                messages.setText("OK! Saved. Objects saved "+wNFactory.getRitaRepo().size());
+            } catch (Exception e) {
+                messages.setText("Something went wrong!");
+            }
         } else {
             messages.setBackground(Color.red);
-            messages.setText("Repossitory is empty. Could not be saved.");
+            messages.setText("Repossitory is empty. Could not be saved. Repo size: "+ wNFactory.getRitaRepo().size() +" objects.");
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
-        riTaFactory.loadRepo();
-        if (riTaFactory.getRitaRepo() == null) {
+        wNFactory.loadRepo();
+        if (translateToggle.isSelected()) {
+            messages.setText("Please stop the translation process first!");
+        }else if (wNFactory.getRitaRepo() == null) {
             messages.setBackground(Color.red);
             messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
         } else {
-            messages.setText("Loaded successfully!");
+            messages.setText("Loaded successfully! Objects count: "+wNFactory.getRitaRepo().size());
         }
     }//GEN-LAST:event_loadButtonActionPerformed
 

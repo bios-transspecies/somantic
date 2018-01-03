@@ -77,7 +77,6 @@ public class SomanticFactory {
         SomanticWord riWord = repo.get(WordNetToolbox.stem(word).get(0));
         if (riWord != null) {
             riWord.addAffect(affect);
-            System.out.println("");
         }
     }
 

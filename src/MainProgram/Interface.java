@@ -1,6 +1,6 @@
 package MainProgram;
 
-import RiTa.RiTaFactory;
+import WNprocess.SomanticFactory;
 import javax.swing.JProgressBar;
 
 public class Interface {
@@ -23,7 +23,7 @@ public class Interface {
     private static String stimulatedAlready = "";
     private static final String generatedSentencesFilePath = "generated_sentences.txt";
     private static boolean visualisation;
-    private static RiTaFactory ritaFactory;
+    private static SomanticFactory ritaFactory;
     private static JProgressBar jProgressBar;
     private static Long minimalSimilarity = 0L;
 
@@ -171,13 +171,13 @@ public class Interface {
         return visualisation;
     }
 
-    public static void setRitaFactory(RiTaFactory riact) {
+    public static void setRitaFactory(SomanticFactory riact) {
         if (ritaFactory == null) {
             Interface.ritaFactory = riact;
         }
     }
 
-    public static RiTaFactory getRitaFactory() {
+    public static SomanticFactory getRitaFactory() {
         return Interface.ritaFactory;
     }
 

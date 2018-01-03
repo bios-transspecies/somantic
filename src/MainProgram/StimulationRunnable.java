@@ -1,25 +1,22 @@
 package MainProgram;
 
 import static MainProgram.Controller.recording;
-import RiTa.RiTaFactory;
-import RiTa.RiTaWord;
-import java.util.List;
+import WNprocess.SomanticFactory;
+import WNprocess.WordNetToolbox;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
 
 public class StimulationRunnable implements Runnable {
 
-    String[] words;
     JToggleButton stimulateToggle;
     String stimulatedAlready;
     private final Thread live;
     private final AudioFFT fft;
     private final JToggleButton liveToggleButton;
-    private final RiTaFactory riTaFactory;
+    private final SomanticFactory riTaFactory;
 
-    StimulationRunnable(RiTaFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
-        this.words = wordsArr(riTaFactory.getListOfRiwords());
+    StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
         this.riTaFactory = riTaFactory;
         this.stimulateToggle = stimulateToggle;
         this.live = live;
@@ -27,30 +24,23 @@ public class StimulationRunnable implements Runnable {
         this.liveToggleButton = liveToggleButton;
     }
 
-    private String[] wordsArr(List<RiTaWord> repo) {
-        String[] wordsArr = new String[repo.size()];
-        int in = 0;
-        for (RiTaWord word : repo) {
-            wordsArr[in++] = word.getLemma();
-        }
-        return wordsArr;
-    }
-
     public void run() {
         Interface.setStimulatedAlready("");
+        String[] words = WordNetToolbox.tokenize(Interface.getBufferedText());
         for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
-            Speaker.start(words[i]);
-            Interface.setWord(words[i]);
-            synchronized (this) {
-                try {
-                    this.wait(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            if (!WordNetToolbox.explain(words[i]).isEmpty()) {
+                Speaker.start(words[i]);
+                Interface.setWord(words[i]);
+                synchronized (this) {
+                    try {
+                        this.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+                riTaFactory.addAffectToWord(words[i], fft.getMatrix());
+                Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
             }
-            //System.out.println(fft.getMatrix());
-            riTaFactory.addAffectToWord(words[i], fft.getMatrix());
-            Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
         }
         if (liveToggleButton.isSelected()) {
             synchronized (live) {

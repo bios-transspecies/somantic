@@ -1,8 +1,8 @@
 package MainProgram;
 
-import RiTa.RiTaFactory;
-import RiTa.RiTaRepo;
-import RiTa.RiTaWord;
+import WNprocess.SomanticFactory;
+import WNprocess.SomanticRepository;
+import WNprocess.SomanticWord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +16,9 @@ public class TranslatorRunnable implements Runnable {
     private final JToggleButton translateToggle;
     private final JTextArea communicationBox;
     private final AudioFFT fft;
-    private final RiTaFactory riTaFactory;
+    private final SomanticFactory riTaFactory;
 
-    TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, RiTaFactory riTaFactory) {
+    TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, SomanticFactory riTaFactory) {
         this.translateToggle = translateToggle;
         this.communicationBox = communicationBox;
         this.fft = fft;
@@ -32,12 +32,12 @@ public class TranslatorRunnable implements Runnable {
             Long stopienPokrewienstwa;
             Long stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
             if (recentAffects.size() > 99) {
-                RiTaRepo repo = riTaFactory.getRitaRepo();
-                RiTaWord rezultat = null;
-                for (Map.Entry<String, RiTaWord> entry : repo.entrySet()) {
+                SomanticRepository repo = riTaFactory.getRitaRepo();
+                SomanticWord rezultat = null;
+                for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
                     stopienPokrewienstwa = 0L;
                     stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
-                    RiTaWord riWord = entry.getValue();
+                    SomanticWord riWord = entry.getValue();
                     List<List<Integer>> affectsInRepo = new ArrayList<>();
                     affectsInRepo.addAll(riWord.getAffects());
                     if (affectsInRepo.size() > 0) {
@@ -61,7 +61,7 @@ public class TranslatorRunnable implements Runnable {
                     }
                 }
                 if (rezultat != null) {
-                    Interface.setWords(Interface.getWords() + " " + rezultat);
+                    Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
                     Speaker.start(rezultat.getWords().toString());
                     Interface.setWord(rezultat.getWords().toString());
                     String arranged = riTaFactory.getArranger().rewrite(Interface.getWords());
