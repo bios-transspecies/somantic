@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileView;
 
 public class Controller extends javax.swing.JFrame {
 
@@ -26,6 +27,7 @@ public class Controller extends javax.swing.JFrame {
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
+            libraryFileChooser.showSaveDialog(null);
             jFileChooser1ActionPerformed(evt);
         });
         jPanel1.setAutoscrolls(false);
@@ -50,14 +52,14 @@ public class Controller extends javax.swing.JFrame {
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {
         File file = libraryFileChooser.getSelectedFile();
-        String res = "";
+        String res = file.getAbsolutePath();
         if (null != file && file.isFile()) {
-            res = file.getAbsolutePath();
-        }
-        if (res.length() > 0) {
             Interface.setLibraryFile(res);
+            messages.setText("You are using file '" + Interface.getLibraryFile() + "' as database.");
+        } else if (null != file) {
+            Interface.setLibraryFile(res);
+            messages.setText("You are going to create new file '" + Interface.getLibraryFile() + "' as database.");
         }
-        messages.setText("You are using file '" + Interface.getLibraryFile() + "' as database.");
     }
 
     @SuppressWarnings("unchecked")

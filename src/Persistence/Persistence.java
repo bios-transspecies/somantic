@@ -21,13 +21,21 @@ public class Persistence {
 
     private static boolean saving = false;
 
-    public static void save(SomanticRepository e) {
+    public static void save(SomanticRepository repository) {
+        File f = new File(Interface.getLibraryFile());
+        if(!f.exists())
+            try {
+                f.setWritable(true);
+                f.createNewFile();
+        } catch (IOException ex) {
+            Logger.getLogger(Persistence.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (!saving) {
             try {
                 saving = true;
                 FileOutputStream fileOut = new FileOutputStream(Interface.getLibraryFile());
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                out.writeObject(e);
+                out.writeObject(repository);
                 out.close();
                 System.out.println("saved " + fileOut.getClass() + " to file " + Interface.getLibraryFile());
                 fileOut.close();
@@ -57,7 +65,7 @@ public class Persistence {
         return riTaRepo;
     }
 
-    public static void saveFile(String line) {
+    public static void saveNewLineInFile(String line) {
         Path pathText = null;
         Charset encoding = Charset.forName("UTF-8");
         try {

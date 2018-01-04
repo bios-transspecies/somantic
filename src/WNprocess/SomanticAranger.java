@@ -22,6 +22,7 @@ public class SomanticAranger {
 
     private SomanticAranger setSentence(String sentence) {
         riSentence = new ArrayList<>();
+        sentence = sentence.trim();
         String[] words = sentence.split(" ");
         for (String word : words) {
             SomanticWord x = ritaFactory.getWord(word);
@@ -99,7 +100,7 @@ public class SomanticAranger {
         }
 
         if (!tmpReSentences.isEmpty()) {
-        //    reString = tmpReSentences.get(tmpReSentences.size() - 1).stream().map(w -> w.getWord().iterator().next()).collect(Collectors.joining(" "));
+            reString = tmpReSentences.get(tmpReSentences.size() - 1).stream().map(w -> w.getLemma()).collect(Collectors.joining(" "));
         } else {
             return sentence;
         }
