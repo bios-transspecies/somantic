@@ -117,8 +117,8 @@ public class View {
                     }
                     gc.setFill(Color.WHITESMOKE);
                     gc.fillText("state: " + Interface.getState(), 100, 100);
-                    gc.setFont(Font.font("Times New Roman", w / 10));
-                    gc.fillText(Interface.getWord(), w / 2, h / 3);
+                    gc.setFont(Font.font("Times New Roman", w / 30));
+                    gc.fillText(Interface.getWord(), w / 4, h / 3);
                     gc.setFont(Font.font("Arial", w / 100));
                     for (int i = 0; i < arrayOfAffects.size() && i < Interface.getWords().split(" ").length; i++) {
                         boolean even = i % 2 > 0;
@@ -154,6 +154,7 @@ public class View {
                         }
                     }
                     gc.fillText(Interface.getWords(), 10, h - 100);
+                    gc.fillText(Interface.getSentence().toLowerCase(), 10, ((2 * h) / 1.1) % h);
                     if (Interface.getWords().length() > 200) {
                         Interface.setWords(" ");
                     }

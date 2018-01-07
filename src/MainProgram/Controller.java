@@ -7,7 +7,6 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileView;
 
 public class Controller extends javax.swing.JFrame {
 
@@ -52,12 +51,11 @@ public class Controller extends javax.swing.JFrame {
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {
         File file = libraryFileChooser.getSelectedFile();
-        String res = file.getAbsolutePath();
         if (null != file && file.isFile()) {
+            String res = file.getAbsolutePath();
             Interface.setLibraryFile(res);
             messages.setText("You are using file '" + Interface.getLibraryFile() + "' as database.");
         } else if (null != file) {
-            Interface.setLibraryFile(res);
             messages.setText("You are going to create new file '" + Interface.getLibraryFile() + "' as database.");
         }
     }
@@ -381,25 +379,30 @@ public class Controller extends javax.swing.JFrame {
             try {
                 wNFactory.saveRepo();
                 messages.setBackground(Color.GRAY);
-                messages.setText("OK! Saved. Objects saved "+wNFactory.getRitaRepo().size());
+                messages.setText("OK! Saved. Objects saved " + wNFactory.getRitaRepo().size());
             } catch (Exception e) {
-                messages.setText("Something went wrong!");
+                messages.setText("Something went wrong! " + e.getMessage());
+                System.err.println(e);
             }
         } else {
             messages.setBackground(Color.red);
-            messages.setText("Repossitory is empty. Could not be saved. Repo size: "+ wNFactory.getRitaRepo().size() +" objects.");
+            messages.setText("Repossitory is empty. Could not be saved. Repo size: " + wNFactory.getRitaRepo().size() + " objects.");
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
-        wNFactory.loadRepo();
+        try{
+            wNFactory.loadRepo();
+        }catch(Exception e){
+            messages.setText("ERROR: " + e.getLocalizedMessage() + " ACTUAL REPO SIZE " + wNFactory.getRitaRepo().size());
+        }
         if (translateToggle.isSelected()) {
             messages.setText("Please stop the translation process first!");
-        }else if (wNFactory.getRitaRepo() == null) {
+        } else if (wNFactory.getRitaRepo() == null) {
             messages.setBackground(Color.red);
             messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
         } else {
-            messages.setText("Loaded successfully! Objects count: "+wNFactory.getRitaRepo().size());
+            messages.setText("Loaded successfully! Objects count: " + wNFactory.getRitaRepo().size());
         }
     }//GEN-LAST:event_loadButtonActionPerformed
 

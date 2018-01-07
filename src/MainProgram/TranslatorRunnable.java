@@ -31,6 +31,8 @@ public class TranslatorRunnable implements Runnable {
             List<Integer> recentAffects = fft.getMatrix();
             Long stopienPokrewienstwa;
             Long stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
+            if(Interface.getWords().split(" ").length > 15)
+                Interface.setWords(" ");
             if (recentAffects.size() > 99) {
                 SomanticRepository repo = riTaFactory.getRitaRepo();
                 SomanticWord rezultat = null;
@@ -63,10 +65,10 @@ public class TranslatorRunnable implements Runnable {
                 if (rezultat != null) {
                     System.out.println(" pokrew " + stopienPokrewienstwa + " minimal " + stopienPokrewienstwaMin);
                     Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
-                    Speaker.start(rezultat.getWords().toString());
-                    Interface.setWord(Interface.getWords() + rezultat.getWords().toString());
+                    Speaker.start(rezultat.getWords().iterator().next());
+                    Interface.setWord(rezultat.getWords().iterator().next());
                     String arranged = riTaFactory.getArranger().rewrite(Interface.getWords());
-                    System.out.println("arranged " + arranged);
+                    Interface.setSentence(arranged);
                     communicationBox.setText(arranged);
                 }
             }

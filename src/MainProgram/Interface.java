@@ -26,6 +26,7 @@ public class Interface {
     private static SomanticFactory ritaFactory;
     private static JProgressBar jProgressBar;
     private static Long minimalSimilarity = 0L;
+    private static String sentence = "";
 
     public static String getMessage() {
         return message;
@@ -195,6 +196,14 @@ public class Interface {
 
     public static void setMinimalSimilarity(Long aMinimalSimilarity) {
         minimalSimilarity = aMinimalSimilarity;
+    }
+
+    static void setSentence(String arranged) {
+        sentence = arranged;
+    }
+    
+    static String getSentence() {
+        return sentence;
     }
 
 }

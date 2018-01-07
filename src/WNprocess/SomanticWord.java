@@ -1,4 +1,5 @@
 package WNprocess;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Set;
 public class SomanticWord implements Serializable {
 
     private String lemma = "";
-    private Set<String> POS= new HashSet<>();
+    private Set<String> POS = new HashSet<>();
     private Set<String> words = new HashSet<>();
     private Set<SomanticWord> previous = new HashSet<>();
     private Set<SomanticWord> next = new HashSet<>();
@@ -19,7 +20,7 @@ public class SomanticWord implements Serializable {
 
     public SomanticWord() {
     }
-    
+
     public Set<String> getPOS() {
         return POS;
     }
@@ -28,10 +29,10 @@ public class SomanticWord implements Serializable {
         this.POS = POS;
     }
 
-    public void addPOS(String POS){
+    public void addPOS(String POS) {
         this.POS.add(POS);
     }
-    
+
     public String getLemma() {
         return lemma;
     }
@@ -51,7 +52,7 @@ public class SomanticWord implements Serializable {
         hash = 89 * hash + Objects.hashCode(this.lemma);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -79,12 +80,17 @@ public class SomanticWord implements Serializable {
     }
 
     void addAffect(List<Integer> affect) {
-        this.affects.add(affect);
+        try {
+            this.affects.add(affect);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     void setDescription(String description) {
         this.description = description;
     }
+
     String getDescription() {
         return description;
     }
@@ -120,13 +126,13 @@ public class SomanticWord implements Serializable {
     public void setNext(Set<SomanticWord> next) {
         this.next = next;
     }
-    
+
     public void addNext(SomanticWord next) {
         this.next.add(next);
     }
 
     public Set<List<SomanticWord>> getSentences() {
-        return sentences;
+        return this.sentences;
     }
 
     public void setSentences(Set<List<SomanticWord>> sentence) {
@@ -140,12 +146,12 @@ public class SomanticWord implements Serializable {
     void addTag(String tag) {
         this.tags.add(tag);
     }
-    
+
     Set<String> getTags() {
-    return tags;
+        return tags;
     }
-    
+
     void setTags(Set<String> tags) {
-    this.tags = tags;
+        this.tags = tags;
     }
 }

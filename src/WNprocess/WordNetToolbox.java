@@ -97,23 +97,24 @@ public class WordNetToolbox {
         }
         return wordslist.toArray(new String[wordslist.size()]);
     }
-    
-    private static IWord bestOne(Map<Integer, IWord> orderpost){
+
+    private static IWord bestOne(Map<Integer, IWord> orderpost) {
         IWord res = null;
         int recent = 0;
         for (Map.Entry<Integer, IWord> entry : orderpost.entrySet()) {
             Integer key = entry.getKey();
             IWord value = entry.getValue();
-            if(key > recent)
+            if (key > recent) {
                 res = value;
+            }
         }
         return res;
     }
-    
-    static public IWord stringToIWord(String word){
+
+    static public IWord stringToIWord(String word) {
         return mostSimilar(explain(word), word);
     }
-    
+
     static public IWord mostSimilar(Set<IWord> words, String word) {
         Map<Integer, IWord> orderpost = new HashMap<>();
         for (IWord next : words) {

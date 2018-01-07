@@ -5,10 +5,13 @@
  */
 package WNprocess;
 
+import WNprocess.Sentences.SentenceMapper;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SomanticAranger {
@@ -50,7 +53,7 @@ public class SomanticAranger {
                     if (i != j && riSentence.get(j) != null) {
                         Set<SomanticWord> next = riSentence.get(index).getNext();
                         for (SomanticWord nextRiTaWord : next) {
-                            if ((nextRiTaWord.getPOS()== null ? riSentence.get(index).getPOS() == null : nextRiTaWord.getPOS().equals(riSentence.get(index).getPOS())) && !tmpReSentence.contains(riSentence.get(j))) {
+                            if ((nextRiTaWord.getPOS() == null ? riSentence.get(index).getPOS() == null : nextRiTaWord.getPOS().equals(riSentence.get(index).getPOS())) && !tmpReSentence.contains(riSentence.get(j))) {
                                 SomanticWord slowo = riSentence.get(j);
                                 if (slowo != null && !tmpReSentence.contains(slowo)) {
                                     tmpReSentence.add(riSentence.get(j));
@@ -60,31 +63,7 @@ public class SomanticAranger {
                     }
                 }
             }
-            
-//            List<RiTaWord> sentenceContextualised = new ArrayList<>();
-//            for (RiTaWord riTaWord : tmpReSentence) {
-//                Set<RiWoContext> contexts = riTaWord.getContexts();
-//                for (RiWoContext context : contexts) {
-//                    List<String> tags = context.getPostSimpleTags();
-//                    if (sentenceContextualised.isEmpty()) {
-//                        for (String tag : tags) {
-//                            for (RiTaWord riTaWordContextualised : tmpReSentence) {
-//                                if (riTaWordContextualised.getPennTag() == tag) {
-//                                    System.err.println(riTaWordContextualised);
-//                                    sentenceContextualised.add(riTaWordContextualised);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    if (tags.size() > 3 && tags.size() - sentenceContextualised.size() < 5) {
-//                        String res = sentenceContextualised.stream().map(w->w.getLemma()).collect(Collectors.joining(" "));
-//                        System.err.println("-------------------------------------------------------------------");
-//                        System.err.println("---"+ res +"---");
-//                        System.err.println("-------------------------------------------------------------------");
-//                        return res;
-//                    }
-//                }
-//            }
+
             // selecting most complex sentence
             Boolean add = true;
             if (!tmpReSentences.contains(tmpReSentence)) {
@@ -104,6 +83,49 @@ public class SomanticAranger {
         } else {
             return sentence;
         }
-        return reString;
+        return makeSomeGrammar(tmpReSentences.get(tmpReSentences.size() - 1)).stream().map(w -> w.getWords().iterator().next()).collect(Collectors.joining(" "));
     }
+
+    private Set<SomanticWord> makeSomeGrammar(Set<SomanticWord> sentence) {
+        final ArrayList<Set<String>> sentencePOSes = sentence.stream().map(SomanticWord::getPOS).collect(Collectors.toCollection(ArrayList::new));
+        List<SentenceMapper> sentencesMapped = new ArrayList<>();
+        // words 
+        for (SomanticWord somanticWord : sentence) {
+            Set<List<SomanticWord>> contextSentences = somanticWord.getSentences();
+            // context sentences make new variant
+            contextSentences.stream().map((List<SomanticWord> contectSentence) -> {
+                int counter = 0;
+                Set<SomanticWord> variantSentence = new HashSet<>();
+                SentenceMapper sentenceMapper = new SentenceMapper();
+                // context words
+                for (SomanticWord word : contectSentence) {
+                    Set<String> contextPOSes = word.getPOS();
+                    // context words POSes
+                    for (String contextPOS : contextPOSes) {
+                        // check
+                        for (Set<String> wordPOSes : sentencePOSes) {
+                            if (wordPOSes.contains(contextPOS)) {
+                                counter++;
+                                variantSentence.add(word);
+                            }
+                        }
+                        sentenceMapper.setCounter(counter);
+                        sentenceMapper.setSentence(variantSentence);
+                    }
+                }
+                return sentenceMapper;
+            }).forEachOrdered((sentenceMapper) -> {
+                sentencesMapped.add(sentenceMapper);
+            });
+
+            Collections.sort(sentencesMapped);
+            if(sentencesMapped.isEmpty())
+                return sentence;
+            // TODO: test
+            return sentencesMapped.get(0).getSentence();
+
+        }
+        return null;
+    }
+
 }

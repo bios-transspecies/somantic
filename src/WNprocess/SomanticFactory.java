@@ -1,6 +1,8 @@
 package WNprocess;
 
 import edu.mit.jwi.item.IWord;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import rita.RiTa;
@@ -31,17 +33,15 @@ public class SomanticFactory {
         return r;
     }
 
-    public void saveRepo() {
-        (new Thread(() -> Persistence.Persistence.save(repo))).run();
+    public void saveRepo() throws IOException {
+        Persistence.Persistence.save(repo);
     }
 
-    public void loadRepo() {
-        (new Thread(() -> {
+    public void loadRepo() throws IOException, FileNotFoundException, ClassNotFoundException {
             SomanticRepository r = Persistence.Persistence.load();
             if (r != null) {
                 repo = r;
             }
-        })).run();
     }
 
     public void addTextToRepo(String textToSplit) {
@@ -50,8 +50,9 @@ public class SomanticFactory {
         List<SomanticWord> sentence = new ArrayList<>();
         SomanticWord previous = null;
         for (int i = 0; i < tokenized.length; i++) {
-            IWord iWord = WordNetToolbox.stringToIWord(tokenized[i]);
-            if (RiTa.containsWord(tokenized[i]) && iWord != null) {
+            IWord iWord = WordNetToolbox.stringToIWord(tokenized[i].trim().toLowerCase());
+            // if string contains word... 
+            if (iWord != null) {
                 SomanticWord word = getWord(iWord.getLemma());
                 word.addTag(tagged[i]);
                 word.addWord(tokenized[i]);
@@ -69,6 +70,9 @@ public class SomanticFactory {
                     somanticWord.addSentence(sentence);
                 }
                 sentence = new ArrayList<>();
+            }else{
+                System.err.println("WORDNET CAN'T FIND WORD: " + tokenized[i].trim().toLowerCase());
+                previous = null;
             }
         }
     }
@@ -76,7 +80,7 @@ public class SomanticFactory {
     public void addAffectToWord(String word, List<Integer> affect) {
         SomanticWord riWord = repo.get(WordNetToolbox.stem(word).get(0));
         if (riWord != null) {
-            riWord.addAffect(affect);
+            try{riWord.addAffect(affect);}catch(Exception e){ e.printStackTrace();}
         }
     }
 
