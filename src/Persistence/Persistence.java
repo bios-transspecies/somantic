@@ -14,15 +14,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;  
 
 public class Persistence {
 
     private static boolean saving = false;
 
-    public static void save(SomanticRepository repository) throws IOException {
+    public static void save(SomanticRepository repository) throws IOException, Exception {
         File f = new File(Interface.getLibraryFile());
         if (!f.exists()) {
             f.setWritable(true);
@@ -37,6 +35,9 @@ public class Persistence {
             System.out.println("saved " + fileOut.getClass() + " to file " + Interface.getLibraryFile());
             fileOut.close();
             saving = false;
+        }else{
+            saving = false;
+            throw new Exception(" writting file in progress ");
         }
     }
 

@@ -3,7 +3,6 @@ package MainProgram;
 import WNprocess.SomanticFactory;
 import WNprocess.SomanticRepository;
 import WNprocess.SomanticWord;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -30,46 +29,40 @@ public class TranslatorRunnable implements Runnable {
         while (translateToggle.isSelected()) {
             List<Integer> recentAffects = fft.getMatrix();
             Long stopienPokrewienstwa;
-            Long stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
-            if(Interface.getWords().split(" ").length > 15)
+            Long stopienPokrewienstwaMin = -0L;
+            if (Interface.getWords().split(" ").length > 15) {
                 Interface.setWords(" ");
+            }
             if (recentAffects.size() > 99) {
                 SomanticRepository repo = riTaFactory.getRitaRepo();
                 SomanticWord rezultat = null;
                 stopienPokrewienstwa = 0L;
                 for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
-                    stopienPokrewienstwaMin = Interface.getMinimalSimilarity();
-                    SomanticWord riWord = entry.getValue();
-                    List<List<Integer>> affectsInRepo = new ArrayList<>();
-                    affectsInRepo.addAll(riWord.getAffects());
-                    if (affectsInRepo.size() > 0) {
-                        for (List<Integer> affectInRepo : affectsInRepo) {
+                    if (entry.getValue().getAffects().size() > 0) {
+                        for (List<Integer> affectInRepo : entry.getValue().getAffects()) {
                             for (int i = 0; i < recentAffects.size(); i++) {
                                 if (recentAffects.size() > i + 1 && affectInRepo.size() > i + 1) {
-                                    stopienPokrewienstwa = stopienPokrewienstwa + Math.abs(recentAffects.get(i) - affectInRepo.get(i));
+                                    stopienPokrewienstwa = (stopienPokrewienstwa + Math.abs(recentAffects.get(i) - affectInRepo.get(i))) / 2 + stopienPokrewienstwa;
                                 }
                             }
                         }
+                        if (stopienPokrewienstwa > stopienPokrewienstwaMin) {
+                            rezultat = entry.getValue();
+                            stopienPokrewienstwaMin = stopienPokrewienstwa + 1;
+                        }
+                        Interface.setMinimalSimilarity(stopienPokrewienstwaMin);
                     }
+                }
 
-                    Long threshold = Interface.getWords().contains(entry.getKey()) ? stopienPokrewienstwaMin * 20 : stopienPokrewienstwaMin;
-                    if (stopienPokrewienstwa > (threshold + stopienPokrewienstwaMin) / 2) {
-                        rezultat = riWord;
-                        stopienPokrewienstwaMin = stopienPokrewienstwa;
-                    }
-                }
-                if (stopienPokrewienstwa > 0) {
-                    stopienPokrewienstwaMin = (Interface.getMinimalSimilarity() + stopienPokrewienstwa) / 2;
-                    Interface.setMinimalSimilarity(stopienPokrewienstwaMin);
-                }
                 if (rezultat != null) {
-                    System.out.println(" pokrew " + stopienPokrewienstwa + " minimal " + stopienPokrewienstwaMin);
                     Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
                     Speaker.start(rezultat.getWords().iterator().next());
                     Interface.setWord(rezultat.getWords().iterator().next());
                     String arranged = riTaFactory.getArranger().rewrite(Interface.getWords());
                     Interface.setSentence(arranged);
                     communicationBox.setText(arranged);
+                } else {
+                    stopienPokrewienstwaMin = (999 * stopienPokrewienstwaMin + stopienPokrewienstwa) / 1000;
                 }
             }
 

@@ -33,7 +33,7 @@ public class SomanticFactory {
         return r;
     }
 
-    public void saveRepo() throws IOException {
+    public void saveRepo() throws IOException, Exception {
         Persistence.Persistence.save(repo);
     }
 
@@ -71,7 +71,7 @@ public class SomanticFactory {
                 }
                 sentence = new ArrayList<>();
             }else{
-                System.err.println("WORDNET CAN'T FIND WORD: " + tokenized[i].trim().toLowerCase());
+                //System.err.println("WORDNET CAN'T FIND WORD: " + tokenized[i].trim().toLowerCase());
                 previous = null;
             }
         }

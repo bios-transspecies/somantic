@@ -83,7 +83,13 @@ public class SomanticAranger {
         } else {
             return sentence;
         }
-        return makeSomeGrammar(tmpReSentences.get(tmpReSentences.size() - 1)).stream().map(w -> w.getWords().iterator().next()).collect(Collectors.joining(" "));
+        String r = "";
+        try {
+            r = makeSomeGrammar(tmpReSentences.get(tmpReSentences.size() - 1)).stream().map(w -> w.getWords().iterator().next()).collect(Collectors.joining(" "));
+        } catch (Exception e) {
+            r = sentence;
+        }
+        return r;
     }
 
     private Set<SomanticWord> makeSomeGrammar(Set<SomanticWord> sentence) {
@@ -119,8 +125,9 @@ public class SomanticAranger {
             });
 
             Collections.sort(sentencesMapped);
-            if(sentencesMapped.isEmpty())
+            if (sentencesMapped.isEmpty()) {
                 return sentence;
+            }
             // TODO: test
             return sentencesMapped.get(0).getSentence();
 

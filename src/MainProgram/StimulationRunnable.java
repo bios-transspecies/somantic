@@ -3,6 +3,7 @@ package MainProgram;
 import static MainProgram.Controller.recording;
 import WNprocess.SomanticFactory;
 import WNprocess.WordNetToolbox;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
@@ -31,14 +32,19 @@ public class StimulationRunnable implements Runnable {
             if (!WordNetToolbox.explain(words[i]).isEmpty()) {
                 Speaker.start(words[i]);
                 Interface.setWord(words[i]);
+                
+                System.out.println(words[i] + " / " + System.nanoTime());
+                
                 synchronized (this) {
                     try {
-                        this.wait(1000);
+                        this.wait(2000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                riTaFactory.addAffectToWord(words[i], fft.getMatrix());
+                System.out.println(words[i] + " / " + System.nanoTime() + " / " + fft.getMatrix());
+                List<Integer> a = fft.getMatrix();
+                riTaFactory.addAffectToWord(words[i], a);
                 Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
             }
         }
