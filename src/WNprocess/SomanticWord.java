@@ -79,7 +79,7 @@ public class SomanticWord implements Serializable {
         this.affects = affects;
     }
 
-    void addAffect(List<Integer> affect) {
+    public void addAffect(List<Integer> affect) {
         try {
             this.affects.add(affect);
         } catch (Exception e) {
@@ -87,11 +87,11 @@ public class SomanticWord implements Serializable {
         }
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    String getDescription() {
+    public String getDescription() {
         return description;
     }
 

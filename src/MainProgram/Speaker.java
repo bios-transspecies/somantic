@@ -16,9 +16,9 @@ class Speaker {
         Speaker.initiate();
         if (word != null && word.length() > 0) {
             //new Thread(() -> {
-                Interface.setIsSpeaking(true);
-                synthesizer.speakPlainText(word, null);
-                Interface.setIsSpeaking(false);
+            Interface.setIsSpeaking(true);
+            synthesizer.speakPlainText(word, null);
+            Interface.setIsSpeaking(false);
             //}).start();
         }
     }

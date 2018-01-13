@@ -57,10 +57,9 @@ public class TranslatorRunnable implements Runnable {
                 if (rezultat != null) {
                     Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
                     Speaker.start(rezultat.getWords().iterator().next());
-                    Interface.setWord(rezultat.getWords().iterator().next());
-                    String arranged = riTaFactory.getArranger().rewrite(Interface.getWords());
-                    Interface.setSentence(arranged);
-                    communicationBox.setText(arranged);
+                    Interface.setWord(rezultat);
+                    Interface.setSentence(riTaFactory.getArranger().rewrite(Interface.getWords()));
+                    communicationBox.setText(Interface.getSentence().toString());
                 } else {
                     stopienPokrewienstwaMin = (999 * stopienPokrewienstwaMin + stopienPokrewienstwa) / 1000;
                 }
@@ -68,7 +67,7 @@ public class TranslatorRunnable implements Runnable {
 
             synchronized (this) {
                 try {
-                    this.wait(1500);
+                    this.wait(2500);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;  
+import java.util.List;
 
 public class Persistence {
 
@@ -35,7 +35,7 @@ public class Persistence {
             System.out.println("saved " + fileOut.getClass() + " to file " + Interface.getLibraryFile());
             fileOut.close();
             saving = false;
-        }else{
+        } else {
             saving = false;
             throw new Exception(" writting file in progress ");
         }

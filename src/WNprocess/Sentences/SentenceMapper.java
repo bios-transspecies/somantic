@@ -8,10 +8,6 @@ package WNprocess.Sentences;
 import WNprocess.SomanticWord;
 import java.util.Comparator;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 /**
  *

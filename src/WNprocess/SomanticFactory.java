@@ -38,10 +38,10 @@ public class SomanticFactory {
     }
 
     public void loadRepo() throws IOException, FileNotFoundException, ClassNotFoundException {
-            SomanticRepository r = Persistence.Persistence.load();
-            if (r != null) {
-                repo = r;
-            }
+        SomanticRepository r = Persistence.Persistence.load();
+        if (r != null) {
+            repo = r;
+        }
     }
 
     public void addTextToRepo(String textToSplit) {
@@ -70,7 +70,7 @@ public class SomanticFactory {
                     somanticWord.addSentence(sentence);
                 }
                 sentence = new ArrayList<>();
-            }else{
+            } else {
                 //System.err.println("WORDNET CAN'T FIND WORD: " + tokenized[i].trim().toLowerCase());
                 previous = null;
             }
@@ -80,7 +80,11 @@ public class SomanticFactory {
     public void addAffectToWord(String word, List<Integer> affect) {
         SomanticWord riWord = repo.get(WordNetToolbox.stem(word).get(0));
         if (riWord != null) {
-            try{riWord.addAffect(affect);}catch(Exception e){ e.printStackTrace();}
+            try {
+                riWord.addAffect(affect);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

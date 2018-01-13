@@ -1,13 +1,17 @@
 package MainProgram;
 
 import WNprocess.SomanticFactory;
+import WNprocess.SomanticWord;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.JProgressBar;
 
 public class Interface {
 
     private static String affects = "";
     private static String words = "";
-    private static String word = "";
+    private static SomanticWord word = new SomanticWord();
     private static String state = "";
     private static boolean isSpeaking = false;
     private static boolean isListening = false;
@@ -26,7 +30,7 @@ public class Interface {
     private static SomanticFactory ritaFactory;
     private static JProgressBar jProgressBar;
     private static Long minimalSimilarity = 0L;
-    private static String sentence = "";
+    private static Set<SomanticWord> sentence = new HashSet<>();
 
     public static String getMessage() {
         return message;
@@ -108,11 +112,11 @@ public class Interface {
         Interface.affectsArray = affectsArray;
     }
 
-    public static String getWord() {
+    public static SomanticWord getWord() {
         return word;
     }
 
-    public static void setWord(String word) {
+    public static void setWord(SomanticWord word) {
         Interface.word = word;
     }
 
@@ -198,11 +202,11 @@ public class Interface {
         minimalSimilarity = aMinimalSimilarity;
     }
 
-    static void setSentence(String arranged) {
+    static void setSentence(Set<SomanticWord> arranged) {
         sentence = arranged;
     }
-    
-    static String getSentence() {
+
+    static Set<SomanticWord> getSentence() {
         return sentence;
     }
 

@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SomanticAranger {
@@ -36,10 +35,10 @@ public class SomanticAranger {
         return this;
     }
 
-    public String rewrite(String sentence) {
+    public Set<SomanticWord> rewrite(String sentence) {
         setSentence(sentence);
         if (riSentence.size() < 3) {
-            return sentence;
+            return new HashSet<SomanticWord>(riSentence);
         }
         String reString = "";
         // generating various sentences by setting words in place co-related to other words
@@ -77,62 +76,53 @@ public class SomanticAranger {
                 tmpReSentences.add(tmpReSentence);
             }
         }
-
-        if (!tmpReSentences.isEmpty()) {
-            reString = tmpReSentences.get(tmpReSentences.size() - 1).stream().map(w -> w.getLemma()).collect(Collectors.joining(" "));
-        } else {
-            return sentence;
+        Set<SomanticWord> r = tmpReSentences.get(tmpReSentences.size() - 1);
+        try{
+            return knownGrammarStructures(tmpReSentences.get(tmpReSentences.size() - 1));
+        }catch(Exception e){
+            return r;
         }
-        String r = "";
-        try {
-            r = makeSomeGrammar(tmpReSentences.get(tmpReSentences.size() - 1)).stream().map(w -> w.getWords().iterator().next()).collect(Collectors.joining(" "));
-        } catch (Exception e) {
-            r = sentence;
-        }
-        return r;
     }
 
-    private Set<SomanticWord> makeSomeGrammar(Set<SomanticWord> sentence) {
-        final ArrayList<Set<String>> sentencePOSes = sentence.stream().map(SomanticWord::getPOS).collect(Collectors.toCollection(ArrayList::new));
+    private Set<SomanticWord> knownGrammarStructures(Set<SomanticWord> somanticSentence) {
         List<SentenceMapper> sentencesMapped = new ArrayList<>();
         // words 
-        for (SomanticWord somanticWord : sentence) {
+        for (SomanticWord somanticWord : somanticSentence) {
             Set<List<SomanticWord>> contextSentences = somanticWord.getSentences();
             // context sentences make new variant
-            contextSentences.stream().map((List<SomanticWord> contectSentence) -> {
+            contextSentences.stream().map((List<SomanticWord> contextSentence) -> {
                 int counter = 0;
                 Set<SomanticWord> variantSentence = new HashSet<>();
                 SentenceMapper sentenceMapper = new SentenceMapper();
                 // context words
-                for (SomanticWord word : contectSentence) {
-                    Set<String> contextPOSes = word.getPOS();
+                for (SomanticWord contextWord : contextSentence) {
+                    Set<String> contextPOSes = contextWord.getPOS();
                     // context words POSes
                     for (String contextPOS : contextPOSes) {
-                        // check
-                        for (Set<String> wordPOSes : sentencePOSes) {
-                            if (wordPOSes.contains(contextPOS)) {
+                        // checksomanticWord
+                        if (somanticWord.getPOS().contains(contextPOS)) {
+                            if (somanticSentence.contains(contextWord)) {
                                 counter++;
-                                variantSentence.add(word);
+                            } else {
+                                counter--;
                             }
+                            variantSentence.add(contextWord);
                         }
-                        sentenceMapper.setCounter(counter);
-                        sentenceMapper.setSentence(variantSentence);
                     }
                 }
+                sentenceMapper.setCounter(counter);
+                sentenceMapper.setSentence(variantSentence);
                 return sentenceMapper;
             }).forEachOrdered((sentenceMapper) -> {
                 sentencesMapped.add(sentenceMapper);
             });
-
-            Collections.sort(sentencesMapped);
-            if (sentencesMapped.isEmpty()) {
-                return sentence;
-            }
-            // TODO: test
-            return sentencesMapped.get(0).getSentence();
-
         }
-        return null;
+        Collections.sort(sentencesMapped);
+        for (SentenceMapper sentenceMapped : sentencesMapped) {
+            if (sentenceMapped.getCounter() > -5 && sentenceMapped.getSentence().size() > 3 && Math.abs(sentenceMapped.getSentence().size() - somanticSentence.size()) < somanticSentence.size() / 5) {
+                return sentenceMapped.getSentence();
+            }
+        }
+        return somanticSentence;
     }
-
 }

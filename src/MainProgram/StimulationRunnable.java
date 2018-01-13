@@ -31,10 +31,10 @@ public class StimulationRunnable implements Runnable {
         for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
             if (!WordNetToolbox.explain(words[i]).isEmpty()) {
                 Speaker.start(words[i]);
-                Interface.setWord(words[i]);
-                
+                Interface.setWord(riTaFactory.getWord(words[i]));
+
                 System.out.println(words[i] + " / " + System.nanoTime());
-                
+
                 synchronized (this) {
                     try {
                         this.wait(2000);
