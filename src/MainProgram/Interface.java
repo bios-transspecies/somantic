@@ -5,6 +5,7 @@ import WNprocess.SomanticWord;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.JProgressBar;
 
 public class Interface {
@@ -208,6 +209,16 @@ public class Interface {
 
     static Set<SomanticWord> getSentence() {
         return sentence;
+    }
+    
+    static String getStringSentence(){
+    return Interface.getSentence().stream().map(w -> {
+                            String r = "";
+                            if (!w.getWords().isEmpty() && w.getWords().iterator().hasNext()) {
+                                r = w.getWords().iterator().next();
+                            }
+                            return r;
+                        }).collect(Collectors.joining(" "));
     }
 
 }

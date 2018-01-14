@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 
@@ -55,11 +56,13 @@ public class TranslatorRunnable implements Runnable {
                 }
 
                 if (rezultat != null) {
-                    Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
-                    Speaker.start(rezultat.getWords().iterator().next());
-                    Interface.setWord(rezultat);
-                    Interface.setSentence(riTaFactory.getArranger().rewrite(Interface.getWords()));
-                    communicationBox.setText(Interface.getSentence().toString());
+                    if (rezultat.getWords().iterator().hasNext()) {
+                        Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
+                        Speaker.start(rezultat.getWords().iterator().next());
+                        Interface.setWord(rezultat);
+                        Interface.setSentence(riTaFactory.getArranger().rewrite(Interface.getWords()));
+                        communicationBox.setText(Interface.getStringSentence());
+                    }
                 } else {
                     stopienPokrewienstwaMin = (999 * stopienPokrewienstwaMin + stopienPokrewienstwa) / 1000;
                 }

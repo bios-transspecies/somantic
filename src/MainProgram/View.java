@@ -156,7 +156,7 @@ public class View {
                         }
                     }
                     gc.fillText(Interface.getWords().toLowerCase(), 10, h - 100);
-                    gc.fillText(Interface.getSentence().toString(), 10, ((2 * h) / 1.1) % h);
+                    gc.fillText(Interface.getStringSentence(), 10, ((2 * h) / 1.1) % h);
                     if (Interface.getWords().length() > 200) {
                         Interface.setWords(" ");
                     }
