@@ -18,9 +18,9 @@ import javax.swing.JToggleButton;
 public class View {
 
     private JFrame window;
-    private JFXPanel jfxPanel;
-    private Scene scene;
-    private Group root;
+    private final JFXPanel jfxPanel;
+    private final Scene scene;
+    private final Group root;
     private AnimationTimer timer;
     private Canvas canvas;
     private JToggleButton visualiseToggle;

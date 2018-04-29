@@ -42,7 +42,7 @@ public class StimulationRunnable implements Runnable {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                System.out.println(words[i] + " / " + System.nanoTime() + " / " + fft.getMatrix());
+//                System.out.println(words[i] + " / " + System.nanoTime() + " / " + fft.getMatrix());
                 List<Integer> a = fft.getMatrix();
                 riTaFactory.addAffectToWord(words[i], a);
                 Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');

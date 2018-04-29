@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 
 public class Controller extends javax.swing.JFrame {
 
-    static boolean recording;
+    static volatile boolean recording;
     private AudioFFT fft;
     private final View view;
     private final JFileChooser libraryFileChooser;

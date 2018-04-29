@@ -33,185 +33,185 @@ public class Interface {
     private static Long minimalSimilarity = 0L;
     private static Set<SomanticWord> sentence = new HashSet<>();
 
-    public static String getMessage() {
+    synchronized public static String getMessage() {
         return message;
     }
 
-    public static void setMessage(String message) {
+    synchronized public static void setMessage(String message) {
         Interface.message = message;
     }
 
-    public static String getLibraryFile() {
+    synchronized public static String getLibraryFile() {
         return libraryFile;
     }
 
-    public static void setLibraryFile(String libraryFile) {
+    synchronized public static void setLibraryFile(String libraryFile) {
         Interface.libraryFile = libraryFile;
     }
 
-    public static boolean isSpeaking() {
+    synchronized public static boolean isSpeaking() {
         return isSpeaking;
     }
 
-    public static void setIsSpeaking(boolean isSpeaking) {
+    synchronized public static void setIsSpeaking(boolean isSpeaking) {
         Interface.isSpeaking = isSpeaking;
     }
 
-    public static String getAffects() {
+    synchronized public static String getAffects() {
         return affects;
     }
 
-    public static void setAffects(String affects) {
+    synchronized public static void setAffects(String affects) {
         Interface.affects = affects;
     }
 
-    public static String getWords() {
+    synchronized public static String getWords() {
         return words;
     }
 
-    public static void setWords(String words) {
+    synchronized public static void setWords(String words) {
         Interface.words = words;
     }
 
-    public static String getState() {
+    synchronized public static String getState() {
         return state;
     }
 
-    public static void setState(String state) {
+    synchronized public static void setState(String state) {
         Interface.state = state;
     }
 
-    public static boolean isListening() {
+    synchronized public static boolean isListening() {
         return isListening;
     }
 
-    public static void setIsListening(boolean aIsListening) {
+    synchronized public static void setIsListening(boolean aIsListening) {
         isListening = aIsListening;
     }
 
-    public static float getVolume() {
+    synchronized public static float getVolume() {
         return volume;
     }
 
-    public static void setVolume(float aVolume) {
+    synchronized public static void setVolume(float aVolume) {
         volume = aVolume;
     }
 
-    public static Boolean getIsVisualising() {
+    synchronized public static Boolean getIsVisualising() {
         return isVisualising;
     }
 
-    public static void setIsVisualising(Boolean aIsVisualising) {
+    synchronized public static void setIsVisualising(Boolean aIsVisualising) {
         isVisualising = aIsVisualising;
     }
 
-    public static float[] getAffectsArray() {
+    synchronized public static float[] getAffectsArray() {
         return affectsArray;
     }
 
-    public static void setAffectsArray(float[] affectsArray) {
+    synchronized public static void setAffectsArray(float[] affectsArray) {
         Interface.affectsArray = affectsArray;
     }
 
-    public static SomanticWord getWord() {
+    synchronized public static SomanticWord getWord() {
         return word;
     }
 
-    public static void setWord(SomanticWord word) {
+    synchronized public static void setWord(SomanticWord word) {
         Interface.word = word;
     }
 
-    public static String getLogin() {
+    synchronized public static String getLogin() {
         return login;
     }
 
-    public static void setLogin(String aLogin) {
+    synchronized public static void setLogin(String aLogin) {
         login = aLogin;
     }
 
-    public static String getPassword() {
+    synchronized public static String getPassword() {
         return password;
     }
 
-    public static void setPassword(String aPassword) {
+    synchronized public static void setPassword(String aPassword) {
         password = aPassword;
     }
 
-    public static String getUrl() {
+    synchronized public static String getUrl() {
         return url;
     }
 
-    static String getDefaultWords() {
+    synchronized static String getDefaultWords() {
         return bufferedText;
     }
 
-    public static String getBufferedText() {
+    synchronized public static String getBufferedText() {
         return bufferedText.trim();
     }
 
-    public static void setBufferedText(String aDefaultString) {
+    synchronized public static void setBufferedText(String aDefaultString) {
         bufferedText = aDefaultString.trim();
     }
 
-    public static String getStimulatedAlready() {
+    synchronized public static String getStimulatedAlready() {
         return stimulatedAlready;
     }
 
-    public static void setStimulatedAlready(String aStimulatedAlready) {
+    synchronized public static void setStimulatedAlready(String aStimulatedAlready) {
         stimulatedAlready = aStimulatedAlready;
     }
 
-    public static String getGeneratedSentencesFilePath() {
+    synchronized public static String getGeneratedSentencesFilePath() {
         return generatedSentencesFilePath;
     }
 
-    public static String wordnetDir() {
+    synchronized public static String wordnetDir() {
         return "wordnet";
     }
 
-    static void setVisualisation(boolean selected) {
+    synchronized static void setVisualisation(boolean selected) {
         Interface.visualisation = selected;
     }
 
-    public static boolean isVisualisation() {
+    synchronized public static boolean isVisualisation() {
         return visualisation;
     }
 
-    public static void setRitaFactory(SomanticFactory riact) {
+    synchronized public static void setRitaFactory(SomanticFactory riact) {
         if (ritaFactory == null) {
             Interface.ritaFactory = riact;
         }
     }
 
-    public static SomanticFactory getRitaFactory() {
+    synchronized public static SomanticFactory getRitaFactory() {
         return Interface.ritaFactory;
     }
 
-    static void setProgressBar(JProgressBar jProgressBar) {
+    synchronized static void setProgressBar(JProgressBar jProgressBar) {
         Interface.jProgressBar = jProgressBar;
     }
 
-    public static JProgressBar getProgressBar() {
+    synchronized public static JProgressBar getProgressBar() {
         return jProgressBar;
     }
 
-    public static Long getMinimalSimilarity() {
+    synchronized public static Long getMinimalSimilarity() {
         return minimalSimilarity;
     }
 
-    public static void setMinimalSimilarity(Long aMinimalSimilarity) {
+    synchronized public static void setMinimalSimilarity(Long aMinimalSimilarity) {
         minimalSimilarity = aMinimalSimilarity;
     }
 
-    static void setSentence(Set<SomanticWord> arranged) {
+    synchronized static void setSentence(Set<SomanticWord> arranged) {
         sentence = arranged;
     }
 
-    static Set<SomanticWord> getSentence() {
+    synchronized static Set<SomanticWord> getSentence() {
         return sentence;
     }
     
-    static String getStringSentence(){
+    synchronized static String getStringSentence(){
     return Interface.getSentence().stream().map(w -> {
                             String r = "";
                             if (!w.getWords().isEmpty() && w.getWords().iterator().hasNext()) {
