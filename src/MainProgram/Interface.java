@@ -3,7 +3,6 @@ package MainProgram;
 import WNprocess.SomanticFactory;
 import WNprocess.SomanticWord;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.JProgressBar;

@@ -51,9 +51,9 @@ public class View {
             private int doxA;
             private int odyA;
             private int odxA;
-
             @Override
             public void handle(long now) {
+                ArrayList<Integer> arrayOfAffects = fft.getArrayOfAffects();
                 window.setVisible(Interface.isVisualisation());
                 if (Interface.isVisualisation()) {
                     canvas = new Canvas(window.getWidth(), window.getHeight());
@@ -65,12 +65,16 @@ public class View {
                     gc.setGlobalAlpha(0.20);
                     gc.setStroke(Color.ALICEBLUE);
                     root.getChildren().add(canvas);
-                    ArrayList<Integer> arrayOfAffects = fft.getArrayOfAffects();
                     if (arrayOfAffects.size() > 0) {
-                        arrayOfAffectsArch = arrayOfAffects;
-                    } else if (arrayOfAffectsArch != null) {
+                        for (int i =0; arrayOfAffects.size() < i; i++){
+                            arrayOfAffectsArch.add(i, 
+                                    (arrayOfAffectsArch.get(i) + arrayOfAffects.get(i)) / 50);
+                        }
+                    }
+                    if (arrayOfAffectsArch != null) {
                         arrayOfAffects = arrayOfAffectsArch;
                     }
+                    int k = 0;
                     int[] arr = new int[4];
                     for (int i = 0; i < arrayOfAffects.size(); i++) {
                         boolean even = i % 2 > 0;
@@ -81,8 +85,9 @@ public class View {
 
                         if (arrayOfAffects.get(i) != null) {
                             int r = arrayOfAffects.get(i);
+                            k = r + (i * j) / 10;
                             try {
-                                arr[j] = r * j * 2;
+                                arr[j] = k * 2 - i;
                             } catch (Exception e) {
                                 arr[j] = 0;
                                 System.err.println(e);
@@ -101,17 +106,22 @@ public class View {
                                     doy = (h - arr[3] % h) % h;
                                 }
                                 if (even) {
-                                    odxA = (odx + w / 2) / 2;
-                                    odyA = (ody + h / 2) / 2;
-                                    doxA = dox;
-                                    doyA = doy;
+                                    odxA = (odx + w / 2);
+                                    odyA = (ody + h / 2);
+                                    doxA = ((doxA*5 + dox) / 6);
+                                    doyA = ((doyA*5 + doy) / 6);
                                 }
-                                if (odx != w / 2 || dox != w / 2) {
-                                    gc.strokeLine((odx + odxA) / 2, (ody + odyA) / 2, dox, doy);
-                                    dox = even ? dox : -dox;
-                                    dox = even ? doy : -doy;
-                                    gc.strokeLine(doxA, doyA, dox, doy);
-                                }
+                                
+                                int f = w / 2;
+                                
+                               // if (odx != w / 2 || dox != w / 2) {
+                                    gc.strokeLine(odxA%(w*f), odyA%(f), dox%(f), doy%(f));
+                                    dox = even ? dox : - dox;
+                                    doy = even ? doy : - doy;
+                                    doxA = even ? doxA : - doxA;
+                                    doyA = even ? doyA : - doyA;
+                                    gc.strokeLine(dox%(f), doy%(f), doxA%(f), doyA%(f));
+                                //}
                             }
                         }
                     }

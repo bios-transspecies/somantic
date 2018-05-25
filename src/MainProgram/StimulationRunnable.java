@@ -16,6 +16,11 @@ public class StimulationRunnable implements Runnable {
     private final AudioFFT fft;
     private final JToggleButton liveToggleButton;
     private final SomanticFactory riTaFactory;
+    private final Object stimulationRunnableLock = new Object();
+
+    public Object getStimulationRunnableLock() {
+        return stimulationRunnableLock;
+    }
 
     StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
         this.riTaFactory = riTaFactory;
@@ -26,30 +31,24 @@ public class StimulationRunnable implements Runnable {
     }
 
     public void run() {
-        Interface.setStimulatedAlready("");
-        String[] words = WordNetToolbox.tokenize(Interface.getBufferedText());
-        for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
-            if (!WordNetToolbox.explain(words[i]).isEmpty()) {
+        synchronized (stimulationRunnableLock) {
+            Interface.setStimulatedAlready("");
+            String[] words = WordNetToolbox.tokenize(Interface.getBufferedText());
+            for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
                 Speaker.start(words[i]);
-                Interface.setWord(riTaFactory.getWord(words[i]));
-
-                System.out.println(words[i] + " / " + System.nanoTime());
-
-                synchronized (this) {
+                if (!WordNetToolbox.explain(words[i]).isEmpty()) {
+                    Interface.setWord(riTaFactory.getWord(words[i]));
                     try {
-                        this.wait(2000);
+                        stimulationRunnableLock.wait(2500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    List<Integer> a = fft.getMatrix();
+                    riTaFactory.addAffectToWord(words[i], a);
                 }
-//                System.out.println(words[i] + " / " + System.nanoTime() + " / " + fft.getMatrix());
-                List<Integer> a = fft.getMatrix();
-                riTaFactory.addAffectToWord(words[i], a);
                 Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
             }
-        }
-        if (liveToggleButton.isSelected()) {
-            synchronized (live) {
+            if (liveToggleButton.isSelected()) {
                 try {
                     live.notify();
                 } catch (Exception ex) {

@@ -336,7 +336,7 @@ public class Controller extends javax.swing.JFrame {
         }
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
-        if (stimulateToggle.isSelected()) {
+        if (stimulateToggle.isSelected()&&communicationBox.getText().length()>5) {
             messages.setText("Building relations between words and affects in progress.");
             stimulateToggle.setText("Stimulation");
             Interface.setState("Stimulate");
@@ -349,7 +349,10 @@ public class Controller extends javax.swing.JFrame {
             StimulationRunnable stimulationRunnable = new StimulationRunnable(wNFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable);
             stimulationThread.start();
-        } else {
+        }else if(communicationBox.getText().length()<5){
+            messages.setText("To process stimmulation please copy and paste some text below.");
+            stimulateToggle.setSelected(false);
+        }else {
             stimulateToggle.setText("Stimulate");
             if (wNFactory.getRitaRepo() != null) {
                 messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");

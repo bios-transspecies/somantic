@@ -16,6 +16,7 @@ class LiveAct implements Runnable {
     private final boolean network;
     private int newsCounter;
     private int scheduler;
+    private final Object liveActLock = new Object();
 
     LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, boolean network, int newsCounter, int scheduler) {
         this.liveToggleButton = liveToggleButton;
@@ -28,6 +29,10 @@ class LiveAct implements Runnable {
         this.scheduler = scheduler;
     }
 
+    public Object getLiveActLock() {
+        return liveActLock;
+    }
+    
     @Override
     public void run() {
 

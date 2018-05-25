@@ -21,7 +21,7 @@ class AudioFFT {
     private final Algorytm flattenAlgo;
     private ArrayList<Integer> arrayOfAffects;
 
-    public AudioFFT() {
+    public AudioFFT()  {
         this.band = 0;
         matrix = new ArrayList<Integer>();
         m = new Minim(this);
