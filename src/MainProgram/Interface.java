@@ -18,6 +18,7 @@ public class Interface {
     private static float volume = 0f;
     private static String libraryFile = "library.affect";
     private static String message = "";
+    private static String sentences = "";
     private static Boolean isVisualising = false;
     private static float[] affectsArray = null;
     private static String login;
@@ -220,4 +221,12 @@ public class Interface {
                         }).collect(Collectors.joining(" "));
     }
 
+    synchronized static void addSentence(String words) {
+        words = words.trim();
+        Interface.sentences += words.substring(0, 1).toUpperCase() + words.substring(1)+". <br> ";
+    }
+    
+    static String getSentences(){
+        return Interface.sentences;
+    }
 }

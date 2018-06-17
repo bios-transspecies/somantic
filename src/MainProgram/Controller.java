@@ -37,7 +37,8 @@ public class Controller extends javax.swing.JFrame {
         view.start(fft);
         messages.setBackground(Color.GRAY);
         LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, isnetwork, newsCounter, scheduler);
-        liveActThread = new Thread(liveAct);
+        liveActThread = new Thread(liveAct, "liveActThread");
+        liveActThread.setPriority(Thread.MIN_PRIORITY);
         Interface.setBufferedText(communicationBox.getText());
         Interface.setProgressBar(jProgressBar1);
     }
@@ -45,7 +46,9 @@ public class Controller extends javax.swing.JFrame {
     private void listen() {
         fft = new AudioFFT();
         AudioRunnable audioRunnable = new AudioRunnable(fft);
-        Thread audioThread = new Thread(audioRunnable);
+        Thread audioThread = new Thread(audioRunnable, "audioThread");
+        audioThread.setDaemon(true);
+        audioThread.setPriority(Thread.MAX_PRIORITY);
         audioThread.start();
     }
 
@@ -287,6 +290,8 @@ public class Controller extends javax.swing.JFrame {
     private void liveToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveToggleButtonActionPerformed
         if (liveToggleButton.isSelected()) {
             liveActThread.start();
+        }else if(liveActThread.isAlive()){
+            liveActThread.notify();
         }
         messages.setText("Live mode auto-switch between stimulation and translation mode.");
     }//GEN-LAST:event_liveToggleButtonActionPerformed
@@ -318,7 +323,8 @@ public class Controller extends javax.swing.JFrame {
             communicationBox.setText("");
             communicationBox.setEditable(false);
             TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, wNFactory);
-            Thread translatorThread = new Thread(translatorRunnable);
+            Thread translatorThread = new Thread(translatorRunnable, "translatorThread");
+            translatorThread.setPriority(Thread.MIN_PRIORITY);
             translatorThread.start();
         } else {
             translateToggle.setText("Translate");
@@ -347,7 +353,8 @@ public class Controller extends javax.swing.JFrame {
             communicationBox.setText(Interface.getBufferedText());
             wNFactory.addTextToRepo(Interface.getBufferedText());
             StimulationRunnable stimulationRunnable = new StimulationRunnable(wNFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
-            Thread stimulationThread = new Thread(stimulationRunnable);
+            Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
+            stimulationThread.setPriority(Thread.MIN_PRIORITY);
             stimulationThread.start();
         }else if(communicationBox.getText().length()<5){
             messages.setText("To process stimmulation please copy and paste some text below.");

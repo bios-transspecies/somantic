@@ -37,6 +37,7 @@ public class TranslatorRunnable implements Runnable {
                 Long stopienPokrewienstwa;
                 Long stopienPokrewienstwaMin = -0L;
                 if (Interface.getWords().split(" ").length > 15) {
+                    Interface.addSentence(Interface.getStringSentence()); 
                     Interface.setWords(" ");
                 }
                 if (recentAffects.size() > 99) {

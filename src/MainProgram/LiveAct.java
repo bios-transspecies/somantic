@@ -68,6 +68,7 @@ class LiveAct implements Runnable {
             }
             controller.liveActSleep(scheduler);
             scheduler = 1000 * 60 * 2;
+            liveToggleButton.setSelected(false);
         }
     }
 }

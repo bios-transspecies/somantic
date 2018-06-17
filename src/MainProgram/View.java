@@ -65,112 +65,96 @@ public class View {
                     gc.setGlobalAlpha(0.20);
                     gc.setStroke(Color.ALICEBLUE);
                     root.getChildren().add(canvas);
-                    if (arrayOfAffects.size() > 0) {
-                        for (int i =0; arrayOfAffects.size() < i; i++){
-                            arrayOfAffectsArch.add(i, 
-                                    (arrayOfAffectsArch.get(i) + arrayOfAffects.get(i)) / 50);
-                        }
-                    }
-                    if (arrayOfAffectsArch != null) {
-                        arrayOfAffects = arrayOfAffectsArch;
-                    }
-                    int k = 0;
-                    int[] arr = new int[4];
-                    for (int i = 0; i < arrayOfAffects.size(); i++) {
-                        boolean even = i % 2 > 0;
-                        int j = i % 4;
-                        if (j == 0) {
-                            arr = new int[4];
-                        }
-
-                        if (arrayOfAffects.get(i) != null) {
-                            int r = arrayOfAffects.get(i);
-                            k = r + (i * j) / 10;
-                            try {
-                                arr[j] = k * 2 - i;
-                            } catch (Exception e) {
-                                arr[j] = 0;
-                                System.err.println(e);
-                            }
-                            int odx, ody, dox, doy;
-                            if (j == 3) {
-                                if (i % 3 == 0) {
-                                    odx = (odxA == 0 ? w / 2 : odxA);
-                                    ody = (odyA == 0 ? h / 2 : odyA);
-                                    dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
-                                    doy = (h - arr[3] % h) % h;
-                                } else {
-                                    odx = (odxA == 0 ? w / 2 : odxA);
-                                    ody = (odyA == 0 ? h / 2 : odyA);
-                                    dox = (w / 2 - arr[2] % w) % w;
-                                    doy = (h - arr[3] % h) % h;
-                                }
-                                if (even) {
-                                    odxA = (odx + w / 2);
-                                    odyA = (ody + h / 2);
-                                    doxA = ((doxA*5 + dox) / 6);
-                                    doyA = ((doyA*5 + doy) / 6);
-                                }
-                                
-                                int f = w / 2;
-                                
-                               // if (odx != w / 2 || dox != w / 2) {
-                                    gc.strokeLine(odxA%(w*f), odyA%(f), dox%(f), doy%(f));
-                                    dox = even ? dox : - dox;
-                                    doy = even ? doy : - doy;
-                                    doxA = even ? doxA : - doxA;
-                                    doyA = even ? doyA : - doyA;
-                                    gc.strokeLine(dox%(f), doy%(f), doxA%(f), doyA%(f));
-                                //}
-                            }
-                        }
-                    }
-                    gc.setFill(Color.WHITE);
-                    gc.fillText("state: " + Interface.getState(), 100, 100);
-                    gc.setFont(Font.font("Times New Roman", w / 30));
-                    gc.fillText(Interface.getWord().toString(), w / 4, h / 3);
-                    gc.setFont(Font.font("Arial", w / 100));
-                    gc.fillText(Interface.getWord().getDescription(), w / 4 , (h / 3) + 30);
-                    for (int i = 0; i < arrayOfAffects.size() && i < Interface.getWords().split(" ").length; i++) {
-                        boolean even = i % 2 > 0;
-                        String words = "";
-                        if (Interface.getWords().contains(" ")) {
-                            words = Interface.getWords().split(" ")[i];
-                        }
-                        int fa = 0;
-                        if (arrayOfAffects.size() >= i) {
-                            try {
-                                fa = arrayOfAffects.get(i) * 2;
-                            } catch (Exception e) {
-                                fa = 0;
-                            }
-                        }
-                        int fz = 0;
-                        if (arrayOfAffects.size() > i + 10 && arrayOfAffects.get(i + 10) != null) {
-                            if (arrayOfAffects.get(i + 10) > 0) {
-                                fz = arrayOfAffects.get(i + 10) * 2;
-                            }
-                        }
-                        try {
-
-                            if (even) {
-                                fa = -fa * 2;
-                                fz = -fz * 2;
-                            }
-                            fa = ((w / 2) + fa) % w;
-                            fz = ((h / 2) + fz) % h;
-                            gc.fillText(words, fa * 1.2, fz * 1.2);
-                            gc.fillText(Interface.getSentence().iterator().next().getDescription(), fa * 1.3, fz * 1.3);
-                        } catch (Exception e) {
-
-                        }
-                    }
-                    gc.fillText(Interface.getWords().toLowerCase(), 10, h - 100);
-                    gc.fillText(Interface.getStringSentence(), 10, ((2 * h) / 1.1) % h);
-                    if (Interface.getWords().length() > 200) {
-                        Interface.setWords(" ");
-                    }
+                    
+                    //graphicsLineDrawer(arrayOfAffects, w, h, gc);
+                
+                    textWriter(gc, w, h, arrayOfAffects);
+                    
                     gc.restore();
+                }
+            }
+
+            private void textWriter(GraphicsContext gc, int w, int h, ArrayList<Integer> arrayOfAffects) {
+                gc.setFill(Color.WHITE);
+                gc.fillText("state: " + Interface.getState(), 100, 100);
+                gc.setFont(Font.font("Tahoma", w / 30));
+                gc.fillText(Interface.getWord().toString(), w / 4, h / 3);
+                gc.setFont(Font.font("Arial", w / 100));
+                gc.fillText(Interface.getWord().getDescription(), w / 4 , (h / 3) + 30);
+                String[] sentences = Interface.getSentences().split(" <br> ");
+                int line = 40;
+                for (String sentence : sentences) {
+                    line = line+12;
+                    if(!sentence.isEmpty())
+                    gc.fillText(sentence, w / 10 , (h / 3) + line, w - w / 10);
+                }
+                gc.fillText("words: "+ Interface.getWords().toLowerCase().toLowerCase(), 100, 120);
+                gc.fillText("sentence: "+Interface.getStringSentence().toLowerCase(), 100, 140);
+//                if (Interface.getWords().length() > 200) {
+//                    Interface.setWords(" ");
+//                }
+            }
+            
+            private void graphicsLineDrawer(ArrayList<Integer> arrayOfAffects, int w, int h, GraphicsContext gc) {
+                if (arrayOfAffects.size() > 0) {
+                    for (int i =0; arrayOfAffects.size() < i; i++){
+                        arrayOfAffectsArch.add(i,
+                                (arrayOfAffectsArch.get(i) + arrayOfAffects.get(i)) / 50);
+                    }
+                }
+                if (arrayOfAffectsArch != null) {
+                    arrayOfAffects = arrayOfAffectsArch;
+                }
+                int k = 0;
+                int[] arr = new int[4];
+                for (int i = 0; i < arrayOfAffects.size(); i++) {
+                    boolean even = i % 2 > 0;
+                    int j = i % 4;
+                    if (j == 0) {
+                        arr = new int[4];
+                    }
+                    
+                    if (arrayOfAffects.get(i) != null) {
+                        int r = arrayOfAffects.get(i);
+                        k = r + (i * j) / 10;
+                        try {
+                            arr[j] = k * 2 - i;
+                        } catch (Exception e) {
+                            arr[j] = 0;
+                            System.err.println(e);
+                        }
+                        int odx, ody, dox, doy;
+                        if (j == 3) {
+                            if (i % 3 == 0) {
+                                odx = (odxA == 0 ? w / 2 : odxA);
+                                ody = (odyA == 0 ? h / 2 : odyA);
+                                dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
+                                doy = (h - arr[3] % h) % h;
+                            } else {
+                                odx = (odxA == 0 ? w / 2 : odxA);
+                                ody = (odyA == 0 ? h / 2 : odyA);
+                                dox = (w / 2 - arr[2] % w) % w;
+                                doy = (h - arr[3] % h) % h;
+                            }
+                            if (even) {
+                                odxA = (odx + w / 2);
+                                odyA = (ody + h / 2);
+                                doxA = ((doxA*5 + dox) / 6);
+                                doyA = ((doyA*5 + doy) / 6);
+                            }
+                            
+                            int f = w / 2;
+                            
+                            if (odx != w / 2 || dox != w / 2) {
+                                gc.strokeLine(odxA%(w*f), odyA%(f), dox%(f), doy%(f));
+                                dox = even ? dox : - dox;
+                                doy = even ? doy : - doy;
+                                doxA = even ? doxA : - doxA;
+                                doyA = even ? doyA : - doyA;
+                                gc.strokeLine(dox%(f), doy%(f), doxA%(f), doyA%(f));
+                            }
+                        }
+                    }
                 }
             }
         };

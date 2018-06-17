@@ -21,23 +21,23 @@ public class SomanticWord implements Serializable {
     public SomanticWord() {
     }
 
-    public Set<String> getPOS() {
+    synchronized public Set<String> getPOS() {
         return POS;
     }
 
-    public void setPOS(Set<String> POS) {
+    synchronized public void setPOS(Set<String> POS) {
         this.POS = POS;
     }
 
-    public void addPOS(String POS) {
+    synchronized public void addPOS(String POS) {
         this.POS.add(POS);
     }
 
-    public String getLemma() {
+    synchronized public String getLemma() {
         return lemma;
     }
 
-    public void setLemma(String lemma) {
+    synchronized public void setLemma(String lemma) {
         this.lemma = lemma;
     }
 
@@ -71,15 +71,15 @@ public class SomanticWord implements Serializable {
         return true;
     }
 
-    public Set<List<Integer>> getAffects() {
+    synchronized public Set<List<Integer>> getAffects() {
         return affects;
     }
 
-    public void setAffects(Set<List<Integer>> affects) {
+    synchronized public void setAffects(Set<List<Integer>> affects) {
         this.affects = affects;
     }
 
-    public void addAffect(List<Integer> affect) {
+    synchronized public void addAffect(List<Integer> affect) {
         try {
             this.affects.add(affect);
         } catch (Exception e) {
@@ -87,71 +87,71 @@ public class SomanticWord implements Serializable {
         }
     }
 
-    public void setDescription(String description) {
+    synchronized public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getDescription() {
+    synchronized public String getDescription() {
         return description;
     }
 
-    public Set<String> getWords() {
+    synchronized public Set<String> getWords() {
         return words;
     }
 
-    public void setWords(Set<String> words) {
+    synchronized public void setWords(Set<String> words) {
         this.words = words;
     }
 
-    public void addWord(String word) {
+    synchronized public void addWord(String word) {
         this.words.add(word);
     }
 
-    public Set<SomanticWord> getPrevious() {
+    synchronized public Set<SomanticWord> getPrevious() {
         return previous;
     }
 
-    public void setPrevious(Set<SomanticWord> previous) {
+    synchronized public void setPrevious(Set<SomanticWord> previous) {
         this.previous = previous;
     }
 
-    public void addPrevious(SomanticWord previous) {
+    synchronized public void addPrevious(SomanticWord previous) {
         this.previous.add(previous);
     }
 
-    public Set<SomanticWord> getNext() {
+    synchronized public Set<SomanticWord> getNext() {
         return next;
     }
 
-    public void setNext(Set<SomanticWord> next) {
+    synchronized public void setNext(Set<SomanticWord> next) {
         this.next = next;
     }
 
-    public void addNext(SomanticWord next) {
+    synchronized public void addNext(SomanticWord next) {
         this.next.add(next);
     }
 
-    public Set<List<SomanticWord>> getSentences() {
+    synchronized public Set<List<SomanticWord>> getSentences() {
         return this.sentences;
     }
 
-    public void setSentences(Set<List<SomanticWord>> sentence) {
+    synchronized public void setSentences(Set<List<SomanticWord>> sentence) {
         this.sentences = sentence;
     }
 
-    public void addSentence(List<SomanticWord> sentence) {
+    synchronized public void addSentence(List<SomanticWord> sentence) {
         this.sentences.add(sentence);
     }
 
-    void addTag(String tag) {
+    synchronized void addTag(String tag) {
         this.tags.add(tag);
     }
 
-    Set<String> getTags() {
+    synchronized Set<String> getTags() {
         return tags;
     }
 
-    void setTags(Set<String> tags) {
+    synchronized void setTags(Set<String> tags) {
         this.tags = tags;
     }
 }
