@@ -51,6 +51,7 @@ public class View {
             private int doxA;
             private int odyA;
             private int odxA;
+
             @Override
             public void handle(long now) {
                 ArrayList<Integer> arrayOfAffects = fft.getArrayOfAffects();
@@ -65,11 +66,10 @@ public class View {
                     gc.setGlobalAlpha(0.20);
                     gc.setStroke(Color.ALICEBLUE);
                     root.getChildren().add(canvas);
-                    
+
                     //graphicsLineDrawer(arrayOfAffects, w, h, gc);
-                
                     textWriter(gc, w, h, arrayOfAffects);
-                    
+
                     gc.restore();
                 }
             }
@@ -80,24 +80,25 @@ public class View {
                 gc.setFont(Font.font("Tahoma", w / 30));
                 gc.fillText(Interface.getWord().toString(), w / 4, h / 3);
                 gc.setFont(Font.font("Arial", w / 100));
-                gc.fillText(Interface.getWord().getDescription(), w / 4 , (h / 3) + 30);
+                gc.fillText(Interface.getWord().getDescription(), w / 4, (h / 3) + 30);
                 String[] sentences = Interface.getSentences().split(" <br> ");
                 int line = 40;
                 for (String sentence : sentences) {
-                    line = line+12;
-                    if(!sentence.isEmpty())
-                    gc.fillText(sentence, w / 10 , (h / 3) + line, w - w / 10);
+                    line = line + 12;
+                    if (!sentence.isEmpty()) {
+                        gc.fillText(sentence, w / 10, (h / 3) + line, w - w / 10);
+                    }
                 }
-                gc.fillText("words: "+ Interface.getWords().toLowerCase().toLowerCase(), 100, 120);
-                gc.fillText("sentence: "+Interface.getStringSentence().toLowerCase(), 100, 140);
+                gc.fillText("words: " + Interface.getWords().toLowerCase().toLowerCase(), 100, 120);
+                gc.fillText("sentence: " + Interface.getStringSentence().toLowerCase(), 100, 140);
 //                if (Interface.getWords().length() > 200) {
 //                    Interface.setWords(" ");
 //                }
             }
-            
+
             private void graphicsLineDrawer(ArrayList<Integer> arrayOfAffects, int w, int h, GraphicsContext gc) {
                 if (arrayOfAffects.size() > 0) {
-                    for (int i =0; arrayOfAffects.size() < i; i++){
+                    for (int i = 0; arrayOfAffects.size() < i; i++) {
                         arrayOfAffectsArch.add(i,
                                 (arrayOfAffectsArch.get(i) + arrayOfAffects.get(i)) / 50);
                     }
@@ -113,7 +114,7 @@ public class View {
                     if (j == 0) {
                         arr = new int[4];
                     }
-                    
+
                     if (arrayOfAffects.get(i) != null) {
                         int r = arrayOfAffects.get(i);
                         k = r + (i * j) / 10;
@@ -139,19 +140,19 @@ public class View {
                             if (even) {
                                 odxA = (odx + w / 2);
                                 odyA = (ody + h / 2);
-                                doxA = ((doxA*5 + dox) / 6);
-                                doyA = ((doyA*5 + doy) / 6);
+                                doxA = ((doxA * 5 + dox) / 6);
+                                doyA = ((doyA * 5 + doy) / 6);
                             }
-                            
+
                             int f = w / 2;
-                            
+
                             if (odx != w / 2 || dox != w / 2) {
-                                gc.strokeLine(odxA%(w*f), odyA%(f), dox%(f), doy%(f));
-                                dox = even ? dox : - dox;
-                                doy = even ? doy : - doy;
-                                doxA = even ? doxA : - doxA;
-                                doyA = even ? doyA : - doyA;
-                                gc.strokeLine(dox%(f), doy%(f), doxA%(f), doyA%(f));
+                                gc.strokeLine(odxA % (w * f), odyA % (f), dox % (f), doy % (f));
+                                dox = even ? dox : -dox;
+                                doy = even ? doy : -doy;
+                                doxA = even ? doxA : -doxA;
+                                doyA = even ? doyA : -doyA;
+                                gc.strokeLine(dox % (f), doy % (f), doxA % (f), doyA % (f));
                             }
                         }
                     }

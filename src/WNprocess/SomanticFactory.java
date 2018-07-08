@@ -59,8 +59,7 @@ public class SomanticFactory {
                 word.addWord(tokenized[i]);
                 word.addPOS(iWord.getPOS().name());
                 word.setLemma(iWord.getLemma());
-                String description = iWord.getSynset().getGloss();
-                    word.setDescription(description);
+                word.setDescription(iWord.getSynset().getGloss());
                 if (previous != null) {
                     previous.addNext(word);
                     word.addPrevious(previous);

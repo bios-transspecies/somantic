@@ -71,9 +71,9 @@ public class SomanticAranger {
             }
         }
         Set<SomanticWord> r = tmpReSentences.get(tmpReSentences.size() - 1);
-        try{
+        try {
             return knownGrammarStructures(tmpReSentences.get(tmpReSentences.size() - 1));
-        }catch(Exception e){
+        } catch (Exception e) {
             return r;
         }
     }

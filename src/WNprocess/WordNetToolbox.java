@@ -67,15 +67,15 @@ public class WordNetToolbox {
 
     static public Set<IWord> explain(String word) {
         Set<IWord> res = new HashSet<>();
-        try{
+        try {
             List<String> stems = stem(word);
             stems.stream().map((stem) -> id(stem)).forEachOrdered((ids) -> {
                 ids.forEach((id) -> {
                     res.add(getDictionary().getWord(id));
                 });
             });
-        }finally{
-        return res;
+        } finally {
+            return res;
         }
     }
 

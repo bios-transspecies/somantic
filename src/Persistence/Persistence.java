@@ -14,13 +14,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Persistence {
 
     private static boolean saving = false;
 
-    public static void save(SomanticRepository repository) throws IOException, Exception {
+    public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         File f = new File(Interface.getLibraryFile());
         if (!f.exists()) {
             f.setWritable(true);
@@ -28,16 +29,19 @@ public class Persistence {
         }
         if (!saving) {
             saving = true;
-            FileOutputStream fileOut = new FileOutputStream(Interface.getLibraryFile());
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            Path tmpPath = Paths.get("temporary" + new Date().getTime());
+            FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
+            ObjectOutputStream out = new ObjectOutputStream(tmp);
             out.writeObject(repository);
             out.close();
-            System.out.println("saved " + fileOut.getClass() + " to file " + Interface.getLibraryFile());
-            fileOut.close();
+            Files.deleteIfExists(Paths.get(Interface.getLibraryFile()));
+            Files.copy(tmpPath, Paths.get(Interface.getLibraryFile()));
+            Files.delete(tmpPath);
+            out.close();
             saving = false;
         } else {
             saving = false;
-            throw new Exception(" writting file in progress ");
+            throw new IllegalArgumentException(" writting file in progress ");
         }
     }
 

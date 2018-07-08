@@ -292,7 +292,7 @@ public class Controller extends javax.swing.JFrame {
     private void liveToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveToggleButtonActionPerformed
         if (liveToggleButton.isSelected()) {
             liveActThread.start();
-        }else if(liveActThread.isAlive()){
+        } else if (liveActThread.isAlive()) {
             liveActThread.notify();
         }
         messages.setText("Live mode auto-switch between stimulation and translation mode.");
@@ -344,25 +344,32 @@ public class Controller extends javax.swing.JFrame {
         }
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
-        if (stimulateToggle.isSelected()&&communicationBox.getText().length()>5) {
+        if (stimulateToggle.isSelected() && communicationBox.getText().length() > 5) {
             messages.setText("Building relations between words and affects in progress.");
             stimulateToggle.setText("Stimulation");
             Interface.setState("Stimulate");
             recording = true;
             Interface.setIsVisualising(visualiseToggle.isSelected());
             String already = Interface.getStimulatedAlready();
-            Interface.setBufferedText(normalize(communicationBox.getText()));
-            Callable<Object> ca = Executors.callable(()->communicationBox.setText(Interface.getBufferedText()));
-            try { ca.call(); Thread.sleep(10);} catch (Exception ex) { Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex); }
+            Callable<Object> ca = Executors.callable(() -> {
+                Interface.setBufferedText(normalize(communicationBox.getText()));
+                communicationBox.setText(Interface.getBufferedText());
+            });
+            try {
+                ca.call();
+                Thread.sleep(100);
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            }
             wNFactory.addTextToRepo(Interface.getBufferedText());
             StimulationRunnable stimulationRunnable = new StimulationRunnable(wNFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
             stimulationThread.setPriority(Thread.MIN_PRIORITY);
             stimulationThread.start();
-        }else if(communicationBox.getText().length()<5){
+        } else if (communicationBox.getText().length() < 5) {
             messages.setText("To process stimmulation please copy and paste some text below.");
             stimulateToggle.setSelected(false);
-        }else {
+        } else {
             stimulateToggle.setText("Stimulate");
             if (wNFactory.getRitaRepo() != null) {
                 messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
@@ -389,15 +396,24 @@ public class Controller extends javax.swing.JFrame {
             messages.setText("Please stop the stimulation process to avoid errors.");
         } else if (wNFactory.getRitaRepo() != null) {
             try {
+                saveButton.setEnabled(false);
                 wNFactory.saveRepo();
                 messages.setBackground(Color.GRAY);
                 messages.setText("OK! Saved. Objects saved " + wNFactory.getRitaRepo().size());
-            } catch (Exception e) {
-                messages.setText("Something went wrong! " + e.getMessage());
-                System.err.println(e);
+                saveButton.setEnabled(true);
+            } catch (IllegalArgumentException e) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
+                messages.setText("Something went wrong! " + e.getLocalizedMessage());
+                if (!e.getMessage().equals(" writting file in progress ")) {
+                    saveButton.setEnabled(true);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                saveButton.setEnabled(true);
             }
         } else {
             messages.setBackground(Color.red);
+            saveButton.setEnabled(true);
             messages.setText("Repossitory is empty. Could not be saved. Repo size: " + wNFactory.getRitaRepo().size() + " objects.");
         }
     }//GEN-LAST:event_saveButtonActionPerformed
@@ -460,6 +476,6 @@ public class Controller extends javax.swing.JFrame {
     }
 
     private String normalize(String text) {
-        return text.trim().replace("\n", " ").replace("\r", " ").replace("_", " ").replace("-", " ").replaceAll( "[^a-zA-Z0-9\\s\\.]", "" ).toLowerCase().replaceAll("  ", " ");
+        return text.trim().replace("\n", " ").replace("\r", " ").replace("_", " ").replace("-", " ").replaceAll("[^a-zA-Z0-9\\s\\.]", "").toLowerCase().replaceAll("  ", " ");
     }
 }

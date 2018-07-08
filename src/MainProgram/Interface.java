@@ -210,23 +210,23 @@ public class Interface {
     synchronized static Set<SomanticWord> getSentence() {
         return sentence;
     }
-    
-    synchronized static String getStringSentence(){
-    return Interface.getSentence().stream().map(w -> {
-                            String r = "";
-                            if (!w.getWords().isEmpty() && w.getWords().iterator().hasNext()) {
-                                r = w.getWords().iterator().next();
-                            }
-                            return r;
-                        }).collect(Collectors.joining(" "));
+
+    synchronized static String getStringSentence() {
+        return Interface.getSentence().stream().map(w -> {
+            String r = "";
+            if (!w.getWords().isEmpty() && w.getWords().iterator().hasNext()) {
+                r = w.getWords().iterator().next();
+            }
+            return r;
+        }).collect(Collectors.joining(" "));
     }
 
     synchronized static void addSentence(String words) {
         words = words.trim();
-        Interface.sentences += words.substring(0, 1).toUpperCase() + words.substring(1)+". <br> ";
+        Interface.sentences += words.substring(0, 1).toUpperCase() + words.substring(1) + ". <br> ";
     }
-    
-    static String getSentences(){
+
+    static String getSentences() {
         return Interface.sentences;
     }
 }
