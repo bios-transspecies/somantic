@@ -9,8 +9,9 @@ import rita.RiTa;
 
 public class SomanticFactory {
 
-    SomanticRepository repo = null;
+    private SomanticRepository repo;
     private SomanticAranger arranger;
+    private boolean recursion;
 
     public SomanticFactory() {
         repo = SomanticRepository.getInstance();
@@ -24,7 +25,7 @@ public class SomanticFactory {
 
     }
 
-    public SomanticWord getWord(String word) {
+    public SomanticWord getOrCreateWord(String word) {
         SomanticWord r = repo.get(word);
         if (r == null) {
             r = new SomanticWord();
@@ -53,12 +54,13 @@ public class SomanticFactory {
             IWord iWord = WordNetToolbox.stringToIWord(tokenized[i].trim().toLowerCase());
             // if string contains word... 
             if (iWord != null) {
-                SomanticWord word = getWord(iWord.getLemma());
+                SomanticWord word = getOrCreateWord(iWord.getLemma());
                 word.addTag(tagged[i]);
                 word.addWord(tokenized[i]);
                 word.addPOS(iWord.getPOS().name());
                 word.setLemma(iWord.getLemma());
-                word.setDescription(iWord.getSynset().getGloss());
+                String description = iWord.getSynset().getGloss();
+                    word.setDescription(description);
                 if (previous != null) {
                     previous.addNext(word);
                     word.addPrevious(previous);

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SomanticWord implements Serializable {
 
@@ -14,7 +15,7 @@ public class SomanticWord implements Serializable {
     private Set<SomanticWord> previous = new HashSet<>();
     private Set<SomanticWord> next = new HashSet<>();
     private Set<List<SomanticWord>> sentences = new HashSet<>();
-    private Set<List<Integer>> affects = new HashSet<>();
+    private Set<List<Integer>> affects = new CopyOnWriteArraySet<>();
     private String description;
     private Set<String> tags = new HashSet<>();
 
@@ -80,11 +81,7 @@ public class SomanticWord implements Serializable {
     }
 
     synchronized public void addAffect(List<Integer> affect) {
-        try {
-            this.affects.add(affect);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.affects.add(affect);
     }
 
     synchronized public void setDescription(String description) {

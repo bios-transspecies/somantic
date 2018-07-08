@@ -21,7 +21,7 @@ public class SomanticAranger {
         sentence = sentence.trim();
         String[] words = sentence.split(" ");
         for (String word : words) {
-            SomanticWord x = ritaFactory.getWord(word);
+            SomanticWord x = ritaFactory.getOrCreateWord(word);
             if (x != null) {
                 riSentence.add(x);
             }

@@ -4,6 +4,8 @@ import WNprocess.SomanticFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -349,8 +351,9 @@ public class Controller extends javax.swing.JFrame {
             recording = true;
             Interface.setIsVisualising(visualiseToggle.isSelected());
             String already = Interface.getStimulatedAlready();
-            Interface.setBufferedText(communicationBox.getText().replace(already.trim(), "").replace("\n", " ").replace("\r", " "));
-            communicationBox.setText(Interface.getBufferedText());
+            Interface.setBufferedText(normalize(communicationBox.getText()));
+            Callable<Object> ca = Executors.callable(()->communicationBox.setText(Interface.getBufferedText()));
+            try { ca.call(); Thread.sleep(10);} catch (Exception ex) { Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex); }
             wNFactory.addTextToRepo(Interface.getBufferedText());
             StimulationRunnable stimulationRunnable = new StimulationRunnable(wNFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
@@ -454,5 +457,9 @@ public class Controller extends javax.swing.JFrame {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    private String normalize(String text) {
+        return text.trim().replace("\n", " ").replace("\r", " ").replace("_", " ").replace("-", " ").replaceAll( "[^a-zA-Z0-9\\s\\.]", "" ).toLowerCase().replaceAll("  ", " ");
     }
 }

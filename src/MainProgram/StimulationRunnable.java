@@ -37,7 +37,7 @@ public class StimulationRunnable implements Runnable {
             for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
                 Speaker.start(words[i]);
                 if (!WordNetToolbox.explain(words[i]).isEmpty()) {
-                    Interface.setWord(riTaFactory.getWord(words[i]));
+                    Interface.setWord(riTaFactory.getOrCreateWord(words[i]));
                     try {
                         stimulationRunnableLock.wait(2500);
                     } catch (InterruptedException ex) {
