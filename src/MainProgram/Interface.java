@@ -1,5 +1,6 @@
 package MainProgram;
 
+import Persistence.Persistence;
 import WNprocess.SomanticFactory;
 import WNprocess.SomanticWord;
 import java.util.HashSet;
@@ -223,7 +224,9 @@ public class Interface {
 
     synchronized static void addSentence(String words) {
         words = words.trim();
-        Interface.sentences += words.substring(0, 1).toUpperCase() + words.substring(1) + ". <br> ";
+        words = words.substring(0, 1).toUpperCase() + words.substring(1) ;
+        Interface.sentences += words+ ". <br> ";
+        Persistence.saveNewLineInFile(words.replace("  ", ", ")+". ");
     }
 
     static String getSentences() {
