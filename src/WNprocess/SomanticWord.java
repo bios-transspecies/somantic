@@ -2,20 +2,19 @@ package WNprocess;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-public class SomanticWord implements Serializable {
+public class SomanticWord implements Serializable, Comparable<SomanticWord> {
 
     private String lemma = "";
     private Set<String> POS = new HashSet<>();
     private Set<String> words = new HashSet<>();
     private Set<SomanticWord> previous = new HashSet<>();
     private Set<SomanticWord> next = new HashSet<>();
-    private Set<List<SomanticWord>> sentences = new HashSet<>();
-    private Set<List<Integer>> affects = new CopyOnWriteArraySet<>();
+    private Set<SomanticSentence> sentences = new HashSet<>();
+    private Set<SomanticAffect> affects = new ConcurrentSkipListSet<>();
     private String description;
     private Set<String> tags = new HashSet<>();
 
@@ -72,15 +71,15 @@ public class SomanticWord implements Serializable {
         return true;
     }
 
-    synchronized public Set<List<Integer>> getAffects() {
+    synchronized public Set<SomanticAffect> getAffects() {
         return affects;
     }
 
-    synchronized public void setAffects(Set<List<Integer>> affects) {
+    synchronized public void setAffects(Set<SomanticAffect> affects) {
         this.affects = affects;
     }
 
-    synchronized public void addAffect(List<Integer> affect) {
+    synchronized public void addAffect(SomanticAffect affect) {
         this.affects.add(affect);
     }
 
@@ -128,15 +127,15 @@ public class SomanticWord implements Serializable {
         this.next.add(next);
     }
 
-    synchronized public Set<List<SomanticWord>> getSentences() {
+    synchronized public Set<SomanticSentence> getSentences() {
         return this.sentences;
     }
 
-    synchronized public void setSentences(Set<List<SomanticWord>> sentence) {
+    synchronized public void setSentences(Set<SomanticSentence> sentence) {
         this.sentences = sentence;
     }
 
-    synchronized public void addSentence(List<SomanticWord> sentence) {
+    synchronized public void addSentence(SomanticSentence sentence) {
         this.sentences.add(sentence);
     }
 
@@ -150,5 +149,13 @@ public class SomanticWord implements Serializable {
 
     synchronized void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public int compareTo(SomanticWord o) {
+        if (lemma.hashCode() == o.lemma.hashCode()) {
+            return 0;
+        }
+        return lemma.hashCode() > o.lemma.hashCode() ? 1 : -1;
     }
 }

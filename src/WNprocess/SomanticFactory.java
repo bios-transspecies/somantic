@@ -3,7 +3,6 @@ package WNprocess;
 import edu.mit.jwi.item.IWord;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import rita.RiTa;
 
@@ -11,7 +10,6 @@ public class SomanticFactory {
 
     private SomanticRepository repo;
     private SomanticAranger arranger;
-    private boolean recursion;
 
     public SomanticFactory() {
         repo = SomanticRepository.getInstance();
@@ -48,7 +46,7 @@ public class SomanticFactory {
     public void addTextToRepo(String textToSplit) {
         String[] tokenized = RiTa.tokenize(textToSplit);
         String[] tagged = RiTa.getPosTags(tokenized);
-        List<SomanticWord> sentence = new ArrayList<>();
+        SomanticSentence sentence = new SomanticSentence();
         SomanticWord previous = null;
         for (int i = 0; i < tokenized.length; i++) {
             IWord iWord = WordNetToolbox.stringToIWord(tokenized[i].trim().toLowerCase());
@@ -70,7 +68,7 @@ public class SomanticFactory {
                 for (SomanticWord somanticWord : sentence) {
                     somanticWord.addSentence(sentence);
                 }
-                sentence = new ArrayList<>();
+                sentence = new SomanticSentence();
             } else {
                 //System.err.println("WORDNET CAN'T FIND WORD: " + tokenized[i].trim().toLowerCase());
                 previous = null;
@@ -79,13 +77,10 @@ public class SomanticFactory {
     }
 
     public void addAffectToWord(String word, List<Integer> affect) {
+        SomanticAffect s = new SomanticAffect(affect);
         SomanticWord riWord = repo.get(WordNetToolbox.stem(word).get(0));
         if (riWord != null) {
-            try {
-                riWord.addAffect(affect);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            riWord.addAffect(s);
         }
     }
 

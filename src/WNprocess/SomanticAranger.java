@@ -82,7 +82,7 @@ public class SomanticAranger {
         List<SentenceMapper> sentencesMapped = new ArrayList<>();
         // words 
         for (SomanticWord somanticWord : somanticSentence) {
-            Set<List<SomanticWord>> contextSentences = somanticWord.getSentences();
+            Set<SomanticSentence> contextSentences = somanticWord.getSentences();
             // context sentences make new variant
             contextSentences.stream().map((List<SomanticWord> contextSentence) -> {
                 int counter = 0;

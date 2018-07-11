@@ -224,9 +224,9 @@ public class Interface {
 
     synchronized static void addSentence(String words) {
         words = words.trim();
-        words = words.substring(0, 1).toUpperCase() + words.substring(1) ;
-        Interface.sentences += words+ ". <br> ";
-        Persistence.saveNewLineInFile(words.replace("  ", ", ")+". ");
+        words = words.substring(0, 1).toUpperCase() + words.substring(1);
+        Interface.sentences += words + ". <br> ";
+        Persistence.saveNewLineInFile(words.replace("  ", ", ") + ". ");
     }
 
     static String getSentences() {
