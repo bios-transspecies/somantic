@@ -351,16 +351,10 @@ public class Controller extends javax.swing.JFrame {
             recording = true;
             Interface.setIsVisualising(visualiseToggle.isSelected());
             String already = Interface.getStimulatedAlready();
-            Callable<Object> ca = Executors.callable(() -> {
+            new Thread(() -> {
                 Interface.setBufferedText(normalize(communicationBox.getText()));
                 communicationBox.setText(Interface.getBufferedText());
-            });
-            try {
-                ca.call();
-                Thread.sleep(100);
-            } catch (Exception ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
-            }
+            }).start();
             somanticFactory.addTextToRepo(Interface.getBufferedText());
             StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");

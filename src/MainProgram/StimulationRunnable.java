@@ -54,11 +54,9 @@ public class StimulationRunnable implements Runnable {
                             try {
                                 Interface.setSaving(true);
                                 somanticFactory.saveRepo();
+                            }catch(Exception e){
+                            } finally {
                                 Interface.setSaving(false);
-                            } catch (Exception ex) {
-                                Logger.getLogger(StimulationRunnable.class.getName()).log(Level.INFO, "SAVING SKIPPED: ", ex);
-                                Interface.setSaving(false);
-
                             }
                         }
                     }).start();
