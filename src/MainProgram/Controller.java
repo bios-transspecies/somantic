@@ -20,11 +20,11 @@ public class Controller extends javax.swing.JFrame {
     private int newsCounter = 0;
     private boolean isnetwork = false;
     private final Thread liveActThread;
-    private final SomanticFactory wNFactory;
+    private final SomanticFactory somanticFactory;
 
     public Controller() {
-        wNFactory = new SomanticFactory();
-        Interface.setRitaFactory(wNFactory);
+        somanticFactory = new SomanticFactory();
+        Interface.setRitaFactory(somanticFactory);
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -324,7 +324,7 @@ public class Controller extends javax.swing.JFrame {
             recording = true;
             communicationBox.setText("");
             communicationBox.setEditable(false);
-            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, wNFactory);
+            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, somanticFactory);
             Thread translatorThread = new Thread(translatorRunnable, "translatorThread");
             translatorThread.setPriority(Thread.MIN_PRIORITY);
             translatorThread.start();
@@ -361,8 +361,8 @@ public class Controller extends javax.swing.JFrame {
             } catch (Exception ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
             }
-            wNFactory.addTextToRepo(Interface.getBufferedText());
-            StimulationRunnable stimulationRunnable = new StimulationRunnable(wNFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
+            somanticFactory.addTextToRepo(Interface.getBufferedText());
+            StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
             stimulationThread.setPriority(Thread.MIN_PRIORITY);
             stimulationThread.start();
@@ -371,7 +371,7 @@ public class Controller extends javax.swing.JFrame {
             stimulateToggle.setSelected(false);
         } else {
             stimulateToggle.setText("Stimulate");
-            if (wNFactory.getRitaRepo() != null) {
+            if (somanticFactory.getRitaRepo() != null) {
                 messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
             } else {
                 messages.setText("Something went wrong. Library of affects still is empty. Try again!");
@@ -394,12 +394,12 @@ public class Controller extends javax.swing.JFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         if (stimulateToggle.isSelected()) {
             messages.setText("Please stop the stimulation process to avoid errors.");
-        } else if (wNFactory.getRitaRepo() != null) {
+        } else if (somanticFactory.getRitaRepo() != null) {
             try {
                 saveButton.setEnabled(false);
-                wNFactory.saveRepo();
+                somanticFactory.saveRepo();
                 messages.setBackground(Color.GRAY);
-                messages.setText("OK! Saved. Objects saved " + wNFactory.getRitaRepo().size());
+                messages.setText("OK! Saved. Objects saved " + somanticFactory.getRitaRepo().size());
                 saveButton.setEnabled(true);
             } catch (IllegalArgumentException e) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
@@ -414,23 +414,23 @@ public class Controller extends javax.swing.JFrame {
         } else {
             messages.setBackground(Color.red);
             saveButton.setEnabled(true);
-            messages.setText("Repossitory is empty. Could not be saved. Repo size: " + wNFactory.getRitaRepo().size() + " objects.");
+            messages.setText("Repossitory is empty. Could not be saved. Repo size: " + somanticFactory.getRitaRepo().size() + " objects.");
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
         try {
-            wNFactory.loadRepo();
+            somanticFactory.loadRepo();
         } catch (Exception e) {
-            messages.setText("ERROR: " + e.getLocalizedMessage() + " ACTUAL REPO SIZE " + wNFactory.getRitaRepo().size());
+            messages.setText("ERROR: " + e.getLocalizedMessage() + " ACTUAL REPO SIZE " + somanticFactory.getRitaRepo().size());
         }
         if (translateToggle.isSelected()) {
             messages.setText("Please stop the translation process first!");
-        } else if (wNFactory.getRitaRepo() == null) {
+        } else if (somanticFactory.getRitaRepo() == null) {
             messages.setBackground(Color.red);
             messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
         } else {
-            messages.setText("Loaded successfully! Objects count: " + wNFactory.getRitaRepo().size());
+            messages.setText("Loaded successfully! Objects count: " + somanticFactory.getRitaRepo().size());
         }
     }//GEN-LAST:event_loadButtonActionPerformed
 

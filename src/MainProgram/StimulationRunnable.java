@@ -3,8 +3,6 @@ package MainProgram;
 import static MainProgram.Controller.recording;
 import WNprocess.SomanticFactory;
 import WNprocess.WordNetToolbox;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +15,7 @@ public class StimulationRunnable implements Runnable {
     private final Thread live;
     private final AudioFFT fft;
     private final JToggleButton liveToggleButton;
-    private final SomanticFactory riTaFactory;
+    private final SomanticFactory somanticFactory;
     private final Object stimulationRunnableLock = new Object();
 
     public Object getStimulationRunnableLock() {
@@ -25,7 +23,7 @@ public class StimulationRunnable implements Runnable {
     }
 
     StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
-        this.riTaFactory = riTaFactory;
+        this.somanticFactory = riTaFactory;
         this.stimulateToggle = stimulateToggle;
         this.live = live;
         this.fft = fft;
@@ -39,16 +37,32 @@ public class StimulationRunnable implements Runnable {
             for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
                 Speaker.start(words[i]);
                 if (!WordNetToolbox.explain(words[i]).isEmpty()) {
-                    Interface.setWord(riTaFactory.getOrCreateWord(words[i]));
+                    Interface.setWord(somanticFactory.getOrCreateWord(words[i]));
                     try {
                         stimulationRunnableLock.wait(2500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     List<Integer> a = fft.getMatrix();
-                    riTaFactory.addAffectToWord(words[i], a);
+                    somanticFactory.addAffectToWord(words[i], a);
                 }
                 Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
+                if (Interface.getSaving() == false) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Interface.setSaving(true);
+                                somanticFactory.saveRepo();
+                                Interface.setSaving(false);
+                            } catch (Exception ex) {
+                                Logger.getLogger(StimulationRunnable.class.getName()).log(Level.INFO, "SAVING SKIPPED: ", ex);
+                                Interface.setSaving(false);
+
+                            }
+                        }
+                    }).start();
+                }
             }
             if (liveToggleButton.isSelected()) {
                 try {
