@@ -1,11 +1,10 @@
 package MainProgram;
 
+import Persistence.Persistence;
 import WNprocess.SomanticFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -23,8 +22,7 @@ public class Controller extends javax.swing.JFrame {
     private final SomanticFactory somanticFactory;
 
     public Controller() {
-        somanticFactory = new SomanticFactory();
-        Interface.setRitaFactory(somanticFactory);
+        somanticFactory = Interface.getSomanticFactory();
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -58,10 +56,11 @@ public class Controller extends javax.swing.JFrame {
         File file = libraryFileChooser.getSelectedFile();
         if (null != file && file.isFile()) {
             String res = file.getAbsolutePath();
-            Interface.setLibraryFile(res);
-            messages.setText("You are using file '" + Interface.getLibraryFile() + "' as database.");
+            Interface.setLiteratureLocation(res);
+            messages.setText("Trying to load file '" + Interface.getLiteratureLocation() + "' as a stimulation text.");
+            loadButtonActionPerformed(evt);
         } else if (null != file) {
-            messages.setText("You are going to create new file '" + Interface.getLibraryFile() + "' as database.");
+            messages.setText("there is no file selected so I am not able to load anything...");
         }
     }
 
@@ -351,11 +350,11 @@ public class Controller extends javax.swing.JFrame {
             recording = true;
             Interface.setIsVisualising(visualiseToggle.isSelected());
             String already = Interface.getStimulatedAlready();
+            Interface.setBufferedText(communicationBox.getText());
             new Thread(() -> {
-                Interface.setBufferedText(normalize(communicationBox.getText()));
                 communicationBox.setText(Interface.getBufferedText());
+                somanticFactory.addTextToRepo(Interface.getBufferedText());
             }).start();
-            somanticFactory.addTextToRepo(Interface.getBufferedText());
             StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
             Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
             stimulationThread.setPriority(Thread.MIN_PRIORITY);
@@ -413,18 +412,20 @@ public class Controller extends javax.swing.JFrame {
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
+        boolean error = false;
         try {
-            somanticFactory.loadRepo();
+            communicationBox.setText(normalize(Persistence.loadLiteraure(Interface.getLiteratureLocation())));
         } catch (Exception e) {
-            messages.setText("ERROR: " + e.getLocalizedMessage() + " ACTUAL REPO SIZE " + somanticFactory.getRitaRepo().size());
+            error = true;
+            messages.setText("couldn't load any text...");
         }
         if (translateToggle.isSelected()) {
             messages.setText("Please stop the translation process first!");
         } else if (somanticFactory.getRitaRepo() == null) {
             messages.setBackground(Color.red);
             messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
-        } else {
-            messages.setText("Loaded successfully! Objects count: " + somanticFactory.getRitaRepo().size());
+        } else if(!error){
+            messages.setText("Loaded successfully!");
         }
     }//GEN-LAST:event_loadButtonActionPerformed
 

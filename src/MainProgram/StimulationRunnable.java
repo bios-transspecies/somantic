@@ -55,6 +55,7 @@ public class StimulationRunnable implements Runnable {
                                 Interface.setSaving(true);
                                 somanticFactory.saveRepo();
                             }catch(Exception e){
+                                
                             } finally {
                                 Interface.setSaving(false);
                             }

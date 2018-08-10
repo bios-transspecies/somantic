@@ -34,6 +34,7 @@ public class Interface {
     private static Long minimalSimilarity = 0L;
     private static Set<SomanticWord> sentence = new HashSet<>();
     private static boolean saving;
+    private static String literatureLocation;
 
     public static String getMessage() {
         return message;
@@ -179,13 +180,13 @@ public class Interface {
         return visualisation;
     }
 
-    public static void setRitaFactory(SomanticFactory riact) {
+    public static void setSomanticFactory(SomanticFactory riact) {
         if (ritaFactory == null) {
             Interface.ritaFactory = riact;
         }
     }
 
-    public static SomanticFactory getRitaFactory() {
+    public static SomanticFactory getSomanticFactory() {
         return Interface.ritaFactory;
     }
 
@@ -227,7 +228,7 @@ public class Interface {
         words = words.trim();
         words = words.substring(0, 1).toUpperCase() + words.substring(1);
         Interface.sentences += words + ". <br> ";
-        Persistence.saveNewLineInFile(words.replace("  ", ", ") + ". ");
+        Persistence.saveNewSentence(words.replace("  ", ", ") + ". ");
     }
 
     static String getSentences() {
@@ -241,4 +242,14 @@ public class Interface {
     static void setSaving(boolean b) {
         Interface.saving = b;
     }
+
+    static String getLiteratureLocation() {
+        return Interface.literatureLocation;
+    }
+
+    public static void setLiteratureLocation(String literatureLocation) {
+        Interface.literatureLocation = literatureLocation;
+    }
+    
+    
 }

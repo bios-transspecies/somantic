@@ -37,7 +37,7 @@ public class SomanticFactory {
     }
 
     public void loadRepo() throws IOException, FileNotFoundException, ClassNotFoundException {
-        SomanticRepository r = Persistence.Persistence.load();
+        SomanticRepository r = Persistence.Persistence.loadRepository();
         if (r != null) {
             repo = r;
         }
@@ -78,7 +78,8 @@ public class SomanticFactory {
 
     public void addAffectToWord(String word, List<Integer> affect) {
         SomanticAffect s = new SomanticAffect(affect);
-        SomanticWord riWord = repo.get(WordNetToolbox.stem(word).get(0));
+        String w = WordNetToolbox.stem(word).get(0);
+        SomanticWord riWord = repo.get(w);
         if (riWord != null) {
             riWord.addAffect(s);
         }

@@ -2,8 +2,9 @@ package WNprocess;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class SomanticRepository extends HashMap<String, SomanticWord> implements Serializable {
+public class SomanticRepository extends ConcurrentHashMap<String, SomanticWord> implements Serializable {
 
     private static SomanticRepository instance = null;
 

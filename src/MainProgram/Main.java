@@ -1,6 +1,7 @@
 package MainProgram;
 
 import Persistence.Persistence;
+import WNprocess.SomanticFactory;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,7 +10,9 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            Persistence.load();
+            SomanticFactory somanticFactory = new SomanticFactory();
+            somanticFactory.loadRepo();
+            Interface.setSomanticFactory(somanticFactory);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

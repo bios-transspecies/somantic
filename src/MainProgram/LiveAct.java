@@ -59,7 +59,7 @@ class LiveAct implements Runnable {
                     }
                 } else {
                     if (newsCounter > 0) {
-                        Persistence.saveNewLineInFile(communicationBox.getText());
+                        Persistence.saveNewSentence(communicationBox.getText());
                         communicationBox.setText(Interface.getDefaultWords());
                     }
                     newsCounter++;

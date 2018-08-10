@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +56,7 @@ public class WordNetToolbox {
     }
 
     static public List<String> stem(String word) {
-        List<String> r = new ArrayList<>();
+        List<String> r = new CopyOnWriteArrayList<>();
         for (POS pos : POS.values()) {
             List<String> a = getWordnetStemmer().findStems(word, pos);
             if (a != null && !a.isEmpty()) {

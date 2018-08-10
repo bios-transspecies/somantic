@@ -1,22 +1,22 @@
 package WNprocess;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SomanticWord implements Serializable, Comparable<SomanticWord> {
 
     private String lemma = "";
-    private Set<String> POS = new HashSet<>();
-    private Set<String> words = new HashSet<>();
-    private Set<SomanticWord> previous = new HashSet<>();
-    private Set<SomanticWord> next = new HashSet<>();
-    private Set<SomanticSentence> sentences = new HashSet<>();
+    private Set<String> POS = new ConcurrentSkipListSet<>();
+    private Set<String> words = new ConcurrentSkipListSet<>();
+    private Set<SomanticWord> previous = new ConcurrentSkipListSet<>();
+    private Set<SomanticWord> next = new ConcurrentSkipListSet<>();
+    private Set<SomanticSentence> sentences = new ConcurrentSkipListSet<>();
     private Set<SomanticAffect> affects = new ConcurrentSkipListSet<>();
     private String description;
-    private Set<String> tags = new HashSet<>();
+    private Set<String> tags = new ConcurrentSkipListSet<>();
 
     public SomanticWord() {
     }

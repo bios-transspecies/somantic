@@ -16,10 +16,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Persistence {
 
-    private static boolean saving = false;
+    private static boolean saving;
+    private static final Object lock = new Object();
 
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         File f = new File(Interface.getLibraryFile());
@@ -28,24 +32,32 @@ public class Persistence {
             f.createNewFile();
         }
         if (!saving) {
-            saving = true;
-            Path tmpPath = Paths.get("temporary" + new Date().getTime());
-            FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
-            ObjectOutputStream out = new ObjectOutputStream(tmp);
-            out.writeObject(repository);
-            out.close();
-            Files.deleteIfExists(Paths.get(Interface.getLibraryFile()));
-            Files.copy(tmpPath, Paths.get(Interface.getLibraryFile()));
-            Files.delete(tmpPath);
-            out.close();
-            saving = false;
+            synchronized(lock){
+                try{
+                    saving = true;
+                    Path tmpPath = Paths.get("temporary" + new Date().getTime());
+                    FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
+                    ObjectOutputStream out = new ObjectOutputStream(tmp);
+                    out.writeObject(repository);
+                    out.close();
+                    Files.deleteIfExists(Paths.get(Interface.getLibraryFile()));
+                    Files.copy(tmpPath, Paths.get(Interface.getLibraryFile()));
+                    Files.delete(tmpPath);
+                    long filesize = Files.size(Paths.get(Interface.getLibraryFile()));
+                    out.close();
+                    System.err.println("SAVED repo size "+filesize/1024+"kB with "+repository.size()+" words");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally{
+                    saving = false;
+                }
+            }
         } else {
-            saving = false;
             throw new IllegalArgumentException(" writting file in progress ");
         }
     }
 
-    public static SomanticRepository load() throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static SomanticRepository loadRepository() throws FileNotFoundException, IOException, ClassNotFoundException {
         SomanticRepository riTaRepo = null;
         File f = new File(Interface.getLibraryFile());
         if (f.exists()) {
@@ -54,12 +66,24 @@ public class Persistence {
             riTaRepo = (SomanticRepository) in.readObject();
             in.close();
             fileIn.close();
-            System.out.println("loaded repo successfully from file" + Interface.getLibraryFile());
+            System.out.println("loaded repo - number of words: "+ riTaRepo.size() +" successfully from file" + Interface.getLibraryFile());
         }
         return riTaRepo;
     }
 
-    public static void saveNewLineInFile(String line) {
+    public static String loadLiteraure(String location){
+        File f = new File(location);
+        if (f.exists()) {
+            try{
+                return Files.lines(f.toPath()).collect(Collectors.joining(" "));
+            } catch (IOException ex) {
+                Logger.getLogger(Persistence.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+    
+    public static void saveNewSentence(String line) {
         Path pathText = null;
         Charset encoding = Charset.forName("UTF-8");
         try {
