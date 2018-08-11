@@ -1,8 +1,6 @@
 package MainProgram;
 
 import Persistence.Persistence;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 
@@ -13,18 +11,16 @@ class LiveAct implements Runnable {
     private final JToggleButton stimulateToggle;
     private final JToggleButton translateToggle;
     private final Controller controller;
-    private final boolean network;
     private int newsCounter;
     private int scheduler;
     private final Object liveActLock = new Object();
 
-    LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, boolean network, int newsCounter, int scheduler) {
+    LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, int newsCounter, int scheduler) {
         this.liveToggleButton = liveToggleButton;
         this.communicationBox = communicationBox;
         this.stimulateToggle = stimulateToggle;
         this.translateToggle = translateToggle;
         this.controller = controller;
-        this.network = network;
         this.newsCounter = newsCounter;
         this.scheduler = scheduler;
     }
@@ -49,26 +45,19 @@ class LiveAct implements Runnable {
                 controller.runTranslate();
             } else if (stimulateToggle.isSelected()) {
                 System.err.println("stimulate");
-                if (network) {
-                    try {
-                        c.sendPost(communicationBox.getText());
-                        Interface.setWords(c.sendGet(newsCounter++));
-                        communicationBox.setText(Interface.getWords());
-                    } catch (Exception ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-                    if (newsCounter > 0) {
-                        Persistence.saveNewSentence(communicationBox.getText());
-                        communicationBox.setText(Interface.getDefaultWords());
-                    }
-                    newsCounter++;
+                if (newsCounter > 0) {
+                    Persistence.saveNewSentence(communicationBox.getText());
+                    communicationBox.setText(Interface.getDefaultWords());
                 }
+                newsCounter++;
                 controller.runStimulate();
             }
             controller.liveActSleep(scheduler);
-            scheduler = 1000 * 60 * 2;
-            liveToggleButton.setSelected(false);
+            if(scheduler>1000 * 30 * 1)
+            scheduler = scheduler / 2;
         }
+        liveToggleButton.setSelected(false);
+        stimulateToggle.setSelected(false);
+        translateToggle.setSelected(false);
     }
 }
