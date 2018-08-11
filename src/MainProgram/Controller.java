@@ -305,26 +305,34 @@ public class Controller extends javax.swing.JFrame {
         stimulateToggle.setText("Stimulate");
         Interface.setWords("");
         if (translateToggle.isSelected()) {
-            translateToggle.setText("Translation");
-            messages.setText("Translating the affests into words and trying to find some sentences.");
-            Interface.setIsVisualising(true);
-            Interface.setState("translate");
-            recording = true;
-            communicationBox.setText("");
-            communicationBox.setEditable(false);
-            TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, somanticFactory);
-            Thread translatorThread = new Thread(translatorRunnable, "translatorThread");
-            translatorThread.setPriority(Thread.MIN_PRIORITY);
-            translatorThread.start();
+            translate();
         } else {
-            translateToggle.setText("Translate");
-            messages.setText("Maybe we should to expand vocabulary and stimulate more?");
-            Interface.setState("stopped");
-            recording = false;
-            Interface.setIsVisualising(false);
-            communicationBox.setEditable(true);
+            translated();
         }
     }//GEN-LAST:event_translateToggleActionPerformed
+
+    private void translated() {
+        translateToggle.setText("Translate");
+        messages.setText("Maybe we should to expand vocabulary and stimulate more?");
+        Interface.setState("stopped");
+        recording = false;
+        Interface.setIsVisualising(false);
+        communicationBox.setEditable(true);
+    }
+
+    private void translate() {
+        translateToggle.setText("Translation");
+        messages.setText("Translating the affests into words and trying to find some sentences.");
+        Interface.setIsVisualising(true);
+        Interface.setState("translate");
+        recording = true;
+        communicationBox.setText("");
+        communicationBox.setEditable(false);
+        TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, somanticFactory);
+        Thread translatorThread = new Thread(translatorRunnable, "translatorThread");
+        translatorThread.setPriority(Thread.MIN_PRIORITY);
+        translatorThread.start();
+    }
 
     private void speakAndStimulate(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speakAndStimulate
         if (evt != null) {
@@ -333,34 +341,42 @@ public class Controller extends javax.swing.JFrame {
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
         if (stimulateToggle.isSelected() && communicationBox.getText().length() > 5) {
-            messages.setText("Building relations between words and affects in progress.");
-            stimulateToggle.setText("Stimulation");
-            Interface.setState("Stimulate");
-            recording = true;
-            Interface.setIsVisualising(visualiseToggle.isSelected());
-            Interface.setBufferedText(communicationBox.getText());
-            new Thread(() -> {
-                communicationBox.setText(Interface.getBufferedText());
-                somanticFactory.addTextToRepo(Interface.getBufferedText());
-            }).start();
-            StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton, communicationBox);
-            Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
-            stimulationThread.setPriority(Thread.MIN_PRIORITY);
-            stimulationThread.start();
+            stimulate();
         } else if (communicationBox.getText().length() < 5) {
             messages.setText("To process stimmulation please copy and paste some text below.");
             stimulateToggle.setSelected(false);
         } else {
-            stimulateToggle.setText("Stimulate");
-            if (somanticFactory.getRitaRepo() != null) {
-                messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
-            } else {
-                messages.setText("Something went wrong. Library of affects still is empty. Try again!");
-            }
-            Interface.setState("stopped");
-            recording = false;
+            stimulated();
         }
     }//GEN-LAST:event_speakAndStimulate
+
+    private void stimulated() {
+        stimulateToggle.setText("Stimulate");
+        if (somanticFactory.getRitaRepo() != null) {
+            messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
+        } else {
+            messages.setText("Something went wrong. Library of affects still is empty. Try again!");
+        }
+        Interface.setState("stopped");
+        recording = false;
+    }
+
+    private void stimulate() {
+        messages.setText("Building relations between words and affects in progress.");
+        stimulateToggle.setText("Stimulation");
+        Interface.setState("Stimulate");
+        recording = true;
+        Interface.setIsVisualising(visualiseToggle.isSelected());
+        Interface.setBufferedText(communicationBox.getText());
+        new Thread(() -> {
+            communicationBox.setText(Interface.getBufferedText());
+            somanticFactory.addTextToRepo(Interface.getBufferedText());
+        }).start();
+        StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton, communicationBox);
+        Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
+        stimulationThread.setPriority(Thread.MIN_PRIORITY);
+        stimulationThread.start();
+    }
 
     private void inputLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputLoginActionPerformed
         Interface.setLogin(inputLogin.getText());
