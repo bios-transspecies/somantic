@@ -51,13 +51,9 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="fileManagerToggle" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="saveButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="loadButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                                   <Component id="jLabel1" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
                                   <Component id="liveToggleButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="buttonLoginPassword" min="-2" max="-2" attributes="0"/>
@@ -72,10 +68,10 @@
                                   <Component id="translateToggle" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="visualiseToggle" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jProgressBar1" min="-2" pref="214" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jProgressBar1" max="32767" attributes="0"/>
                               </Group>
                               <Component id="jPanel2" max="32767" attributes="0"/>
                               <Component id="jScrollPane1" alignment="1" max="32767" attributes="0"/>
@@ -98,8 +94,6 @@
                       <Component id="inputPassword" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="fileManagerToggle" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="liveToggleButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="loadButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -236,29 +230,9 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="visualiseToggleActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="saveButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="save"/>
-            <Property name="toolTipText" type="java.lang.String" value="save existing library (relation words to affects) for future sessions in selected file" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="loadButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="load"/>
-          </Properties>
-          <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="load library (relations words to affects) from selected file" noResource="true"/>
-          </AccessibilityProperties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadButtonActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="::SOMANTIC::"/>
+            <Property name="text" type="java.lang.String" value="::SOMANTIC:: interspecies translator"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel2">
@@ -268,7 +242,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="messages" pref="0" max="32767" attributes="0"/>
+                      <Component id="messages" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -284,7 +258,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="messages">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Welcome to :: SOMANTIC ::  [SOMATIC / SEMANTIC] translator for affects to the English that could let to speak the plants, or tissues."/>
+                <Property name="text" type="java.lang.String" value="Welcome to :: SOMANTIC ::  [SOMATIC / SEMANTIC] affects to the English translator that could let to speak the fauna and flora."/>
               </Properties>
             </Component>
           </SubComponents>

@@ -15,9 +15,8 @@ public class Controller extends javax.swing.JFrame {
     private AudioFFT fft;
     private final View view;
     private final JFileChooser libraryFileChooser;
-    private int scheduler = (1000 * 60 * 10); // (milisekundy, sekundy, minuty)
+    private int scheduler = (1000 * 30 * 1); // (milisekundy, sekundy, minuty)
     private int newsCounter = 0;
-    private boolean isnetwork = false;
     private final Thread liveActThread;
     private final SomanticFactory somanticFactory;
 
@@ -36,7 +35,7 @@ public class Controller extends javax.swing.JFrame {
         view = new View();
         view.start(fft);
         messages.setBackground(Color.GRAY);
-        LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, isnetwork, newsCounter, scheduler);
+        LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, newsCounter, scheduler);
         liveActThread = new Thread(liveAct, "liveActThread");
         liveActThread.setPriority(Thread.MIN_PRIORITY);
         Interface.setBufferedText(communicationBox.getText());
@@ -54,11 +53,25 @@ public class Controller extends javax.swing.JFrame {
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {
         File file = libraryFileChooser.getSelectedFile();
+        boolean error = false;
         if (null != file && file.isFile()) {
             String res = file.getAbsolutePath();
             Interface.setLiteratureLocation(res);
             messages.setText("Trying to load file '" + Interface.getLiteratureLocation() + "' as a stimulation text.");
-            loadButtonActionPerformed(evt);
+            try {
+                communicationBox.setText(normalize(Persistence.loadLiteraure(Interface.getLiteratureLocation())));
+            } catch (Exception e) {
+                error = true;
+                messages.setText("couldn't load any text...");
+            }
+            if (translateToggle.isSelected()) {
+                messages.setText("Please stop the translation process first!");
+            } else if (somanticFactory.getRitaRepo() == null) {
+                messages.setBackground(Color.red);
+                messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
+            } else if (!error) {
+                messages.setText("Loaded successfully!");
+            }
         } else if (null != file) {
             messages.setText("there is no file selected so I am not able to load anything...");
         }
@@ -82,8 +95,6 @@ public class Controller extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         liveToggleButton = new javax.swing.JToggleButton();
         visualiseToggle = new javax.swing.JToggleButton();
-        saveButton = new javax.swing.JButton();
-        loadButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         messages = new javax.swing.JLabel();
@@ -161,24 +172,9 @@ public class Controller extends javax.swing.JFrame {
             }
         });
 
-        saveButton.setText("save");
-        saveButton.setToolTipText("save existing library (relation words to affects) for future sessions in selected file"); // NOI18N
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
+        jLabel1.setText("::SOMANTIC:: interspecies translator");
 
-        loadButton.setText("load");
-        loadButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("::SOMANTIC::");
-
-        messages.setText("Welcome to :: SOMANTIC ::  [SOMATIC / SEMANTIC] translator for affects to the English that could let to speak the plants, or tissues.");
+        messages.setText("Welcome to :: SOMANTIC ::  [SOMATIC / SEMANTIC] affects to the English translator that could let to speak the fauna and flora.");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -186,7 +182,7 @@ public class Controller extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(messages, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(messages, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,13 +203,9 @@ public class Controller extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(fileManagerToggle)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(saveButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(loadButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(46, 46, 46)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(108, 108, 108)
                                 .addComponent(liveToggleButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonLoginPassword)
@@ -227,10 +219,10 @@ public class Controller extends javax.swing.JFrame {
                                 .addComponent(translateToggle)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(visualiseToggle)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
                                 .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
@@ -247,8 +239,6 @@ public class Controller extends javax.swing.JFrame {
                     .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileManagerToggle)
                     .addComponent(liveToggleButton)
-                    .addComponent(saveButton)
-                    .addComponent(loadButton)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -266,7 +256,6 @@ public class Controller extends javax.swing.JFrame {
         );
 
         stimulateToggle.getAccessibleContext().setAccessibleDescription("");
-        loadButton.getAccessibleContext().setAccessibleDescription("load library (relations words to affects) from selected file"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -349,13 +338,12 @@ public class Controller extends javax.swing.JFrame {
             Interface.setState("Stimulate");
             recording = true;
             Interface.setIsVisualising(visualiseToggle.isSelected());
-            String already = Interface.getStimulatedAlready();
             Interface.setBufferedText(communicationBox.getText());
             new Thread(() -> {
                 communicationBox.setText(Interface.getBufferedText());
                 somanticFactory.addTextToRepo(Interface.getBufferedText());
             }).start();
-            StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton);
+            StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton, communicationBox);
             Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
             stimulationThread.setPriority(Thread.MIN_PRIORITY);
             stimulationThread.start();
@@ -381,53 +369,7 @@ public class Controller extends javax.swing.JFrame {
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         Interface.setPassword(String.copyValueOf(inputPassword.getPassword()));
         Interface.setLogin(inputLogin.getText());
-        isnetwork = true;
     }//GEN-LAST:event_loginActionPerformed
-
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        if (stimulateToggle.isSelected()) {
-            messages.setText("Please stop the stimulation process to avoid errors.");
-        } else if (somanticFactory.getRitaRepo() != null) {
-            try {
-                saveButton.setEnabled(false);
-                somanticFactory.saveRepo();
-                messages.setBackground(Color.GRAY);
-                messages.setText("OK! Saved. Objects saved " + somanticFactory.getRitaRepo().size());
-                saveButton.setEnabled(true);
-            } catch (IllegalArgumentException e) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
-                messages.setText("Something went wrong! " + e.getLocalizedMessage());
-                if (!e.getMessage().equals(" writting file in progress ")) {
-                    saveButton.setEnabled(true);
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                saveButton.setEnabled(true);
-            }
-        } else {
-            messages.setBackground(Color.red);
-            saveButton.setEnabled(true);
-            messages.setText("Repossitory is empty. Could not be saved. Repo size: " + somanticFactory.getRitaRepo().size() + " objects.");
-        }
-    }//GEN-LAST:event_saveButtonActionPerformed
-
-    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
-        boolean error = false;
-        try {
-            communicationBox.setText(normalize(Persistence.loadLiteraure(Interface.getLiteratureLocation())));
-        } catch (Exception e) {
-            error = true;
-            messages.setText("couldn't load any text...");
-        }
-        if (translateToggle.isSelected()) {
-            messages.setText("Please stop the translation process first!");
-        } else if (somanticFactory.getRitaRepo() == null) {
-            messages.setBackground(Color.red);
-            messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
-        } else if(!error){
-            messages.setText("Loaded successfully!");
-        }
-    }//GEN-LAST:event_loadButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonLoginPassword;
@@ -443,9 +385,7 @@ public class Controller extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToggleButton liveToggleButton;
-    private javax.swing.JButton loadButton;
     private javax.swing.JLabel messages;
-    private javax.swing.JButton saveButton;
     private javax.swing.JToggleButton stimulateToggle;
     private javax.swing.JToggleButton translateToggle;
     private javax.swing.JToggleButton visualiseToggle;

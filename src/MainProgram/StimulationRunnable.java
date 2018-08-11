@@ -6,6 +6,7 @@ import WNprocess.WordNetToolbox;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 
 public class StimulationRunnable implements Runnable {
@@ -17,24 +18,26 @@ public class StimulationRunnable implements Runnable {
     private final JToggleButton liveToggleButton;
     private final SomanticFactory somanticFactory;
     private final Object stimulationRunnableLock = new Object();
+    private final JTextArea communicationBox;
 
     public Object getStimulationRunnableLock() {
         return stimulationRunnableLock;
     }
 
-    StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton) {
+    StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton, JTextArea communicationBox) {
         this.somanticFactory = riTaFactory;
         this.stimulateToggle = stimulateToggle;
         this.live = live;
         this.fft = fft;
         this.liveToggleButton = liveToggleButton;
+        this.communicationBox = communicationBox;
     }
 
     public void run() {
         synchronized (stimulationRunnableLock) {
-            Interface.setStimulatedAlready("");
             String[] words = WordNetToolbox.tokenize(Interface.getBufferedText());
             for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
+                cutOffFromBuffer(words, i);
                 Speaker.start(words[i]);
                 if (!WordNetToolbox.explain(words[i]).isEmpty()) {
                     Interface.setWord(somanticFactory.getOrCreateWord(words[i]));
@@ -46,7 +49,6 @@ public class StimulationRunnable implements Runnable {
                     List<Integer> a = fft.getMatrix();
                     somanticFactory.addAffectToWord(words[i], a);
                 }
-                Interface.setStimulatedAlready(Interface.getStimulatedAlready() + words[i] + ' ');
                 if (Interface.getSaving() == false) {
                     new Thread(new Runnable() {
                         @Override
@@ -67,9 +69,19 @@ public class StimulationRunnable implements Runnable {
                 try {
                     live.notify();
                 } catch (Exception ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
                 }
             }
         }
+    }
+
+    private void cutOffFromBuffer(String[] words, int i) {
+        Interface.setBufferedText(Interface.getBufferedText().replaceFirst(words[i], "").trim().replace("  ", " "));
+        if(Interface.getBufferedText().charAt(0)=='.')
+            Interface.setBufferedText(Interface.getBufferedText().replaceFirst(".", "").trim());
+        if(Interface.getBufferedText().length()>10000)
+            communicationBox.setText(Interface.getBufferedText().substring(0, Interface.getBufferedText().substring(0, 10000).lastIndexOf(".")));
+        else
+            communicationBox.setText(Interface.getBufferedText());
     }
 }

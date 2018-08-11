@@ -26,7 +26,6 @@ public class Interface {
     private static String password;
     private static final String url = "https://art-hub.pl/webservice/tal";
     private static String bufferedText;
-    private static String stimulatedAlready = "";
     private static final String generatedSentencesFilePath = "generated_sentences.txt";
     private static boolean visualisation;
     private static SomanticFactory ritaFactory;
@@ -154,14 +153,6 @@ public class Interface {
 
     public static void setBufferedText(String aDefaultString) {
         bufferedText = aDefaultString.trim();
-    }
-
-    public static String getStimulatedAlready() {
-        return stimulatedAlready;
-    }
-
-    public static void setStimulatedAlready(String aStimulatedAlready) {
-        stimulatedAlready = aStimulatedAlready;
     }
 
     public static String getGeneratedSentencesFilePath() {
