@@ -62,7 +62,7 @@ public class Controller extends javax.swing.JFrame {
                 communicationBox.setText(normalize(Persistence.loadLiteraure(Interface.getLiteratureLocation())));
             } catch (Exception e) {
                 error = true;
-                messages.setText("couldn't load any text...");
+                messages.setText("couldn't load any text... "+e);
             }
             if (translateToggle.isSelected()) {
                 messages.setText("Please stop the translation process first!");

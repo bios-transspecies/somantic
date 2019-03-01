@@ -11,13 +11,13 @@ public class HttpConnector {
 
     private String login;
     private String password;
-    private String url;
+    private String urlAddress;
     private final String USER_AGENT = "Mozilla/5.0";
 
     HttpConnector(String login, String password, String url) {
         this.login = login;
         this.password = password;
-        this.url = url;
+        this.urlAddress = url;
     }
 
     HttpConnector() {
@@ -39,24 +39,24 @@ public class HttpConnector {
         this.password = password;
     }
 
-    public String getUrl() {
-        return url;
+    public String getUrlAddress() {
+        return urlAddress;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrlAddress(String urlAddress) {
+        this.urlAddress = urlAddress;
     }
 
     // HTTP GET request
     public String sendGet(int counter) throws Exception {
-        URL obj = new URL(url + "?login=" + login + "&password=" + password + "&counter=" + counter);
+        URL obj = new URL(urlAddress + "?login=" + login + "&password=" + password + "&counter=" + counter);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         // optional default is GET
         con.setRequestMethod("GET");
         //add request header
         con.setRequestProperty("User-Agent", USER_AGENT);
         int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'GET' request to URL : " + url);
+        System.out.println("\nSending 'GET' request to URL : " + urlAddress);
         System.out.println("Response Code : " + responseCode);
         StringBuffer response;
         try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
@@ -71,14 +71,12 @@ public class HttpConnector {
 
     // HTTP POST request
     public String sendPost(String message) throws Exception {
-        URL obj = new URL(url);
-        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-
+        URL url = new URL(this.urlAddress);
+        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         //add reuqest header
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", USER_AGENT);
         String urlParameters = "login=" + login + "&password=" + password + "&message=" + message;
-
         // Send post request
         con.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());

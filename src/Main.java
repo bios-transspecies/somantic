@@ -1,6 +1,7 @@
-package MainProgram;
 
-import Persistence.Persistence;
+
+import MainProgram.Controller;
+import MainProgram.Interface;
 import WNprocess.SomanticFactory;
 import java.io.IOException;
 import java.util.logging.Level;

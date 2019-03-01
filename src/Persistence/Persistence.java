@@ -2,6 +2,7 @@ package Persistence;
 
 import MainProgram.Interface;
 import WNprocess.SomanticRepository;
+import com.sun.istack.internal.logging.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,13 +18,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 public class Persistence {
 
     private static boolean saving;
     private static final Object lock = new Object();
+
+    private static Logger logger = Logger.getLogger(Persistence.class);
 
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         File f = new File(Interface.getLibraryFile());
@@ -32,8 +36,8 @@ public class Persistence {
             f.createNewFile();
         }
         if (!saving) {
-            synchronized(lock){
-                try{
+            synchronized (lock) {
+                try {
                     saving = true;
                     Path tmpPath = Paths.get("temporary" + new Date().getTime());
                     FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
@@ -45,10 +49,10 @@ public class Persistence {
                     Files.delete(tmpPath);
                     long filesize = Files.size(Paths.get(Interface.getLibraryFile()));
                     out.close();
-                    System.err.println("SAVED repo size "+filesize/1024+"kB with "+repository.size()+" words");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }finally{
+                    System.err.println("SAVED repo size " + filesize / 1024 + "kB with " + repository.size() + " words");
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, e.getMessage());
+                } finally {
                     saving = false;
                 }
             }
@@ -66,30 +70,35 @@ public class Persistence {
             riTaRepo = (SomanticRepository) in.readObject();
             in.close();
             fileIn.close();
-            System.out.println("loaded repo - number of words: "+ riTaRepo.size() +" successfully from file" + Interface.getLibraryFile());
+            System.out.println("loaded repo - number of words: " + riTaRepo.size() + " successfully from file" + Interface.getLibraryFile());
         }
         return riTaRepo;
     }
 
-    public static String loadLiteraure(String location){
+    public static String loadLiteraure(String location) throws IOException {
         File f = new File(location);
         if (f.exists()) {
-            try{
+            if (f.getName().toLowerCase().contains(".pdf")) {
+                PDFTextStripper pdfStripper = new PDFTextStripper();
+                PDDocument pdDoc = PDDocument.load(f);
+                pdfStripper.setStartPage(0);
+                pdfStripper.setEndPage(pdDoc.getNumberOfPages());
+                String parsedText = pdfStripper.getText(pdDoc);
+                return parsedText;
+            } else {
                 return Files.lines(f.toPath()).collect(Collectors.joining(" "));
-            } catch (IOException ex) {
-                Logger.getLogger(Persistence.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return null;
     }
-    
+
     public static void saveNewSentence(String line) {
         Path pathText = null;
         Charset encoding = Charset.forName("UTF-8");
         try {
             pathText = Paths.get(Interface.getGeneratedSentencesFilePath());
         } catch (Exception e) {
-            System.err.println(e);
+            logger.log(Level.SEVERE, e.getMessage());
         }
         if (pathText != null) {
             List<String> newline = new ArrayList<>();
@@ -99,20 +108,20 @@ public class Persistence {
                     file.setWritable(true);
                     file.createNewFile();
                 } catch (IOException ex) {
-                    System.err.println(ex);
+                    logger.log(Level.SEVERE, ex.getMessage());
                 }
             } else {
                 try {
                     newline.addAll(Files.readAllLines(pathText, encoding));
                 } catch (IOException ex) {
-                    System.err.println(ex);
+                    logger.log(Level.SEVERE, ex.getMessage());
                 }
             }
             newline.add(line);
             try {
                 Files.write(pathText, newline, encoding);
             } catch (IOException ex) {
-                System.err.println(ex);
+                logger.log(Level.SEVERE, ex.getMessage());
             }
         }
     }
