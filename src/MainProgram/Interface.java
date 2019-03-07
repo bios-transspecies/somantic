@@ -163,7 +163,7 @@ public class Interface {
         return "wordnet";
     }
 
-    static void setVisualisation(boolean selected) {
+    public static void setVisualisation(boolean selected) {
         Interface.visualisation = selected;
     }
 
@@ -181,7 +181,7 @@ public class Interface {
         return Interface.ritaFactory;
     }
 
-    static void setProgressBar(JProgressBar jProgressBar) {
+    public static void setProgressBar(JProgressBar jProgressBar) {
         Interface.jProgressBar = jProgressBar;
     }
 
@@ -234,13 +234,12 @@ public class Interface {
         Interface.saving = b;
     }
 
-    static String getLiteratureLocation() {
+    public static String getLiteratureLocation() {
         return Interface.literatureLocation;
     }
 
     public static void setLiteratureLocation(String literatureLocation) {
         Interface.literatureLocation = literatureLocation;
     }
-    
-    
+
 }

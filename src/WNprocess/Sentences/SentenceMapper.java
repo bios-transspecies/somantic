@@ -33,11 +33,6 @@ public class SentenceMapper implements Comparator<SentenceMapper>, Comparable<Se
     public void setSentence(Set<SomanticWord> sentence) {
         this.sentence = sentence;
     }
-//
-//    @Override
-//    public int compareTo(SentenceMapper o) {
-//        return o.getCounter().compareTo(o.getCounter());
-//    }
 
     @Override
     public int compare(SentenceMapper o1, SentenceMapper o2) {

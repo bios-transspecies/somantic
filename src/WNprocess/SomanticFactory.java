@@ -1,5 +1,6 @@
 package WNprocess;
 
+import Persistence.Persistence;
 import edu.mit.jwi.item.IWord;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,11 +34,11 @@ public class SomanticFactory {
     }
 
     public void saveRepo() throws IOException, Exception {
-        Persistence.Persistence.save(repo);
+        Persistence.save(repo);
     }
 
     public void loadRepo() throws IOException, FileNotFoundException, ClassNotFoundException {
-        SomanticRepository r = Persistence.Persistence.loadRepository();
+        SomanticRepository r = Persistence.loadRepository();
         if (r != null) {
             repo = r;
         }

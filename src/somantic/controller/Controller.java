@@ -1,5 +1,12 @@
-package MainProgram;
+package somantic.controller;
 
+import MainProgram.AudioFFT;
+import MainProgram.AudioRunnable;
+import MainProgram.Interface;
+import MainProgram.LiveAct;
+import MainProgram.StimulationRunnable;
+import MainProgram.TranslatorRunnable;
+import MainProgram.View;
 import Persistence.Persistence;
 import WNprocess.SomanticFactory;
 import java.awt.Color;
@@ -11,7 +18,7 @@ import javax.swing.JFileChooser;
 
 public class Controller extends javax.swing.JFrame {
 
-    static volatile boolean recording;
+    public static volatile boolean recording;
     private AudioFFT fft;
     private final View view;
     private final JFileChooser libraryFileChooser;
@@ -62,7 +69,7 @@ public class Controller extends javax.swing.JFrame {
                 communicationBox.setText(normalize(Persistence.loadLiteraure(Interface.getLiteratureLocation())));
             } catch (Exception e) {
                 error = true;
-                messages.setText("couldn't load any text... "+e);
+                messages.setText("couldn't load any text... " + e);
             }
             if (translateToggle.isSelected()) {
                 messages.setText("Please stop the translation process first!");
@@ -407,15 +414,15 @@ public class Controller extends javax.swing.JFrame {
     private javax.swing.JToggleButton visualiseToggle;
     // End of variables declaration//GEN-END:variables
 
-    void runTranslate() {
+    public void runTranslate() {
         translateToggleActionPerformed(null);
     }
 
-    void runStimulate() {
+    public void runStimulate() {
         speakAndStimulate(null);
     }
 
-    void liveActSleep(int scheduler) {
+    public void liveActSleep(int scheduler) {
         this.scheduler = scheduler;
         synchronized (liveActThread) {
             try {

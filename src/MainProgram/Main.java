@@ -1,6 +1,7 @@
+package MainProgram;
 
 
-import MainProgram.Controller;
+import somantic.controller.Controller;
 import MainProgram.Interface;
 import WNprocess.SomanticFactory;
 import java.io.IOException;

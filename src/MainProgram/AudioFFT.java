@@ -11,7 +11,7 @@ import javax.swing.JProgressBar;
  * Object of this class audioInputStream able to deliver FFT results for sound,
  * also like array of affects based on 35hZ freq. *
  */
-class AudioFFT {
+public class AudioFFT {
 
     private final Minim m;
     private final AudioInput in;

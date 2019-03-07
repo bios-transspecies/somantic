@@ -1,5 +1,6 @@
 package MainProgram;
 
+import somantic.controller.Controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -7,7 +8,7 @@ public class AudioRunnable implements Runnable {
 
     private final AudioFFT fft;
 
-    AudioRunnable(AudioFFT fft) {
+    public AudioRunnable(AudioFFT fft) {
         this.fft = fft;
     }
 

@@ -162,7 +162,7 @@ public class View {
         timer.start();
     }
 
-    void setVisualiseToggle(JToggleButton visualiseToggle) {
+    public void setVisualiseToggle(JToggleButton visualiseToggle) {
         this.visualiseToggle = visualiseToggle;
     }
 }

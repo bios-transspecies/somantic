@@ -2,7 +2,6 @@ package Persistence;
 
 import MainProgram.Interface;
 import WNprocess.SomanticRepository;
-import com.sun.istack.internal.logging.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -26,8 +24,6 @@ public class Persistence {
 
     private static boolean saving;
     private static final Object lock = new Object();
-
-    private static Logger logger = Logger.getLogger(Persistence.class);
 
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         File f = new File(Interface.getLibraryFile());
@@ -51,7 +47,6 @@ public class Persistence {
                     out.close();
                     System.err.println("SAVED repo size " + filesize / 1024 + "kB with " + repository.size() + " words");
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, e.getMessage());
                 } finally {
                     saving = false;
                 }
@@ -98,7 +93,6 @@ public class Persistence {
         try {
             pathText = Paths.get(Interface.getGeneratedSentencesFilePath());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
         }
         if (pathText != null) {
             List<String> newline = new ArrayList<>();
@@ -108,20 +102,17 @@ public class Persistence {
                     file.setWritable(true);
                     file.createNewFile();
                 } catch (IOException ex) {
-                    logger.log(Level.SEVERE, ex.getMessage());
                 }
             } else {
                 try {
                     newline.addAll(Files.readAllLines(pathText, encoding));
                 } catch (IOException ex) {
-                    logger.log(Level.SEVERE, ex.getMessage());
                 }
             }
             newline.add(line);
             try {
                 Files.write(pathText, newline, encoding);
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, ex.getMessage());
             }
         }
     }

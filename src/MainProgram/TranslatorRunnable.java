@@ -1,5 +1,6 @@
 package MainProgram;
 
+import somantic.controller.Controller;
 import WNprocess.SomanticFactory;
 import WNprocess.SomanticRepository;
 import WNprocess.SomanticWord;
@@ -22,7 +23,7 @@ public class TranslatorRunnable implements Runnable {
         return translatorRunnablelock;
     }
 
-    TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, SomanticFactory riTaFactory) {
+    public TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, SomanticFactory riTaFactory) {
         this.translateToggle = translateToggle;
         this.communicationBox = communicationBox;
         this.fft = fft;

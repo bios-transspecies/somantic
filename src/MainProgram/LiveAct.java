@@ -1,10 +1,11 @@
 package MainProgram;
 
+import somantic.controller.Controller;
 import Persistence.Persistence;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 
-class LiveAct implements Runnable {
+public class LiveAct implements Runnable {
 
     private final JToggleButton liveToggleButton;
     private final JTextArea communicationBox;
@@ -15,7 +16,7 @@ class LiveAct implements Runnable {
     private int scheduler;
     private final Object liveActLock = new Object();
 
-    LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, int newsCounter, int scheduler) {
+    public LiveAct(JToggleButton liveToggleButton, JTextArea communicationBox, JToggleButton stimulateToggle, JToggleButton translateToggle, Controller controller, int newsCounter, int scheduler) {
         this.liveToggleButton = liveToggleButton;
         this.communicationBox = communicationBox;
         this.stimulateToggle = stimulateToggle;
@@ -53,8 +54,9 @@ class LiveAct implements Runnable {
                 controller.runStimulate();
             }
             controller.liveActSleep(scheduler);
-            if(scheduler>1000 * 30 * 1)
-            scheduler = scheduler / 2;
+            if (scheduler > 1000 * 30 * 1) {
+                scheduler = scheduler / 2;
+            }
         }
         liveToggleButton.setSelected(false);
         stimulateToggle.setSelected(false);

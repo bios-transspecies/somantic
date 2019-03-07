@@ -1,6 +1,7 @@
 package MainProgram;
 
-import static MainProgram.Controller.recording;
+import somantic.controller.Controller;
+import static somantic.controller.Controller.recording;
 import WNprocess.SomanticFactory;
 import WNprocess.WordNetToolbox;
 import java.util.List;
@@ -24,7 +25,7 @@ public class StimulationRunnable implements Runnable {
         return stimulationRunnableLock;
     }
 
-    StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton, JTextArea communicationBox) {
+    public StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton, JTextArea communicationBox) {
         this.somanticFactory = riTaFactory;
         this.stimulateToggle = stimulateToggle;
         this.live = live;
@@ -56,8 +57,8 @@ public class StimulationRunnable implements Runnable {
                             try {
                                 Interface.setSaving(true);
                                 somanticFactory.saveRepo();
-                            }catch(Exception e){
-                                
+                            } catch (Exception e) {
+
                             } finally {
                                 Interface.setSaving(false);
                             }
@@ -77,11 +78,13 @@ public class StimulationRunnable implements Runnable {
 
     private void cutOffFromBuffer(String[] words, int i) {
         Interface.setBufferedText(Interface.getBufferedText().replaceFirst(words[i], "").trim().replace("  ", " "));
-        if(Interface.getBufferedText().charAt(0)=='.')
+        if (Interface.getBufferedText().charAt(0) == '.') {
             Interface.setBufferedText(Interface.getBufferedText().replaceFirst(".", "").trim());
-        if(Interface.getBufferedText().length()>10000)
+        }
+        if (Interface.getBufferedText().length() > 10000) {
             communicationBox.setText(Interface.getBufferedText().substring(0, Interface.getBufferedText().substring(0, 10000).lastIndexOf(".")));
-        else
+        } else {
             communicationBox.setText(Interface.getBufferedText());
+        }
     }
 }
