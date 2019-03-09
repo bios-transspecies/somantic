@@ -328,6 +328,7 @@ public class Controller extends javax.swing.JFrame {
     }
 
     private void translate() {
+        stimulated();
         translateToggle.setText("Translation");
         messages.setText("Translating the affests into words and trying to find some sentences.");
         Interface.setIsVisualising(true);
@@ -361,6 +362,9 @@ public class Controller extends javax.swing.JFrame {
         stimulateToggle.setText("Stimulate");
         if (somanticFactory.getRitaRepo() != null) {
             messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
+            if(Interface.getNeuralNetworkTrainer().getSize()>1){
+                new Thread(()->Interface.getNeuralNetworkTrainer().learn()).start();
+            }
         } else {
             messages.setText("Something went wrong. Library of affects still is empty. Try again!");
         }

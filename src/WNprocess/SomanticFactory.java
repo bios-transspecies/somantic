@@ -77,13 +77,16 @@ public class SomanticFactory {
         }
     }
 
-    public void addAffectToWord(String word, List<Integer> affect) {
+    public Integer addAffectToWord(String word, List<Integer> affect) {
         SomanticAffect s = new SomanticAffect(affect);
         String w = WordNetToolbox.stem(word).get(0);
         SomanticWord riWord = repo.get(w);
         if (riWord != null) {
             riWord.addAffect(s);
+            riWord.addWord(word);
+            return riWord.hashCode();
         }
+        return null;
     }
 
     public SomanticAranger getArranger() {

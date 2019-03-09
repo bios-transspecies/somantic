@@ -4,6 +4,7 @@ import somantic.controller.Controller;
 import static somantic.controller.Controller.recording;
 import WNprocess.SomanticFactory;
 import WNprocess.WordNetToolbox;
+import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ public class StimulationRunnable implements Runnable {
     private final SomanticFactory somanticFactory;
     private final Object stimulationRunnableLock = new Object();
     private final JTextArea communicationBox;
+    private final NeuralNetworkTrainer networkTrainer = Interface.getNeuralNetworkTrainer();
 
     public Object getStimulationRunnableLock() {
         return stimulationRunnableLock;
@@ -47,8 +49,11 @@ public class StimulationRunnable implements Runnable {
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    List<Integer> a = fft.getMatrix();
-                    somanticFactory.addAffectToWord(words[i], a);
+                    List<Integer> affect = fft.getMatrix();
+                    Integer wordId = somanticFactory.addAffectToWord(words[i], affect);
+                    System.out.println(" trying with word: "+words[i]);
+                    if(wordId != null)
+                        networkTrainer.train(affect, wordId);
                 }
                 if (Interface.getSaving() == false) {
                     new Thread(new Runnable() {

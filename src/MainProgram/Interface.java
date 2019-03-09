@@ -3,6 +3,7 @@ package MainProgram;
 import Persistence.Persistence;
 import WNprocess.SomanticFactory;
 import WNprocess.SomanticWord;
+import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class Interface {
     private static Set<SomanticWord> sentence = new HashSet<>();
     private static boolean saving;
     private static String literatureLocation;
+    private static NeuralNetworkTrainer neuralNetworkTrainer = new NeuralNetworkTrainer();
 
     public static String getMessage() {
         return message;
@@ -240,6 +242,10 @@ public class Interface {
 
     public static void setLiteratureLocation(String literatureLocation) {
         Interface.literatureLocation = literatureLocation;
+    }
+
+    public static NeuralNetworkTrainer getNeuralNetworkTrainer() {
+        return neuralNetworkTrainer;
     }
 
 }

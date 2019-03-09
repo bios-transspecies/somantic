@@ -16,15 +16,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.neuroph.core.NeuralNetwork;
 
 public class Persistence {
 
     private static boolean saving;
     private static final Object lock = new Object();
-
+    private static final ExecutorService neuralNetworkSavingThread = Executors.newSingleThreadExecutor();
+    
+    
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         File f = new File(Interface.getLibraryFile());
         if (!f.exists()) {
@@ -115,5 +120,9 @@ public class Persistence {
             } catch (IOException ex) {
             }
         }
+    }
+
+    public static void saveNeuralNetwork(NeuralNetwork neuralNetwork, String PERCEPTRONNNET) {
+        neuralNetworkSavingThread.execute(()-> neuralNetwork.save(PERCEPTRONNNET));   
     }
 }

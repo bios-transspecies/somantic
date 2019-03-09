@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SomanticWord implements Serializable, Comparable<SomanticWord> {
 
@@ -48,9 +47,7 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.lemma);
-        return hash;
+        return Objects.hashCode(this.lemma);
     }
 
     @Override
