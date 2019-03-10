@@ -1,7 +1,7 @@
 package MainProgram;
 
 import Persistence.Persistence;
-import WNprocess.SomanticFactory;
+import WNprocess.SomanticFacade;
 import WNprocess.SomanticWord;
 import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.HashSet;
@@ -13,7 +13,7 @@ public class Interface {
 
     private static String affects = "";
     private static String words = "";
-    private static SomanticWord word = new SomanticWord();
+    private static SomanticWord word = new SomanticWord("");
     private static String state = "";
     private static boolean isSpeaking = false;
     private static boolean isListening = false;
@@ -29,7 +29,7 @@ public class Interface {
     private static String bufferedText;
     private static final String generatedSentencesFilePath = "generated_sentences.txt";
     private static boolean visualisation;
-    private static SomanticFactory ritaFactory;
+    private static SomanticFacade somanticFacade = SomanticFacade.getInstance();
     private static JProgressBar jProgressBar;
     private static Long minimalSimilarity = 0L;
     private static Set<SomanticWord> sentence = new HashSet<>();
@@ -173,14 +173,14 @@ public class Interface {
         return visualisation;
     }
 
-    public static void setSomanticFactory(SomanticFactory riact) {
-        if (ritaFactory == null) {
-            Interface.ritaFactory = riact;
+    public static void setSomanticFactory(SomanticFacade riact) {
+        if (somanticFacade == null) {
+            Interface.somanticFacade = riact;
         }
     }
 
-    public static SomanticFactory getSomanticFactory() {
-        return Interface.ritaFactory;
+    public static SomanticFacade getSomanticFacade() {
+        return Interface.somanticFacade;
     }
 
     public static void setProgressBar(JProgressBar jProgressBar) {

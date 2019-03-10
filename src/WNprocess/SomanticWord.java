@@ -17,7 +17,11 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     private String description;
     private Set<String> tags = new ConcurrentSkipListSet<>();
 
-    public SomanticWord() {
+    private SomanticWord() {
+    }
+
+    public SomanticWord(String lemma) {
+        this.lemma = lemma;
     }
 
     synchronized public Set<String> getPOS() {

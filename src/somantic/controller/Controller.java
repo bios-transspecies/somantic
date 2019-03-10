@@ -8,7 +8,7 @@ import MainProgram.StimulationRunnable;
 import MainProgram.TranslatorRunnable;
 import MainProgram.View;
 import Persistence.Persistence;
-import WNprocess.SomanticFactory;
+import WNprocess.SomanticFacade;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
@@ -25,10 +25,10 @@ public class Controller extends javax.swing.JFrame {
     private int scheduler = (1000 * 30 * 1); // (milisekundy, sekundy, minuty)
     private int newsCounter = 0;
     private final Thread liveActThread;
-    private final SomanticFactory somanticFactory;
+    private final SomanticFacade somanticFactory;
 
     public Controller() {
-        somanticFactory = Interface.getSomanticFactory();
+        somanticFactory = Interface.getSomanticFacade();
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -373,8 +373,8 @@ public class Controller extends javax.swing.JFrame {
         stimulateToggle.setText("Stimulate");
         if (somanticFactory.getSomanticRepo() != null) {
             messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
-            if(Interface.getNeuralNetworkTrainer().getSize()>1){
-                new Thread(()->Interface.getNeuralNetworkTrainer().learn()).start();
+            if (Interface.getNeuralNetworkTrainer().getSize() > 1) {
+                new Thread(() -> Interface.getNeuralNetworkTrainer().learn()).start();
             }
         } else {
             messages.setText("Something went wrong. Library of affects still is empty. Try again!");
@@ -398,6 +398,7 @@ public class Controller extends javax.swing.JFrame {
         Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
         stimulationThread.setPriority(Thread.MIN_PRIORITY);
         stimulationThread.start();
+        Interface.getNeuralNetworkTrainer().useSomanticLibraryToLearn();
     }
 
     private void inputLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputLoginActionPerformed
@@ -454,6 +455,16 @@ public class Controller extends javax.swing.JFrame {
     }
 
     private String normalize(String text) {
-        return text.trim().replace("\n", " ").replace("\r", " ").replace("_", " ").replace("-", " ").replaceAll("[^a-zA-Z0-9\\s\\.]", "").toLowerCase().replaceAll("  ", " ");
+        return text.trim()
+                .replace("\n", " ")
+                .replace("\r", " ")
+                .replace("_", " ")
+                .replace("-", " ")
+                .replaceAll("[^a-zA-Z\\s\\.]", "")
+                .replace(" .", ". ")
+                .replace(". .", ".")
+                .replace("..", ".")
+                .replace(". .", ".")
+                .toLowerCase().replace("  ", " ");
     }
 }

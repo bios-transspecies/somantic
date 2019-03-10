@@ -2,6 +2,7 @@ package Persistence;
 
 import MainProgram.Interface;
 import WNprocess.SomanticRepository;
+import WNprocess.SomanticWord;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -28,8 +30,7 @@ public class Persistence {
     private static boolean saving;
     private static final Object lock = new Object();
     private static final ExecutorService neuralNetworkSavingThread = Executors.newSingleThreadExecutor();
-    
-    
+
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         File f = new File(Interface.getLibraryFile());
         if (!f.exists()) {
@@ -43,7 +44,7 @@ public class Persistence {
                     Path tmpPath = Paths.get("temporary" + new Date().getTime());
                     FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
                     ObjectOutputStream out = new ObjectOutputStream(tmp);
-                    out.writeObject(repository);
+                    out.writeObject(repository.getRepositoryToSave());
                     out.close();
                     Files.deleteIfExists(Paths.get(Interface.getLibraryFile()));
                     Files.copy(tmpPath, Paths.get(Interface.getLibraryFile()));
@@ -62,17 +63,22 @@ public class Persistence {
     }
 
     public static SomanticRepository loadRepository() throws FileNotFoundException, IOException, ClassNotFoundException {
-        SomanticRepository riTaRepo = null;
+        SomanticRepository somanticRepository = Interface.getSomanticFacade().getSomanticRepo();
         File f = new File(Interface.getLibraryFile());
         if (f.exists()) {
             FileInputStream fileIn = new FileInputStream(Interface.getLibraryFile());
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            riTaRepo = (SomanticRepository) in.readObject();
+            if (in != null) {
+                ConcurrentHashMap<String, SomanticWord> repo = (ConcurrentHashMap<String, SomanticWord>) in.readObject();
+                if (repo != null && !repo.isEmpty()) {
+                    somanticRepository.loadRepository(repo);
+                }
+            }
             in.close();
             fileIn.close();
-            System.out.println("loaded repo - number of words: " + riTaRepo.size() + " successfully from file" + Interface.getLibraryFile());
+            System.out.println("loaded repo - number of words: " + somanticRepository.size() + " successfully from file" + Interface.getLibraryFile());
         }
-        return riTaRepo;
+        return somanticRepository;
     }
 
     public static String loadLiteraure(String location) throws IOException {
@@ -123,6 +129,6 @@ public class Persistence {
     }
 
     public static void saveNeuralNetwork(NeuralNetwork neuralNetwork, String PERCEPTRONNNET) {
-        neuralNetworkSavingThread.execute(()-> neuralNetwork.save(PERCEPTRONNNET));   
+        neuralNetworkSavingThread.execute(() -> neuralNetwork.save(PERCEPTRONNNET));
     }
 }

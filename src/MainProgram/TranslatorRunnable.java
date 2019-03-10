@@ -1,11 +1,13 @@
 package MainProgram;
 
 import somantic.controller.Controller;
-import WNprocess.SomanticFactory;
+import WNprocess.SomanticFacade;
 import WNprocess.SomanticRepository;
 import WNprocess.SomanticWord;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
@@ -16,67 +18,88 @@ public class TranslatorRunnable implements Runnable {
     private final JToggleButton translateToggle;
     private final JTextArea communicationBox;
     private final AudioFFT fft;
-    private final SomanticFactory riTaFactory;
+    private final SomanticFacade somanticRepo;
     private final Object translatorRunnablelock = new Object();
 
     public Object getTranslatorRunnablelock() {
         return translatorRunnablelock;
     }
 
-    public TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, SomanticFactory riTaFactory) {
+    public TranslatorRunnable(JToggleButton translateToggle, JTextArea communicationBox, AudioFFT fft, SomanticFacade riTaFactory) {
         this.translateToggle = translateToggle;
         this.communicationBox = communicationBox;
         this.fft = fft;
-        this.riTaFactory = riTaFactory;
+        this.somanticRepo = riTaFactory;
     }
 
     @Override
     public void run() {
         synchronized (translatorRunnablelock) {
+            List<String> skip = new ArrayList<>();
             while (translateToggle.isSelected()) {
                 List<Integer> recentAffects = fft.getMatrix();
-                Long stopienPokrewienstwa;
-                Long stopienPokrewienstwaMin = -0L;
                 if (Interface.getWords().split(" ").length > 15) {
                     Interface.addSentence(Interface.getStringSentence());
                     Interface.setWords(" ");
                 }
                 if (recentAffects.size() > 99) {
-                    SomanticRepository repo = riTaFactory.getSomanticRepo();
+                    long stopienPokrewienstwaMax = 0L;
+                    long stopienPokrewienstwaMin = 0L;
+
                     SomanticWord rezultat = null;
-                    stopienPokrewienstwa = 0L;
-                    for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
-                        if (entry.getValue().getAffects().size() > 0) {
-                            for (List<Integer> affectInRepo : entry.getValue().getAffects()) {
-                                for (int i = 0; i < recentAffects.size(); i++) {
-                                    if (recentAffects.size() > i + 1 && affectInRepo.size() > i + 1) {
-                                        stopienPokrewienstwa = (stopienPokrewienstwa + Math.abs(recentAffects.get(i) - affectInRepo.get(i))) / 2 + stopienPokrewienstwa;
+                    Long neuralResult = Interface.getNeuralNetworkTrainer().ask(recentAffects);
+                    Optional<SomanticWord> opt = somanticRepo.getWordByHashcode(neuralResult);
+                    if (opt.isPresent()) {
+                        rezultat = opt.get();
+                        System.out.println("SUCCESS! neural network had found match! " + rezultat.getWords().size());
+                    } else {
+                        System.err.println("need to train NN - trying algorythmical way...");
+                        SomanticRepository repo = somanticRepo.getSomanticRepo();
+                        for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
+                            long stopienPokrewienstwa = 0L;
+                            if (entry.getValue().getAffects().size() > 0) {
+                                for (List<Integer> affectInRepo : entry.getValue().getAffects()) {
+                                    long last = 0;
+                                    long lastproportions = 1;
+                                    for (int i = 0; i < recentAffects.size(); i++) {
+                                        if (recentAffects.size() > i + 1 && affectInRepo.size() > i + 1) {
+                                            long actual = Math.abs(recentAffects.get(i) - affectInRepo.get(i));
+                                            long actualproportions = last / (actual > 1 ? actual : 1);
+                                            stopienPokrewienstwa = Math.abs(stopienPokrewienstwa + Math.abs(lastproportions - actualproportions) * Math.abs(last - actual)) / 2;
+                                            last = actual;
+                                            lastproportions = actualproportions;
+                                        }
                                     }
                                 }
                             }
-                            if (stopienPokrewienstwa > stopienPokrewienstwaMin) {
+                            if (stopienPokrewienstwa > stopienPokrewienstwaMin
+                                    && !skip.contains(entry.getKey())) {
+                                stopienPokrewienstwaMax = stopienPokrewienstwaMin = Math.abs(stopienPokrewienstwa);
                                 rezultat = entry.getValue();
-                                stopienPokrewienstwaMin = stopienPokrewienstwa + 1;
+                                skip.add(entry.getKey());
+                                System.out.println(rezultat);
                             }
-                            Interface.setMinimalSimilarity(stopienPokrewienstwaMin);
                         }
                     }
 
                     if (rezultat != null) {
+                        stopienPokrewienstwaMin = stopienPokrewienstwaMax;
                         if (rezultat.getWords().iterator().hasNext()) {
+                            Interface.getNeuralNetworkTrainer().addToLearningDataset(recentAffects, rezultat.hashCode());
+                            Interface.getNeuralNetworkTrainer().learn();
                             Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
                             Speaker.start(rezultat.getWords().iterator().next());
                             Interface.setWord(rezultat);
-                            Interface.setSentence(riTaFactory.getArranger().rewrite(Interface.getWords()));
+                            Interface.setSentence(somanticRepo.getArranger().rewrite(Interface.getWords()));
                             communicationBox.setText(Interface.getStringSentence());
                         }
+                        rezultat = null;
                     } else {
-                        stopienPokrewienstwaMin = (999 * stopienPokrewienstwaMin + stopienPokrewienstwa) / 1000;
+                        stopienPokrewienstwaMin--;
                     }
                 }
-
                 try {
-                    translatorRunnablelock.wait(2500);
+                    translatorRunnablelock.wait(1500);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }

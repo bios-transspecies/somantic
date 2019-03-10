@@ -1,9 +1,8 @@
 package MainProgram;
 
-
 import somantic.controller.Controller;
 import MainProgram.Interface;
-import WNprocess.SomanticFactory;
+import WNprocess.SomanticFacade;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            SomanticFactory somanticFactory = new SomanticFactory();
+            SomanticFacade somanticFactory = SomanticFacade.getInstance();
             somanticFactory.loadRepo();
             Interface.setSomanticFactory(somanticFactory);
         } catch (IOException ex) {

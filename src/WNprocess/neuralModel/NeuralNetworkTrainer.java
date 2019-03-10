@@ -3,10 +3,13 @@ package WNprocess.neuralModel;
 import MainProgram.Interface;
 import Persistence.Persistence;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
@@ -42,21 +45,19 @@ public class NeuralNetworkTrainer {
     }
 
     public void useSomanticLibraryToLearn() {
-        Interface.getSomanticFactory()
-                .getSomanticRepo()
-                .entrySet()
-                .forEach( a -> a.getValue()
-                                .getAffects()
-                                .forEach(
-                                        v -> addToLearningDataset(v, a.hashCode())));
-        learn();
+        executor.execute(() -> {
+            Interface.getSomanticFacade()
+                    .getSomanticRepo()
+                    .entrySet()
+                    .forEach(a -> a.getValue()
+                    .getAffects()
+                    .forEach(
+                            v -> addToLearningDataset(v, a.hashCode())));
+        });
     }
 
     private void listenerImpl(LearningEvent e) {
         LearningEvent.Type t = e.getEventType();
-        System.out.println(" listener triggered " + t.name());
-        System.out.println(e.toString());
-        System.out.println(" HURRA! ----------------------- > saving results");
         Persistence.saveNeuralNetwork(neuralNetwork, NEURAL_NETWORK_STORAGE_FILENAME);
     }
 
@@ -65,7 +66,7 @@ public class NeuralNetworkTrainer {
     }
 
     public void addToLearningDataset(List<Integer> a, int hashCode) {
-        addRowToLearningDataset(process(a), hashCode);
+        addRowToLearningDataset(stringify(a), hashCode);
     }
 
     public void stopLearning() {
@@ -82,16 +83,18 @@ public class NeuralNetworkTrainer {
     }
 
     public Long ask(String affect) throws ExecutionException, InterruptedException {
-        return executor.submit(() -> {
-            neuralNetwork.setInput(affectToTrainData(affect));
-            neuralNetwork.calculate();
-            double[] networkOutput = neuralNetwork.getOutput();
-            return new Double(networkOutput[0]).longValue();
-        }).get();
+        stopLearning();
+        System.out.println("asking for: "+ affect);
+        neuralNetwork.setInput(affectToDoubleArray(affect));
+        neuralNetwork.calculate();
+        double[] networkOutput = neuralNetwork.getOutput();
+        Long response = new Double(networkOutput[0]).longValue();
+        System.out.println("response: "+ response);
+        return response;
     }
 
-    private String process(List<Integer> a) {
-        return a.stream()
+    private String stringify(List<Integer> a) {
+        return (new ArrayList<Integer>(a)).stream()
                 .map(b -> String.valueOf(b))
                 .collect(Collectors.joining(","));
     }
@@ -101,21 +104,31 @@ public class NeuralNetworkTrainer {
         executor.execute(() -> {
             System.out.println("preparing");
             System.out.println("somanticWordId " + somanticWordId);
-            double[] affectToTrain = affectToTrainData(affect);
+            double[] affectToTrain = affectToDoubleArray(affect);
             double[] result = new double[1];
             result[0] = somanticWordId.doubleValue();
             trainingSet.addRow(new DataSetRow(affectToTrain, result));
+            lr.learn(trainingSet);
         });
     }
 
-    private double[] affectToTrainData(String affect) {
-        System.out.println("affect " + affect);
+    private double[] affectToDoubleArray(String affect) {
         String[] arrayAffect = affect.split(",");
-        double[] affectToTrain = new double[arrayAffect.length];
+        double[] doublearray = new double[arrayAffect.length];
         for (int i = 0; i < arrayAffect.length; i++) {
-            affectToTrain[i] = Double.parseDouble(arrayAffect[i].trim());
+            doublearray[i] = Double.parseDouble(arrayAffect[i].trim());
         }
-        System.out.println("transformed to affectToTrain size: ");
-        return affectToTrain;
+        return doublearray;
+    }
+
+    public Long ask(List<Integer> recentAffects) {
+        try {
+            return ask(stringify(recentAffects));
+        } catch (ExecutionException ex) {
+            Logger.getLogger(NeuralNetworkTrainer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(NeuralNetworkTrainer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0L;
     }
 }

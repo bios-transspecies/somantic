@@ -10,9 +10,9 @@ import java.util.Set;
 public class SomanticAranger {
 
     List<SomanticWord> riSentence;
-    SomanticFactory ritaFactory;
+    SomanticFacade ritaFactory;
 
-    public SomanticAranger(SomanticFactory riact) {
+    public SomanticAranger(SomanticFacade riact) {
         this.ritaFactory = riact;
     }
 
@@ -21,7 +21,7 @@ public class SomanticAranger {
         sentence = sentence.trim();
         String[] words = sentence.split(" ");
         for (String word : words) {
-            SomanticWord x = ritaFactory.getOrCreateWord(word);
+            SomanticWord x = ritaFactory.getOrCreateWord(word, null);
             if (x != null) {
                 riSentence.add(x);
             }
@@ -39,33 +39,9 @@ public class SomanticAranger {
         Set<SomanticWord> tmpReSentence = new HashSet<>();
         List<Set<SomanticWord>> tmpReSentences = new ArrayList<>();
         for (int wariant = 0; wariant < riSentence.size(); wariant++) {
-            for (int i = wariant; i < riSentence.size() + wariant; i++) {
-                int index = i % riSentence.size();
-                tmpReSentence.add(riSentence.get(index));
-                for (int j = 0; j < riSentence.size(); j++) {
-                    if (i != j && riSentence.get(j) != null) {
-                        Set<SomanticWord> next = riSentence.get(index).getNext();
-                        for (SomanticWord nextRiTaWord : next) {
-                            if ((nextRiTaWord.getPOS() == null ? riSentence.get(index).getPOS() == null : nextRiTaWord.getPOS().equals(riSentence.get(index).getPOS())) && !tmpReSentence.contains(riSentence.get(j))) {
-                                SomanticWord slowo = riSentence.get(j);
-                                if (slowo != null && !tmpReSentence.contains(slowo)) {
-                                    tmpReSentence.add(riSentence.get(j));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // selecting most complex sentence
+            wariantsProcessor(wariant, tmpReSentence);
             Boolean add = true;
-            if (!tmpReSentences.contains(tmpReSentence)) {
-                for (Set<SomanticWord> tmpReSentence1 : tmpReSentences) {
-                    if (add) {
-                        add = tmpReSentence.size() > tmpReSentence1.size() && tmpReSentence.size() < 3;
-                    }
-                }
-            }
+            add = mostComplexSentence(tmpReSentences, tmpReSentence, add);
             if (add) {
                 tmpReSentences.add(tmpReSentence);
             }
@@ -75,6 +51,41 @@ public class SomanticAranger {
             return knownGrammarStructures(tmpReSentences.get(tmpReSentences.size() - 1));
         } catch (Exception e) {
             return r;
+        }
+    }
+
+    private Boolean mostComplexSentence(List<Set<SomanticWord>> tmpReSentences, Set<SomanticWord> tmpReSentence, Boolean add) {
+        if (!tmpReSentences.contains(tmpReSentence)) {
+            for (Set<SomanticWord> tmpReSentence1 : tmpReSentences) {
+                if (add) {
+                    add = tmpReSentence.size() > tmpReSentence1.size() && tmpReSentence.size() < 3;
+                }
+            }
+        }
+        return add;
+    }
+
+    private void wariantsProcessor(int wariant, Set<SomanticWord> tmpReSentence) {
+        for (int i = wariant; i < riSentence.size() + wariant; i++) {
+            int index = i % riSentence.size();
+            tmpReSentence.add(riSentence.get(index));
+            for (int j = 0; j < riSentence.size(); j++) {
+                if (i != j && riSentence.get(j) != null) {
+                    Set<SomanticWord> next = riSentence.get(index).getNext();
+                    processSomanticWords(next, index, tmpReSentence, j);
+                }
+            }
+        }
+    }
+
+    private void processSomanticWords(Set<SomanticWord> next, int index, Set<SomanticWord> tmpReSentence, int j) {
+        for (SomanticWord nextRiTaWord : next) {
+            if ((nextRiTaWord.getPOS() == null ? riSentence.get(index).getPOS() == null : nextRiTaWord.getPOS().equals(riSentence.get(index).getPOS())) && !tmpReSentence.contains(riSentence.get(j))) {
+                SomanticWord slowo = riSentence.get(j);
+                if (slowo != null && !tmpReSentence.contains(slowo)) {
+                    tmpReSentence.add(riSentence.get(j));
+                }
+            }
         }
     }
 

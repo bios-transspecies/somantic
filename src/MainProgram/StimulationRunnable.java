@@ -2,7 +2,7 @@ package MainProgram;
 
 import somantic.controller.Controller;
 import static somantic.controller.Controller.recording;
-import WNprocess.SomanticFactory;
+import WNprocess.SomanticFacade;
 import WNprocess.WordNetToolbox;
 import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.List;
@@ -18,7 +18,7 @@ public class StimulationRunnable implements Runnable {
     private final Thread live;
     private final AudioFFT fft;
     private final JToggleButton liveToggleButton;
-    private final SomanticFactory somanticFactory;
+    private final SomanticFacade somanticFactory;
     private final Object stimulationRunnableLock = new Object();
     private final JTextArea communicationBox;
     private final NeuralNetworkTrainer networkTrainer = Interface.getNeuralNetworkTrainer();
@@ -27,7 +27,7 @@ public class StimulationRunnable implements Runnable {
         return stimulationRunnableLock;
     }
 
-    public StimulationRunnable(SomanticFactory riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton, JTextArea communicationBox) {
+    public StimulationRunnable(SomanticFacade riTaFactory, JToggleButton stimulateToggle, Thread live, AudioFFT fft, JToggleButton liveToggleButton, JTextArea communicationBox) {
         this.somanticFactory = riTaFactory;
         this.stimulateToggle = stimulateToggle;
         this.live = live;
@@ -43,7 +43,7 @@ public class StimulationRunnable implements Runnable {
                 cutOffFromBuffer(words, i);
                 Speaker.start(words[i]);
                 if (!WordNetToolbox.explain(words[i]).isEmpty()) {
-                    Interface.setWord(somanticFactory.getOrCreateWord(words[i]));
+                    Interface.setWord(somanticFactory.getOrCreateWord(words[i], null));
                     try {
                         stimulationRunnableLock.wait(2500);
                     } catch (InterruptedException ex) {
@@ -51,9 +51,9 @@ public class StimulationRunnable implements Runnable {
                     }
                     List<Integer> affect = fft.getMatrix();
                     Integer wordId = somanticFactory.addAffectToWord(words[i], affect);
-                    System.out.println(" trying with word: "+words[i]);
-                    if(wordId != null)
+                    if (wordId != null) {
                         networkTrainer.addToLearningDataset(affect, wordId);
+                    }
                 }
                 if (Interface.getSaving() == false) {
                     new Thread(new Runnable() {
