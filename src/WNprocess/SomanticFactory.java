@@ -16,7 +16,7 @@ public class SomanticFactory {
         repo = SomanticRepository.getInstance();
     }
 
-    public SomanticRepository getRitaRepo() {
+    public SomanticRepository getSomanticRepo() {
         return repo;
     }
 

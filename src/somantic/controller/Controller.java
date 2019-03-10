@@ -73,7 +73,7 @@ public class Controller extends javax.swing.JFrame {
             }
             if (translateToggle.isSelected()) {
                 messages.setText("Please stop the translation process first!");
-            } else if (somanticFactory.getRitaRepo() == null) {
+            } else if (somanticFactory.getSomanticRepo() == null) {
                 messages.setBackground(Color.red);
                 messages.setText("Repossitory is empty. Could not be loaded. Please just try again.");
             } else if (!error) {
@@ -105,6 +105,7 @@ public class Controller extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         messages = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -198,6 +199,13 @@ public class Controller extends javax.swing.JFrame {
                 .addGap(0, 6, Short.MAX_VALUE))
         );
 
+        jButton1.setText("meditation");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -212,7 +220,9 @@ public class Controller extends javax.swing.JFrame {
                                 .addComponent(fileManagerToggle)
                                 .addGap(46, 46, 46)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(108, 108, 108)
+                                .addGap(25, 25, 25)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(liveToggleButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonLoginPassword)
@@ -246,7 +256,8 @@ public class Controller extends javax.swing.JFrame {
                     .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileManagerToggle)
                     .addComponent(liveToggleButton)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -360,7 +371,7 @@ public class Controller extends javax.swing.JFrame {
 
     private void stimulated() {
         stimulateToggle.setText("Stimulate");
-        if (somanticFactory.getRitaRepo() != null) {
+        if (somanticFactory.getSomanticRepo() != null) {
             messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
             if(Interface.getNeuralNetworkTrainer().getSize()>1){
                 new Thread(()->Interface.getNeuralNetworkTrainer().learn()).start();
@@ -398,12 +409,17 @@ public class Controller extends javax.swing.JFrame {
         Interface.setLogin(inputLogin.getText());
     }//GEN-LAST:event_loginActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Interface.getNeuralNetworkTrainer().useSomanticLibraryToLearn();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonLoginPassword;
     private static javax.swing.JTextArea communicationBox;
     private javax.swing.JToggleButton fileManagerToggle;
     private javax.swing.JTextField inputLogin;
     private javax.swing.JPasswordField inputPassword;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

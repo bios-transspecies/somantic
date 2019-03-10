@@ -42,7 +42,7 @@ public class TranslatorRunnable implements Runnable {
                     Interface.setWords(" ");
                 }
                 if (recentAffects.size() > 99) {
-                    SomanticRepository repo = riTaFactory.getRitaRepo();
+                    SomanticRepository repo = riTaFactory.getSomanticRepo();
                     SomanticWord rezultat = null;
                     stopienPokrewienstwa = 0L;
                     for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
