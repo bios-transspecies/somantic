@@ -1,5 +1,6 @@
 package WNprocess.neuralModel;
 
+import MainProgram.Interface;
 import Persistence.Persistence;
 import java.io.File;
 import java.util.List;
@@ -28,7 +29,7 @@ public class NeuralNetworkTrainer {
     public NeuralNetworkTrainer() {
         if (new File(NEURAL_NETWORK_STORAGE_FILENAME).exists()) {
             neuralNetwork = NeuralNetwork.createFromFile(NEURAL_NETWORK_STORAGE_FILENAME);
-            System.out.println("loading neural network from file: "+NEURAL_NETWORK_STORAGE_FILENAME);
+            System.out.println("loading neural network from file: " + NEURAL_NETWORK_STORAGE_FILENAME);
         } else {
             neuralNetwork = new SupervisedHebbianNetwork(100, 1, TransferFunctionType.STEP);
             neuralNetwork.randomizeWeights();
@@ -38,6 +39,17 @@ public class NeuralNetworkTrainer {
         lr = neuralNetwork.getLearningRule();
         lr.addListener(listener);
         executor = Executors.newSingleThreadExecutor();
+    }
+
+    public void useSomanticLibraryToLearn() {
+        Interface.getSomanticFactory()
+                .getSomanticRepo()
+                .entrySet()
+                .forEach( a -> a.getValue()
+                                .getAffects()
+                                .forEach(
+                                        v -> addToLearningDataset(v, a.hashCode())));
+        learn();
     }
 
     private void listenerImpl(LearningEvent e) {
@@ -53,12 +65,13 @@ public class NeuralNetworkTrainer {
     }
 
     public void addToLearningDataset(List<Integer> a, int hashCode) {
-        addRowToLearningDataset( process(a), hashCode );
+        addRowToLearningDataset(process(a), hashCode);
     }
 
     public void stopLearning() {
-        if(!lr.isStopped())
+        if (!lr.isStopped()) {
             lr.stopLearning();
+        }
     }
 
     public void learn() {
