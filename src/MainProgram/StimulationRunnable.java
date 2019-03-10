@@ -53,7 +53,7 @@ public class StimulationRunnable implements Runnable {
                     Integer wordId = somanticFactory.addAffectToWord(words[i], affect);
                     System.out.println(" trying with word: "+words[i]);
                     if(wordId != null)
-                        networkTrainer.train(affect, wordId);
+                        networkTrainer.addToLearningDataset(affect, wordId);
                 }
                 if (Interface.getSaving() == false) {
                     new Thread(new Runnable() {
