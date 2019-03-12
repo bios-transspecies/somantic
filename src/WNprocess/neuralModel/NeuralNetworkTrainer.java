@@ -17,7 +17,7 @@ import org.neuroph.core.data.DataSetRow;
 import org.neuroph.core.events.LearningEvent;
 import org.neuroph.core.events.LearningEventListener;
 import org.neuroph.core.learning.LearningRule;
-import org.neuroph.nnet.SupervisedHebbianNetwork;
+import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.util.TransferFunctionType;
 
 public class NeuralNetworkTrainer {
@@ -34,7 +34,7 @@ public class NeuralNetworkTrainer {
             neuralNetwork = NeuralNetwork.createFromFile(NEURAL_NETWORK_STORAGE_FILENAME);
             System.out.println("loading neural network from file: " + NEURAL_NETWORK_STORAGE_FILENAME);
         } else {
-            neuralNetwork = new SupervisedHebbianNetwork(100, 1, TransferFunctionType.STEP);
+            neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.TANH, 100, 50, 3, 1);
             neuralNetwork.randomizeWeights();
             System.out.println(" ---------> NEW instance of neural network created - no storage found!");
         }
@@ -52,12 +52,17 @@ public class NeuralNetworkTrainer {
                     .forEach(a -> a.getValue()
                     .getAffects()
                     .forEach(
-                            v -> addToLearningDataset(v, a.hashCode())));
+                            v -> {
+                                addToLearningDataset(v, a.hashCode());
+                                learn();
+                            }
+                    ));
         });
     }
 
     private void listenerImpl(LearningEvent e) {
         LearningEvent.Type t = e.getEventType();
+       // Interface.setMessage("Neural Network state: "+t.name());
         Persistence.saveNeuralNetwork(neuralNetwork, NEURAL_NETWORK_STORAGE_FILENAME);
     }
 
@@ -84,12 +89,12 @@ public class NeuralNetworkTrainer {
 
     public Long ask(String affect) throws ExecutionException, InterruptedException {
         stopLearning();
-        System.out.println("asking for: "+ affect);
+        Interface.setMessage("asking for: " + affect);
         neuralNetwork.setInput(affectToDoubleArray(affect));
         neuralNetwork.calculate();
         double[] networkOutput = neuralNetwork.getOutput();
         Long response = new Double(networkOutput[0]).longValue();
-        System.out.println("response: "+ response);
+        Interface.setMessage("response: " + response);
         return response;
     }
 
@@ -102,8 +107,6 @@ public class NeuralNetworkTrainer {
     private void addRowToLearningDataset(String affect, Integer somanticWordId) {
         stopLearning();
         executor.execute(() -> {
-            System.out.println("preparing");
-            System.out.println("somanticWordId " + somanticWordId);
             double[] affectToTrain = affectToDoubleArray(affect);
             double[] result = new double[1];
             result[0] = somanticWordId.doubleValue();

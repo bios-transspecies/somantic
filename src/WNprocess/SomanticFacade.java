@@ -1,5 +1,6 @@
 package WNprocess;
 
+import WNprocess.neuralModel.wordnet.WordNetToolbox;
 import Persistence.Persistence;
 import edu.mit.jwi.item.IWord;
 import java.io.FileNotFoundException;

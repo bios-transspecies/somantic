@@ -3,7 +3,7 @@ package MainProgram;
 import somantic.controller.Controller;
 import static somantic.controller.Controller.recording;
 import WNprocess.SomanticFacade;
-import WNprocess.WordNetToolbox;
+import WNprocess.neuralModel.wordnet.WordNetToolbox;
 import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,11 +48,13 @@ public class StimulationRunnable implements Runnable {
                         stimulationRunnableLock.wait(2500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                        Interface.setMessage(ex.getMessage());
                     }
                     List<Integer> affect = fft.getMatrix();
                     Integer wordId = somanticFactory.addAffectToWord(words[i], affect);
                     if (wordId != null) {
                         networkTrainer.addToLearningDataset(affect, wordId);
+                        networkTrainer.learn();
                     }
                 }
                 if (Interface.getSaving() == false) {
@@ -63,7 +65,7 @@ public class StimulationRunnable implements Runnable {
                                 Interface.setSaving(true);
                                 somanticFactory.saveRepo();
                             } catch (Exception e) {
-
+                                Interface.setMessage(e.getMessage());
                             } finally {
                                 Interface.setSaving(false);
                             }
@@ -75,7 +77,7 @@ public class StimulationRunnable implements Runnable {
                 try {
                     live.notify();
                 } catch (Exception ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+                    Interface.setMessage(ex.getMessage());
                 }
             }
         }
@@ -83,7 +85,7 @@ public class StimulationRunnable implements Runnable {
 
     private void cutOffFromBuffer(String[] words, int i) {
         Interface.setBufferedText(Interface.getBufferedText().replaceFirst(words[i], "").trim().replace("  ", " "));
-        if (Interface.getBufferedText().charAt(0) == '.') {
+        if (Interface.getBufferedText().length()>0 && Interface.getBufferedText().charAt(0) == '.') {
             Interface.setBufferedText(Interface.getBufferedText().replaceFirst(".", "").trim());
         }
         if (Interface.getBufferedText().length() > 10000) {

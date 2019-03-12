@@ -89,6 +89,8 @@ public class Controller extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jocAction1 = new com.xzq.osc.JocAction();
+        jocAction2 = new com.xzq.osc.JocAction();
         jPanel1 = new javax.swing.JPanel();
         buttonLoginPassword = new javax.swing.JButton();
         inputLogin = new javax.swing.JTextField();
@@ -430,6 +432,8 @@ public class Controller extends javax.swing.JFrame {
     public static javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private com.xzq.osc.JocAction jocAction1;
+    private com.xzq.osc.JocAction jocAction2;
     private javax.swing.JToggleButton liveToggleButton;
     private javax.swing.JLabel messages;
     private javax.swing.JToggleButton stimulateToggle;

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.JProgressBar;
+import somantic.controller.Controller;
 
 public class Interface {
 
@@ -36,12 +37,15 @@ public class Interface {
     private static boolean saving;
     private static String literatureLocation;
     private static NeuralNetworkTrainer neuralNetworkTrainer = new NeuralNetworkTrainer();
+    private static Controller subscriber;
 
     public static String getMessage() {
         return message;
     }
 
     public static void setMessage(String message) {
+        if(subscriber!=null)
+            subscriber.setMessage(message);
         Interface.message = message;
     }
 
@@ -246,6 +250,10 @@ public class Interface {
 
     public static NeuralNetworkTrainer getNeuralNetworkTrainer() {
         return neuralNetworkTrainer;
+    }
+
+    public static void subscribeMessages(Controller aThis) {
+        subscriber = aThis;
     }
 
 }

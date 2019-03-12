@@ -1,4 +1,4 @@
-package WNprocess;
+package WNprocess.neuralModel.wordnet;
 
 import edu.mit.jwi.*;
 import edu.mit.jwi.item.IIndexWord;

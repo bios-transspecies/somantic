@@ -51,9 +51,9 @@ public class TranslatorRunnable implements Runnable {
                     Optional<SomanticWord> opt = somanticRepo.getWordByHashcode(neuralResult);
                     if (opt.isPresent()) {
                         rezultat = opt.get();
-                        System.out.println("SUCCESS! neural network had found match! " + rezultat.getWords().size());
+                        Interface.setMessage(SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH);
                     } else {
-                        System.err.println("need to train NN - trying algorythmical way...");
+                        Interface.setMessage(NEED_TO_TRAIN_NN__TRYING_ALGORYTHMICAL_WA);
                         SomanticRepository repo = somanticRepo.getSomanticRepo();
                         for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
                             long stopienPokrewienstwa = 0L;
@@ -77,7 +77,6 @@ public class TranslatorRunnable implements Runnable {
                                 stopienPokrewienstwaMax = stopienPokrewienstwaMin = Math.abs(stopienPokrewienstwa);
                                 rezultat = entry.getValue();
                                 skip.add(entry.getKey());
-                                System.out.println(rezultat);
                             }
                         }
                     }
@@ -106,4 +105,6 @@ public class TranslatorRunnable implements Runnable {
             }
         }
     }
+    private static final String NEED_TO_TRAIN_NN__TRYING_ALGORYTHMICAL_WA = "we need to train your Neuro Network - finding right word in algorythmical way... and supervising NN";
+    private static final String SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH = "SUCCESS! neural network had found match!";
 }

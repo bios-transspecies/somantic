@@ -78,7 +78,8 @@ public class View {
                 gc.setFill(Color.WHITE);
                 gc.fillText("state: " + Interface.getState(), 100, 100);
                 gc.setFont(Font.font("Tahoma", w / 30));
-                gc.fillText(Interface.getWord().toString(), w / 4, h / 3);
+                if(Interface.getWord()!=null)
+                    gc.fillText(Interface.getWord().toString(), w / 4, h / 3);
                 gc.setFont(Font.font("Arial", w / 100));
                 gc.fillText(Interface.getWord().getDescription(), w / 4, (h / 3) + 30);
                 String[] sentences = Interface.getSentences().split(" <br> ");
