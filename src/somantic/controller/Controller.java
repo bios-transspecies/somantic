@@ -37,7 +37,7 @@ public class Controller extends javax.swing.JFrame {
         });
         jPanel1.setAutoscrolls(false);
         jPanel1.setSize(300, 350);
-        fileManagerToggle.setText("file manager");
+        fileManagerToggle.setText("load .txt or .pdf");
         listen();
         view = new View();
         view.start(fft);
@@ -47,6 +47,7 @@ public class Controller extends javax.swing.JFrame {
         liveActThread.setPriority(Thread.MIN_PRIORITY);
         Interface.setBufferedText(communicationBox.getText());
         Interface.setProgressBar(jProgressBar1);
+        Interface.subscribeMessages(this);
     }
 
     private void listen() {
@@ -158,6 +159,7 @@ public class Controller extends javax.swing.JFrame {
         });
 
         fileManagerToggle.setText("hide file manager");
+        fileManagerToggle.setToolTipText("");
         fileManagerToggle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fileManagerToggleActionPerformed(evt);
@@ -389,10 +391,10 @@ public class Controller extends javax.swing.JFrame {
         Interface.setState("Stimulate");
         recording = true;
         Interface.setIsVisualising(visualiseToggle.isSelected());
-        Interface.setBufferedText(communicationBox.getText());
+        Interface.setBufferedText(normalize(communicationBox.getText()));
         new Thread(() -> {
-            communicationBox.setText(Interface.getBufferedText());
-            somanticFactory.addTextToRepo(Interface.getBufferedText());
+            communicationBox.setText(normalize(Interface.getBufferedText()));
+            somanticFactory.addTextToRepo(normalize(Interface.getBufferedText()));
         }).start();
         StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton, communicationBox);
         Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
@@ -452,6 +454,10 @@ public class Controller extends javax.swing.JFrame {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public void setMessage(String message){
+        this.messages.setText(message);
     }
 
     private String normalize(String text) {
