@@ -156,7 +156,7 @@ public class Persistence {
         if (!savingNN) {
             savingNN = true;
             savingThread.execute(() -> {
-                Interface.setMessage(" saving Neural Network ");
+                //Interface.setMessage(" saving Neural Network ");
                 try {
                     Path tmpPath = Paths.get(ZonedDateTime.now().toLocalDate() + "_" + PERCEPTRONNNET);
                     Files.deleteIfExists(tmpPath);
@@ -164,7 +164,7 @@ public class Persistence {
                     Files.deleteIfExists(Paths.get(PERCEPTRONNNET));
                     Files.copy(tmpPath, Paths.get(PERCEPTRONNNET));
                     Files.deleteIfExists(tmpPath);
-                    Interface.setMessage(" saved Neural Network successfully!");
+                    //Interface.setMessage(" saved Neural Network successfully!");
                 } catch (IOException ex) {
                     Interface.setMessage(ex.getMessage());
                 } finally{

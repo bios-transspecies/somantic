@@ -7,6 +7,7 @@ import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import somantic.controller.Controller;
 
@@ -38,6 +39,7 @@ public class Interface {
     private static String literatureLocation;
     private static NeuralNetworkTrainer neuralNetworkTrainer = new NeuralNetworkTrainer();
     private static Controller subscriber;
+    private static JLabel nnStateLabel;
 
     public static String getMessage() {
         return message;
@@ -254,6 +256,14 @@ public class Interface {
 
     public static void subscribeMessages(Controller aThis) {
         subscriber = aThis;
+    }
+
+    public static void setNnStateLabel(JLabel l) {
+        nnStateLabel = l;
+    }
+
+    public static JLabel getNnStateLabel() {
+        return nnStateLabel;
     }
 
 }

@@ -107,6 +107,7 @@ public class SomanticFacade {
         if (riWord != null) {
             riWord.addAffect(s);
             riWord.addWord(word);
+            System.out.println(riWord.hashCode());
             return riWord.hashCode();
         }
         return null;
