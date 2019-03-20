@@ -21,6 +21,7 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     private Set<SomanticAffect> affects = new ConcurrentSkipListSet<>();
     private String description;
     private Set<String> tags = new ConcurrentSkipListSet<>();
+    private static volatile int lastKnownIndex;
 
     public SomanticWord(String lemma) {
         this.lemma = lemma;
@@ -86,9 +87,9 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
         int hc = Math.abs(hashCode() % MAX_WORDS_IN_REPOSITORY);
         if(placedIdInStore(hc))
             return hc;
-        for (int i = 0; i < MAX_WORDS_IN_REPOSITORY; i++) {
+        for (int i = ++lastKnownIndex; i < MAX_WORDS_IN_REPOSITORY; i++) {
             if(placedIdInStore(i))
-                return i;
+                return lastKnownIndex = i;
             System.out.println("------------->>>>>>>>>INDEX>>>>>" + i);
             System.out.println("------------->>>>>>>>MAX_WORDS_IN_REPOSITORY>>>>>>>>>>" + MAX_WORDS_IN_REPOSITORY);
         }
