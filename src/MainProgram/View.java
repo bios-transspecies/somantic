@@ -64,10 +64,10 @@ public class View {
                     GraphicsContext gc = canvas.getGraphicsContext2D();
                     gc.setFill(Color.BLACK);
                     gc.setGlobalAlpha(0.20);
-                    gc.setStroke(Color.ALICEBLUE);
+                    gc.setStroke(Color.WHITE);
                     root.getChildren().add(canvas);
 
-                    //graphicsLineDrawer(arrayOfAffects, w, h, gc);
+                    graphicsLineDrawer(arrayOfAffects, w, h, gc);
                     textWriter(gc, w, h, arrayOfAffects);
 
                     gc.restore();
@@ -75,29 +75,33 @@ public class View {
             }
 
             private void textWriter(GraphicsContext gc, int w, int h, ArrayList<Integer> arrayOfAffects) {
+                gc.setGlobalAlpha(0.80);
                 gc.setFill(Color.WHITE);
                 gc.fillText("state: " + Interface.getState(), 100, 100);
-                gc.setFont(Font.font("Tahoma", w / 30));
-                if(Interface.getWord()!=null)
+                gc.setFont(Font.font("Impact", w / 30));
+                if (Interface.getWord() != null) {
                     gc.fillText(Interface.getWord().toString(), w / 4, h / 3);
-                gc.setFont(Font.font("Arial", w / 100));
-                gc.fillText(Interface.getWord().getDescription(), w / 4, (h / 3) + 30);
-                String[] sentences = Interface.getSentences().split(" <br> ");
-                int line = 40;
-                for (String sentence : sentences) {
-                    line = line + 12;
-                    if (!sentence.isEmpty()) {
-                        gc.fillText(sentence, w / 10, (h / 3) + line, w - w / 10);
+                    gc.setFont(Font.font("Arial", w / 100));
+                    gc.fillText(Interface.getWord().getDescription(), w / 4, (h / 3) + 30);
+                    String[] sentences = Interface.getSentences().split(" <br> ");
+                    gc.setGlobalAlpha(0.20);
+                    int line = 40;
+                    for (String sentence : sentences) {
+                        line = line + 12;
+                        if (!sentence.isEmpty()) {
+                            gc.fillText(sentence, w / 10, (h / 3) + line, w - w / 10);
+                        }
+                    }
+                    gc.fillText("words: " + Interface.getWords().toLowerCase().toLowerCase(), 100, 120);
+                    gc.fillText("sentence: " + Interface.getStringSentence().toLowerCase(), 100, 140);
+                    if (Interface.getWords().length() > 200) {
+                        Interface.setWords(" ");
                     }
                 }
-                gc.fillText("words: " + Interface.getWords().toLowerCase().toLowerCase(), 100, 120);
-                gc.fillText("sentence: " + Interface.getStringSentence().toLowerCase(), 100, 140);
-//                if (Interface.getWords().length() > 200) {
-//                    Interface.setWords(" ");
-//                }
             }
 
             private void graphicsLineDrawer(ArrayList<Integer> arrayOfAffects, int w, int h, GraphicsContext gc) {
+                gc.setGlobalAlpha(0.20);
                 if (arrayOfAffects.size() > 0) {
                     for (int i = 0; arrayOfAffects.size() < i; i++) {
                         arrayOfAffectsArch.add(i,

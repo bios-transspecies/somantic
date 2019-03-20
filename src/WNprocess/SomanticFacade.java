@@ -30,11 +30,8 @@ public class SomanticFacade {
         return SomanticRepository.getInstance();
     }
 
-    public void makeWord() {
-
-    }
-
     public SomanticWord getOrCreateWord(String word, IWord oprionalIword) {
+        word = word.toLowerCase();
         SomanticWord sw = repo.get(word);
         if (sw == null) {
             IWord iWord = oprionalIword == null ? getIword(word) : oprionalIword;
@@ -71,6 +68,7 @@ public class SomanticFacade {
                 setContext(word, tagged, i, previous, sentence);
             } else if (words[i].contains(".") || words[i].contains("?") || words[i].contains("!") || words[i].contains(";")) {
                 for (SomanticWord somanticWord : sentence) {
+                    if(somanticWord!=null)
                     somanticWord.addSentence(sentence);
                 }
                 sentence = new SomanticSentence();
@@ -95,11 +93,12 @@ public class SomanticFacade {
     }
 
     private IWord getIword(String word) {
-        IWord iWord = WordNetToolbox.stringToIWord(word);
+        IWord iWord = WordNetToolbox.stringToIWord(word.toLowerCase());
         return iWord;
     }
 
     public Integer addAffectToWord(String word, List<Integer> affect) {
+        word = word.toLowerCase();
         SomanticAffect s = new SomanticAffect(affect);
         String w = WordNetToolbox.stem(word).get(0);
         SomanticWord riWord = repo.get(w);
@@ -107,8 +106,7 @@ public class SomanticFacade {
         if (riWord != null) {
             riWord.addAffect(s);
             riWord.addWord(word);
-            System.out.println(riWord.hashCode());
-            return riWord.hashCode();
+            return riWord.getId();
         }
         return null;
     }
@@ -120,12 +118,13 @@ public class SomanticFacade {
         return arranger;
     }
 
-    public Optional<SomanticWord> getWordByHashcode(Long hashcode) {
+    public SomanticWord getWordById(Integer id) {
+        if(id==null) return null;
         return repo.entrySet().stream()
                 .map(s -> s.getValue())
                 .filter(
-                        (s) -> s.hashCode() == hashcode
+                        (s) -> s.getId() == id
                         && s.getLemma().trim().length() > 0)
-                .findFirst();
+                .findFirst().orElseGet(()->null);
     }
 }

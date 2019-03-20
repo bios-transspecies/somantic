@@ -1,9 +1,11 @@
 package WNprocess.neuralModel;
 
+import static MainProgram.Main.MAX_WORDS_IN_REPOSITORY;
 import MainProgram.Interface;
 import Persistence.Persistence;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -26,23 +28,25 @@ import org.neuroph.util.TransferFunctionType;
 
 public class NeuralNetworkTrainer {
 
-    private final MultiLayerPerceptron neuralNetwork;
     private static final String NEURAL_NETWORK_STORAGE_FILENAME = "neuralnetwork_state.nnet";
-    private final DataSet trainingSet = new DataSet(100, 1);
+    private volatile MultiLayerPerceptron neuralNetwork;
+    private volatile BackPropagation backPropagation;
+    private volatile DataSet trainingSet = new DataSet(100, 1);
     private final LearningEventListener listener;
     private final ExecutorService trainExecutor;
     private final AtomicBoolean busy = new AtomicBoolean();
-    private ExecutorService askExecutor;
-    private final BackPropagation backPropagation;
+    private final ExecutorService askExecutor;
 
     public NeuralNetworkTrainer() {
         if (new File(NEURAL_NETWORK_STORAGE_FILENAME).exists()) {
-            neuralNetwork = (MultiLayerPerceptron) NeuralNetwork.createFromFile(NEURAL_NETWORK_STORAGE_FILENAME);
             System.out.println("loading neural network from file: " + NEURAL_NETWORK_STORAGE_FILENAME);
+            neuralNetwork = (MultiLayerPerceptron) NeuralNetwork.createFromFile(NEURAL_NETWORK_STORAGE_FILENAME);
         } else {
-            neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.GAUSSIAN, 100, 100, 50, 10, 1);
-            neuralNetwork.randomizeWeights();
             System.out.println(" ---------> NEW instance of neural network created - no storage found!");
+            neuralNetwork = new MultiLayerPerceptron(
+                    TransferFunctionType.GAUSSIAN, 100, 10, 50, MAX_WORDS_IN_REPOSITORY);
+            neuralNetwork.randomizeWeights();
+            System.out.println("MAX_WORDS_IN_REPOSITORY: "+ MAX_WORDS_IN_REPOSITORY);
         }
         listener = (e) -> listener(e);
         backPropagation = (BackPropagation) neuralNetwork.getLearningRule();
@@ -84,7 +88,9 @@ public class NeuralNetworkTrainer {
             setText("stopping");
             neuralNetwork.stopLearning();
             backPropagation.stopLearning();
+            trainingSet.clear();
             trainExecutor.awaitTermination(2, TimeUnit.SECONDS);
+            askExecutor.awaitTermination(2, TimeUnit.SECONDS);
             Persistence.saveNeuralNetwork(neuralNetwork, NEURAL_NETWORK_STORAGE_FILENAME);
         } catch (InterruptedException ex) {
             setText(ex.getMessage());
@@ -105,28 +111,36 @@ public class NeuralNetworkTrainer {
         }
     }
 
-    public Long ask(String affect) throws ExecutionException, InterruptedException {
+    public Integer ask(String affect) throws ExecutionException, InterruptedException {
         setText("ask");
         stopLearning();
         return askExecutor.submit(() -> {
-            setText(" [asking] ");
+            setText("asking");
             Interface.getNnStateLabel().setText("");
             Interface.setMessage("asking for: " + affect);
             neuralNetwork.setInput(stringToDoubleArray(affect));
             neuralNetwork.calculate();
-            double[] networkOutput = neuralNetwork.getOutput();
-            Double output = ((networkOutput[0] - 1) * Integer.MAX_VALUE) % Integer.MAX_VALUE;
-            setText(" [output: " + output + "] ");
-            Long response = output.longValue();
-            Interface.setMessage("found response: " + response);
-            setText("[response: " + response.toString() + "]");
-            return response;
+            Integer result = findWordId(neuralNetwork.getOutput());
+            Interface.setMessage("found response: " + result);
+            setText("response: " + result.toString());
+            return result;
         }).get();
+    }
+
+    private Integer findWordId(double[] networkOutput) {
+        Integer result = null;
+        double lastvalue = Integer.MIN_VALUE;
+        for (int i = 0; i < networkOutput.length; i++) {
+            boolean yes = networkOutput[i] > lastvalue;
+            result = yes ? i : result;
+            lastvalue = yes ? networkOutput[i] : lastvalue;
+        }
+        return result;
     }
 
     private void listener(LearningEvent e) {
         LearningEvent.Type t = e.getEventType();
-        setText(" [" + t.name().toLowerCase().replace("_", " ") + "] ");
+        setText(t.name().toLowerCase().replace("_", " "));
     }
 
     private String stringify(List<Integer> a) {
@@ -137,9 +151,11 @@ public class NeuralNetworkTrainer {
 
     private void addRowToLearningDataset(String affect, Integer somanticWordId) {
         setText("adding row to learning dataset");
+        System.out.println("somanticWordId: " + somanticWordId + " / affect: " + affect);
         double[] affectToTrain = stringToDoubleArray(affect);
-        double[] result = new double[1];
-        result[0] = somanticWordId.doubleValue() / Integer.MAX_VALUE;
+        double[] result = new double[MAX_WORDS_IN_REPOSITORY];
+        Arrays.fill(result, 0);
+        result[somanticWordId] = 1;
         trainingSet.addRow(new DataSetRow(affectToTrain, result));
     }
 
@@ -152,7 +168,7 @@ public class NeuralNetworkTrainer {
         return doublearray;
     }
 
-    public Long ask(List<Integer> recentAffects) {
+    public Integer ask(List<Integer> recentAffects) {
         try {
             return ask(stringify(recentAffects));
         } catch (ExecutionException ex) {
@@ -160,23 +176,28 @@ public class NeuralNetworkTrainer {
         } catch (InterruptedException ex) {
             Logger.getLogger(NeuralNetworkTrainer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0L;
+        return null;
     }
 
-    private void useSomanticLibraryToLearn(){
+    private void useSomanticLibraryToLearn() {
         try {
-            trainExecutor.submit(() -> {
+            Boolean res = trainExecutor.submit(() -> {
                 Interface.getSomanticFacade()
                         .getSomanticRepo()
                         .entrySet()
                         .forEach(a -> a.getValue()
                                 .getAffects()
                                 .forEach(
-                                        v -> addRowToLearningDataset(stringify(v), a.getValue().hashCode())
+                                        v -> addRowToLearningDataset(
+                                                stringify(v), 
+                                                a.getValue().getId()
+                                        )
                                 ));
                 Interface.getNnStateLabel().setText("");
+                return true;
             }).get();
-            learn();
+            if(res)
+                learn();
         } catch (InterruptedException ex) {
             Logger.getLogger(NeuralNetworkTrainer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
@@ -186,14 +207,13 @@ public class NeuralNetworkTrainer {
 
     private void setText(String text) {
         JLabel l = Interface.getNnStateLabel();
-        String t = l.getText().concat(text);
-        if (l.getText().equals(text)) {
+        String t = l.getText().concat(" [" + text + "]");
+        if (l.getText().equals("[" + text + "]")) {
             t = "";
         } else if (l.getText().contains(text)) {
-            t = text;
-
+            t = "[" + text + "]";
         } else {
-            System.out.println(t);
+           // System.out.println(t);
         }
         if (t.length() > 40) {
             l.setText(text);

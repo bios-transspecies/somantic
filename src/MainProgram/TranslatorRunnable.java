@@ -47,11 +47,11 @@ public class TranslatorRunnable implements Runnable {
                     long stopienPokrewienstwaMin = 0L;
 
                     SomanticWord rezultat = null;
-                    Long neuralResult = Interface.getNeuralNetworkTrainer().ask(recentAffects);
-                    Optional<SomanticWord> opt = somanticRepo.getWordByHashcode(neuralResult);
-                    if (opt.isPresent()) {
-                        rezultat = opt.get();
-                        Interface.setMessage(SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH);
+                    Integer neuralResult = Interface.getNeuralNetworkTrainer().ask(recentAffects);
+                    SomanticWord opt = somanticRepo.getWordById(neuralResult);
+                    if (opt!=null) {
+                        rezultat = opt;
+                        Interface.setMessage(SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH + rezultat);
                     } else {
                         Interface.setMessage(NEED_TO_TRAIN_NN__TRYING_ALGORYTHMICAL_WA);
                         SomanticRepository repo = somanticRepo.getSomanticRepo();
@@ -84,7 +84,7 @@ public class TranslatorRunnable implements Runnable {
                     if (rezultat != null) {
                         stopienPokrewienstwaMin = stopienPokrewienstwaMax;
                         if (rezultat.getWords().iterator().hasNext()) {
-                            Interface.getNeuralNetworkTrainer().addToLearningDataset(recentAffects, rezultat.hashCode());
+                            Interface.getNeuralNetworkTrainer().addToLearningDataset(recentAffects, rezultat.getId());
                             Interface.getNeuralNetworkTrainer().learn();
                             Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
                             Speaker.start(rezultat.getWords().iterator().next());
@@ -106,5 +106,5 @@ public class TranslatorRunnable implements Runnable {
         }
     }
     private static final String NEED_TO_TRAIN_NN__TRYING_ALGORYTHMICAL_WA = "we need to train your Neuro Network - finding right word in algorythmical way... and supervising NN";
-    private static final String SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH = "SUCCESS! neural network had found match!";
+    private static final String SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH = "SUCCESS! neural network had found match: ";
 }

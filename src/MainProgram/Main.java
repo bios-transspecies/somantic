@@ -9,6 +9,9 @@ import java.util.logging.Logger;
 
 public class Main {
 
+    
+    public static final int MAX_WORDS_IN_REPOSITORY = 20_000;
+    
     public static void main(String[] args) {
         try {
             SomanticFacade somanticFactory = SomanticFacade.getInstance();

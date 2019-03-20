@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class SomanticRepository implements Serializable {
 
@@ -18,8 +17,17 @@ public class SomanticRepository implements Serializable {
     public static SomanticRepository getInstance() {
         if (instance == null) {
             instance = new SomanticRepository();
+            initialiseKeystore();
         }
         return instance;
+    }
+
+    private static void initialiseKeystore() {
+        for (Map.Entry<String, SomanticWord> entry : repository.entrySet()) {
+            String key = entry.getKey();
+            SomanticWord value = entry.getValue();
+            SomanticWord.idStore.put(value.getId(), key);
+        }
     }
 
     public SomanticWord put(String key, SomanticWord value) {

@@ -12,8 +12,6 @@ import WNprocess.SomanticFacade;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
 
@@ -23,9 +21,7 @@ public class Controller extends javax.swing.JFrame {
     private AudioFFT fft;
     private final View view;
     private final JFileChooser libraryFileChooser;
-    private int scheduler = (1000 * 30 * 1); // (milisekundy, sekundy, minuty)
-    private int newsCounter = 0;
-    private final Thread liveActThread;
+    private int scheduler = 100; // (milisekundy, sekundy, minuty)
     private final SomanticFacade somanticFactory;
 
     public Controller() {
@@ -43,9 +39,6 @@ public class Controller extends javax.swing.JFrame {
         view = new View();
         view.start(fft);
         messages.setBackground(Color.GRAY);
-        LiveAct liveAct = new LiveAct(liveToggleButton, communicationBox, stimulateToggle, translateToggle, this, newsCounter, scheduler);
-        liveActThread = new Thread(liveAct, "liveActThread");
-        liveActThread.setPriority(Thread.MIN_PRIORITY);
         Interface.setBufferedText(communicationBox.getText());
         Interface.setProgressBar(jProgressBar1);
         Interface.subscribeMessages(this);
@@ -91,12 +84,6 @@ public class Controller extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jocAction1 = new com.xzq.osc.JocAction();
-        jocAction2 = new com.xzq.osc.JocAction();
-        jocBusyIcon1 = new com.xzq.osc.JocBusyIcon();
-        jocBusyIcon2 = new com.xzq.osc.JocBusyIcon();
-        jocBusyIcon3 = new com.xzq.osc.JocBusyIcon();
-        jocAction3 = new com.xzq.osc.JocAction();
         jPanel1 = new javax.swing.JPanel();
         buttonLoginPassword = new javax.swing.JButton();
         inputLogin = new javax.swing.JTextField();
@@ -119,6 +106,7 @@ public class Controller extends javax.swing.JFrame {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setMaximumSize(new java.awt.Dimension(600, 300));
 
@@ -203,12 +191,12 @@ public class Controller extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(messages, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81))
+                .addComponent(messages, javax.swing.GroupLayout.PREFERRED_SIZE, 551, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(121, 121, 121))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(messages, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+            .addComponent(messages, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jToggleButton1.setText("meditate");
@@ -228,46 +216,43 @@ public class Controller extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSeparator1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(stimulateToggle)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(translateToggle)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(visualiseToggle)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(fileManagerToggle)
-                                        .addGap(46, 46, 46)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jToggleButton1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(liveToggleButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(buttonLoginPassword)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(inputLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(31, 31, 31))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(nnStateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1))))
+                            .addComponent(nnStateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(stimulateToggle, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(translateToggle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(visualiseToggle)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(fileManagerToggle)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(liveToggleButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonLoginPassword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(inputLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 781, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -275,7 +260,7 @@ public class Controller extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inputLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonLoginPassword)
@@ -284,23 +269,23 @@ public class Controller extends javax.swing.JFrame {
                     .addComponent(liveToggleButton)
                     .addComponent(jLabel1)
                     .addComponent(jToggleButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nnStateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(nnStateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(translateToggle)
                         .addComponent(stimulateToggle)
                         .addComponent(jLabel2)
                         .addComponent(visualiseToggle))
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(224, 224, 224))
         );
 
         stimulateToggle.getAccessibleContext().setAccessibleDescription("");
@@ -309,13 +294,17 @@ public class Controller extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
         );
 
         pack();
@@ -324,10 +313,8 @@ public class Controller extends javax.swing.JFrame {
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         JToggleButton b = (JToggleButton) evt.getSource();
         if (!b.isSelected()) {
-            b.setText("meditate");
             Interface.getNeuralNetworkTrainer().stopLearning();
         } else {
-            b.setText("stop");
             Interface.getNeuralNetworkTrainer().useSomanticLibraryToLearn(b);
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
@@ -340,11 +327,13 @@ public class Controller extends javax.swing.JFrame {
 
     private void liveToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liveToggleButtonActionPerformed
         if (liveToggleButton.isSelected()) {
+            LiveAct liveAct = new LiveAct(liveToggleButton, stimulateToggle, translateToggle, this, scheduler);
+            Thread liveActThread = new Thread(liveAct, "liveActThread");
+            liveActThread.setPriority(Thread.MIN_PRIORITY);
             liveActThread.start();
-        } else if (liveActThread.isAlive()) {
-            liveActThread.notify();
+            messages.setText("Live mode auto-switch between stimulation and translation mode.");
         }
-        messages.setText("Live mode auto-switch between stimulation and translation mode.");
+        messages.setText("Live mode is turned off. Manual action only.");
     }//GEN-LAST:event_liveToggleButtonActionPerformed
 
     private void fileManagerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileManagerToggleActionPerformed
@@ -378,11 +367,12 @@ public class Controller extends javax.swing.JFrame {
         }
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
-        if (stimulateToggle.isSelected() && communicationBox.getText().length() > 5) {
+        if (stimulateToggle.isSelected() //                && communicationBox.getText().length() > 5
+                ) {
             stimulate();
-        } else if (communicationBox.getText().length() < 5) {
-            messages.setText("To process stimmulation please copy and paste some text below.");
-            stimulateToggle.setSelected(false);
+//        } else if (communicationBox.getText().length() < 5) {
+//            messages.setText("To process stimmulation please copy and paste some text below.");
+//            stimulateToggle.setSelected(false);
         } else {
             stimulated();
         }
@@ -399,6 +389,7 @@ public class Controller extends javax.swing.JFrame {
 
     private void translated() {
         translateToggle.setText("Translate");
+        communicationBox.setEditable(true);
         messages.setText("Maybe we should to expand vocabulary and stimulate more?");
         Interface.setState("stopped");
         recording = false;
@@ -418,10 +409,12 @@ public class Controller extends javax.swing.JFrame {
         TranslatorRunnable translatorRunnable = new TranslatorRunnable(translateToggle, communicationBox, fft, somanticFactory);
         Thread translatorThread = new Thread(translatorRunnable, "translatorThread");
         translatorThread.setPriority(Thread.MIN_PRIORITY);
+        communicationBox.setEditable(false);
         translatorThread.start();
     }
 
     private void stimulated() {
+        communicationBox.setEditable(true);
         stimulateToggle.setText("Stimulate");
         if (somanticFactory.getSomanticRepo() != null) {
             messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
@@ -446,7 +439,8 @@ public class Controller extends javax.swing.JFrame {
             communicationBox.setText(normalize(Interface.getBufferedText()));
             somanticFactory.addTextToRepo(normalize(Interface.getBufferedText()));
         }).start();
-        StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, liveActThread, fft, liveToggleButton, communicationBox);
+        communicationBox.setEditable(false);
+        StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, fft, communicationBox);
         Thread stimulationThread = new Thread(stimulationRunnable, "stimulationThread");
         stimulationThread.setPriority(Thread.MIN_PRIORITY);
         stimulationThread.start();
@@ -454,7 +448,7 @@ public class Controller extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonLoginPassword;
-    private javax.swing.JTextArea communicationBox;
+    private static javax.swing.JTextArea communicationBox;
     private javax.swing.JToggleButton fileManagerToggle;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JTextField inputLogin;
@@ -463,16 +457,10 @@ public class Controller extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JProgressBar jProgressBar1;
+    public static javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToggleButton jToggleButton1;
-    private com.xzq.osc.JocAction jocAction1;
-    private com.xzq.osc.JocAction jocAction2;
-    private com.xzq.osc.JocAction jocAction3;
-    private com.xzq.osc.JocBusyIcon jocBusyIcon1;
-    private com.xzq.osc.JocBusyIcon jocBusyIcon2;
-    private com.xzq.osc.JocBusyIcon jocBusyIcon3;
     private javax.swing.JToggleButton liveToggleButton;
     private javax.swing.JLabel messages;
     private javax.swing.JLabel nnStateLabel;
@@ -487,17 +475,6 @@ public class Controller extends javax.swing.JFrame {
 
     public void runStimulate() {
         speakAndStimulate(null);
-    }
-
-    public void liveActSleep(int scheduler) {
-        this.scheduler = scheduler;
-        synchronized (liveActThread) {
-            try {
-                liveActThread.sleep(scheduler);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 
     public void setMessage(String message) {

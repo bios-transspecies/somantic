@@ -22,11 +22,10 @@ public class StimulationRunnable implements Runnable {
     private final Object stimulationRunnableLock = new Object();
     private final JTextArea communicationBox;
     private final NeuralNetworkTrainer networkTrainer = Interface.getNeuralNetworkTrainer();
-    private static final String TO_PROCESS_STIMMULATION_PLEASE_IMPORT_TXT 
+    private static final String TO_PROCESS_STIMMULATION_PLEASE_IMPORT_TXT
             = "To process stimulation please import txt file or pdf or copy and paste some text below.";
-    private static final String YOU_HAD_NOT_PROVIDED_TEST_TO_STIMULATE 
+    private static final String YOU_HAD_NOT_PROVIDED_TEST_TO_STIMULATE
             = "You had not provided text to stimulate so we are filling gaps in existing vocabulary.";
-
 
     public Object getStimulationRunnableLock() {
         return stimulationRunnableLock;
@@ -45,7 +44,7 @@ public class StimulationRunnable implements Runnable {
             if (words.length < 1) {
                 words = collectWordsWithoutAffect();
                 if (words.length > 1) {
-                   // Interface.setBufferedText(Arrays.asList(words).stream().reduce((a, b) -> a + " " + b).get());
+                    // Interface.setBufferedText(Arrays.asList(words).stream().reduce((a, b) -> a + " " + b).get());
                     Interface.setMessage(YOU_HAD_NOT_PROVIDED_TEST_TO_STIMULATE);
                 } else {
                     stimulateToggle.setSelected(false);

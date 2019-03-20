@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -29,7 +30,7 @@ import org.neuroph.core.NeuralNetwork;
 public class Persistence {
 
     private static boolean savingRepository;
-    private static boolean savingNN;
+    public static AtomicBoolean savingNN = new AtomicBoolean(false);
     private static final Object lock = new Object();
     private static final ExecutorService savingThread = Executors.newSingleThreadExecutor();
 
@@ -153,10 +154,10 @@ public class Persistence {
     }
 
     public static void saveNeuralNetwork(NeuralNetwork neuralNetwork, String PERCEPTRONNNET) {
-        if (!savingNN) {
-            savingNN = true;
+        if (!savingNN.get()) {
             savingThread.execute(() -> {
-                //Interface.setMessage(" saving Neural Network ");
+                // Interface.setMessage("saving Neural Network");
+                savingNN.set(true);
                 try {
                     Path tmpPath = Paths.get(ZonedDateTime.now().toLocalDate() + "_" + PERCEPTRONNNET);
                     Files.deleteIfExists(tmpPath);
@@ -164,11 +165,11 @@ public class Persistence {
                     Files.deleteIfExists(Paths.get(PERCEPTRONNNET));
                     Files.copy(tmpPath, Paths.get(PERCEPTRONNNET));
                     Files.deleteIfExists(tmpPath);
-                    //Interface.setMessage(" saved Neural Network successfully!");
+                    //    Interface.setMessage("saved Neural Network successfully!");
                 } catch (IOException ex) {
                     Interface.setMessage(ex.getMessage());
-                } finally{
-                    savingNN = false;
+                } finally {
+                    savingNN.set(false);
                 }
             });
         }

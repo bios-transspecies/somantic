@@ -6,6 +6,7 @@ import WNprocess.SomanticWord;
 import WNprocess.neuralModel.NeuralNetworkTrainer;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
@@ -40,14 +41,16 @@ public class Interface {
     private static NeuralNetworkTrainer neuralNetworkTrainer = new NeuralNetworkTrainer();
     private static Controller subscriber;
     private static JLabel nnStateLabel;
+    private static AtomicBoolean liveactIsOn = new AtomicBoolean();
 
     public static String getMessage() {
         return message;
     }
 
     public static void setMessage(String message) {
-        if(subscriber!=null)
+        if (subscriber != null) {
             subscriber.setMessage(message);
+        }
         Interface.message = message;
     }
 
@@ -80,7 +83,7 @@ public class Interface {
     }
 
     public static void setWords(String words) {
-        Interface.words = words;
+        Interface.words = words.toLowerCase();
     }
 
     public static String getState() {
@@ -264,6 +267,14 @@ public class Interface {
 
     public static JLabel getNnStateLabel() {
         return nnStateLabel;
+    }
+
+    public static void setLiveactIsOn(boolean b) {
+        liveactIsOn.set(b);
+    }
+
+    public static Boolean isLiveactOn() {
+        return liveactIsOn.get();
     }
 
 }

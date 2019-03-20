@@ -1,12 +1,17 @@
 package WNprocess;
 
+import static MainProgram.Main.MAX_WORDS_IN_REPOSITORY;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class SomanticWord implements Serializable, Comparable<SomanticWord> {
 
+    public static Map<Integer, String> idStore = new HashMap<>();
+    private Integer id;
     private String lemma = "";
     private Set<String> POS = new ConcurrentSkipListSet<>();
     private Set<String> words = new ConcurrentSkipListSet<>();
@@ -17,11 +22,9 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     private String description;
     private Set<String> tags = new ConcurrentSkipListSet<>();
 
-    private SomanticWord() {
-    }
-
     public SomanticWord(String lemma) {
         this.lemma = lemma;
+        getId();
     }
 
     synchronized public Set<String> getPOS() {
@@ -44,6 +47,31 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
         this.lemma = lemma;
     }
 
+    public Integer getId() {
+        if(id==null)
+            id = generateId();
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
+    
+
+    private boolean placedIdInStore(Integer id) {
+        id = Math.abs(id);
+        String lem = idStore.get(id);
+        if (lem==null) {
+            idStore.put(id, lemma);
+            return true;
+        }
+        if (lem.equals(lemma)) {
+            return true;
+        }
+        return false;
+    }
+    
     @Override
     public String toString() {
         return lemma;
@@ -52,6 +80,19 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.lemma);
+    }
+    
+    public int generateId(){
+        int hc = Math.abs(hashCode() % MAX_WORDS_IN_REPOSITORY);
+        if(placedIdInStore(hc))
+            return hc;
+        for (int i = 0; i < MAX_WORDS_IN_REPOSITORY; i++) {
+            if(placedIdInStore(i))
+                return i;
+            System.out.println("------------->>>>>>>>>INDEX>>>>>" + i);
+            System.out.println("------------->>>>>>>>MAX_WORDS_IN_REPOSITORY>>>>>>>>>>" + MAX_WORDS_IN_REPOSITORY);
+        }
+        throw new RuntimeException("too much objects in vocabulary to store it in!");
     }
 
     @Override
@@ -137,6 +178,7 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     }
 
     synchronized public void addSentence(SomanticSentence sentence) {
+        if(sentence!=null)
         this.sentences.add(sentence);
     }
 
