@@ -55,7 +55,7 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.id = Math.abs(id);
     }
     
     

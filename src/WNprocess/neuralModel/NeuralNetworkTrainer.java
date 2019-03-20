@@ -31,7 +31,7 @@ public class NeuralNetworkTrainer {
     private static final String NEURAL_NETWORK_STORAGE_FILENAME = "neuralnetwork_state.nnet";
     private volatile MultiLayerPerceptron neuralNetwork;
     private volatile BackPropagation backPropagation;
-    private volatile DataSet trainingSet = new DataSet(100, 1);
+    private volatile DataSet trainingSet = new DataSet(100, MAX_WORDS_IN_REPOSITORY);
     private final LearningEventListener listener;
     private final ExecutorService trainExecutor;
     private final AtomicBoolean busy = new AtomicBoolean();
@@ -123,6 +123,7 @@ public class NeuralNetworkTrainer {
             Integer result = findWordId(neuralNetwork.getOutput());
             Interface.setMessage("found response: " + result);
             setText("response: " + result.toString());
+            System.out.println(result);
             return result;
         }).get();
     }
@@ -155,7 +156,7 @@ public class NeuralNetworkTrainer {
         double[] affectToTrain = stringToDoubleArray(affect);
         double[] result = new double[MAX_WORDS_IN_REPOSITORY];
         Arrays.fill(result, 0);
-        result[somanticWordId] = 1;
+        result[Math.abs(somanticWordId)] = 1;
         trainingSet.addRow(new DataSetRow(affectToTrain, result));
     }
 

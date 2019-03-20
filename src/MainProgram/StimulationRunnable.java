@@ -5,6 +5,7 @@ import static somantic.controller.Controller.recording;
 import WNprocess.SomanticFacade;
 import WNprocess.neuralModel.wordnet.WordNetToolbox;
 import WNprocess.neuralModel.NeuralNetworkTrainer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -96,7 +97,7 @@ public class StimulationRunnable implements Runnable {
                 .flatMap(w -> w.stream())
                 .collect(Collectors.toList()).stream()
                 .flatMap(w -> w.stream())
-                .map(w -> w.getWords())
+                .map(w -> w!=null ? w.getWords() : new ArrayList<String>())
                 .flatMap(w -> w.stream())
                 .collect(Collectors.joining(" "))
                 .split(" ");
