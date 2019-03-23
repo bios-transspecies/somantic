@@ -1,4 +1,4 @@
-package MainProgram;
+package somantic.processors;
 
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javax.swing.JFrame;
 import javax.swing.JToggleButton;
+import somantic.synthesizer.Synthesizer;
 
 public class View {
 
@@ -24,7 +25,8 @@ public class View {
     private AnimationTimer timer;
     private Canvas canvas;
     private JToggleButton visualiseToggle;
-
+    private final Synthesizer synthesizer = new Synthesizer();
+    
     public View() {
         jfxPanel = new JFXPanel();
         window = new JFrame();
@@ -45,13 +47,13 @@ public class View {
     }
 
     public void start(AudioFFT fft) {
+        synthesizer.play(fft);
         timer = new AnimationTimer() {
             ArrayList<Integer> arrayOfAffectsArch = null;
             private int doyA;
             private int doxA;
             private int odyA;
             private int odxA;
-
             @Override
             public void handle(long now) {
                 ArrayList<Integer> arrayOfAffects = fft.getArrayOfAffects();

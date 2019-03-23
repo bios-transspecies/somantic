@@ -1,4 +1,4 @@
-package WNprocess;
+package somantic.library;
 
 import java.io.Serializable;
 import java.util.Map;

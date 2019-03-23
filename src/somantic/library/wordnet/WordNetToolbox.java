@@ -1,4 +1,4 @@
-package WNprocess.neuralModel.wordnet;
+package somantic.library.wordnet;
 
 import edu.mit.jwi.*;
 import edu.mit.jwi.item.IIndexWord;
@@ -58,7 +58,7 @@ public class WordNetToolbox {
     static public List<String> stem(String word) {
         List<String> r = new CopyOnWriteArrayList<>();
         for (POS pos : POS.values()) {
-            List<String> a = getWordnetStemmer().findStems(word, pos);
+            List<String> a = new CopyOnWriteArrayList<>(getWordnetStemmer().findStems(word, pos));
             if (a != null && !a.isEmpty()) {
                 r.addAll(a);
             }

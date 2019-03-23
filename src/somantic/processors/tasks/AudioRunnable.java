@@ -1,8 +1,10 @@
-package MainProgram;
+package somantic.processors.tasks;
 
 import somantic.controller.Controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import somantic.processors.AudioFFT;
+import somantic.processors.Interface;
 
 public class AudioRunnable implements Runnable {
 

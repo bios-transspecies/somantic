@@ -1,4 +1,4 @@
-package MainProgram;
+package somantic.processors;
 
 import ddf.minim.AudioInput;
 import ddf.minim.Minim;
@@ -34,7 +34,7 @@ public class AudioFFT {
     }
 
     /**
-     * methode will prepare data based on FFT analyse of the audio signal for
+     * method will prepare data based on FFT analyse of the audio signal for
      * the future purposes
      */
     public void analizuj(JProgressBar jp) {

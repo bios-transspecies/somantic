@@ -1,6 +1,6 @@
-package WNprocess;
+package somantic.library;
 
-import WNprocess.Sentences.SentenceMapper;
+import somantic.library.sentences.SentenceMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;

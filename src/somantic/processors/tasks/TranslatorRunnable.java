@@ -1,9 +1,9 @@
-package MainProgram;
+package somantic.processors.tasks;
 
 import somantic.controller.Controller;
-import WNprocess.SomanticFacade;
-import WNprocess.SomanticRepository;
-import WNprocess.SomanticWord;
+import somantic.library.SomanticFacade;
+import somantic.library.SomanticRepository;
+import somantic.library.SomanticWord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import somantic.processors.AudioFFT;
+import somantic.processors.Interface;
 
 public class TranslatorRunnable implements Runnable {
 

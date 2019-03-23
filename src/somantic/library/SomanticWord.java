@@ -1,6 +1,6 @@
-package WNprocess;
+package somantic.library;
 
-import static MainProgram.Main.MAX_WORDS_IN_REPOSITORY;
+import static somantic.Main.MAX_WORDS_IN_REPOSITORY;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package WNprocess;
+package somantic.library;
 
 import java.util.ArrayList;
 import java.util.Collection;

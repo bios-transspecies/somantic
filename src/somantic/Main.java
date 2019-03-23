@@ -1,8 +1,8 @@
-package MainProgram;
+package somantic;
 
 import somantic.controller.Controller;
-import MainProgram.Interface;
-import WNprocess.SomanticFacade;
+import somantic.processors.Interface;
+import somantic.library.SomanticFacade;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

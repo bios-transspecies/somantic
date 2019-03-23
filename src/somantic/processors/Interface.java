@@ -1,9 +1,7 @@
-package MainProgram;
+package somantic.processors;
 
-import Persistence.Persistence;
-import WNprocess.SomanticFacade;
-import WNprocess.SomanticWord;
-import WNprocess.neuralModel.NeuralNetworkTrainer;
+import somantic.library.SomanticFacade;
+import somantic.library.SomanticWord;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import somantic.controller.Controller;
+import somantic.neuralnetwork.NeuralNetworkTrainer;
+import somantic.persistence.Persistence;
 
 public class Interface {
 
@@ -208,7 +208,7 @@ public class Interface {
         minimalSimilarity = aMinimalSimilarity;
     }
 
-    static void setSentence(Set<SomanticWord> arranged) {
+    public static void setSentence(Set<SomanticWord> arranged) {
         sentence = arranged;
     }
 
@@ -216,7 +216,7 @@ public class Interface {
         return sentence;
     }
 
-    static String getStringSentence() {
+    public static String getStringSentence() {
         return Interface.getSentence().stream().map(w -> {
             String r = "";
             if (!w.getWords().isEmpty() && w.getWords().iterator().hasNext()) {
@@ -226,7 +226,7 @@ public class Interface {
         }).collect(Collectors.joining(" "));
     }
 
-    static void addSentence(String words) {
+    public static void addSentence(String words) {
         words = words.trim();
         words = words.substring(0, 1).toUpperCase() + words.substring(1);
         Interface.sentences += words + ". <br> ";
@@ -237,11 +237,11 @@ public class Interface {
         return Interface.sentences;
     }
 
-    static boolean getSaving() {
+    public static boolean getSaving() {
         return Interface.saving;
     }
 
-    static void setSaving(boolean b) {
+    public static void setSaving(boolean b) {
         Interface.saving = b;
     }
 

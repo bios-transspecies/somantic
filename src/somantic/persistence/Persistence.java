@@ -1,8 +1,8 @@
-package Persistence;
+package somantic.persistence;
 
-import MainProgram.Interface;
-import WNprocess.SomanticRepository;
-import WNprocess.SomanticWord;
+import somantic.processors.Interface;
+import somantic.library.SomanticRepository;
+import somantic.library.SomanticWord;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -1,18 +1,19 @@
-package MainProgram;
+package somantic.processors.tasks;
 
 import somantic.controller.Controller;
 import static somantic.controller.Controller.recording;
-import WNprocess.SomanticFacade;
-import WNprocess.neuralModel.wordnet.WordNetToolbox;
-import WNprocess.neuralModel.NeuralNetworkTrainer;
+import somantic.library.SomanticFacade;
+import somantic.library.wordnet.WordNetToolbox;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import somantic.neuralnetwork.NeuralNetworkTrainer;
+import somantic.processors.AudioFFT;
+import somantic.processors.Interface;
 
 public class StimulationRunnable implements Runnable {
 

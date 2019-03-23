@@ -1,8 +1,7 @@
-package WNprocess.neuralModel;
+package somantic.neuralnetwork;
 
-import static MainProgram.Main.MAX_WORDS_IN_REPOSITORY;
-import MainProgram.Interface;
-import Persistence.Persistence;
+import static somantic.Main.MAX_WORDS_IN_REPOSITORY;
+import somantic.processors.Interface;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +25,7 @@ import org.neuroph.core.events.LearningEventListener;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.TransferFunctionType;
+import somantic.persistence.Persistence;
 
 public class NeuralNetworkTrainer {
 

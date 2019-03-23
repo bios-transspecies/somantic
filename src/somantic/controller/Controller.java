@@ -1,19 +1,19 @@
 package somantic.controller;
 
-import MainProgram.AudioFFT;
-import MainProgram.AudioRunnable;
-import MainProgram.Interface;
-import MainProgram.LiveAct;
-import MainProgram.StimulationRunnable;
-import MainProgram.TranslatorRunnable;
-import MainProgram.View;
-import Persistence.Persistence;
-import WNprocess.SomanticFacade;
+import somantic.processors.AudioFFT;
+import somantic.processors.tasks.AudioRunnable;
+import somantic.processors.Interface;
+import somantic.processors.tasks.LiveAct;
+import somantic.processors.tasks.StimulationRunnable;
+import somantic.processors.tasks.TranslatorRunnable;
+import somantic.processors.View;
+import somantic.library.SomanticFacade;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JToggleButton;
+import somantic.persistence.Persistence;
 
 public class Controller extends javax.swing.JFrame {
 

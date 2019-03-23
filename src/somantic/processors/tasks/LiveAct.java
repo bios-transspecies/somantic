@@ -1,8 +1,9 @@
-package MainProgram;
+package somantic.processors.tasks;
 
 import somantic.controller.Controller;
 import java.time.ZonedDateTime;
 import javax.swing.JToggleButton;
+import somantic.processors.Interface;
 
 public class LiveAct implements Runnable {
 

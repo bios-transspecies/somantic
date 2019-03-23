@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package WNprocess.Sentences;
+package somantic.library.sentences;
 
-import WNprocess.SomanticWord;
+import somantic.library.SomanticWord;
 import java.util.Comparator;
 import java.util.Set;
 

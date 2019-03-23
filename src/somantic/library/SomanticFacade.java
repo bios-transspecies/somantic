@@ -1,13 +1,13 @@
-package WNprocess;
+package somantic.library;
 
-import WNprocess.neuralModel.wordnet.WordNetToolbox;
-import Persistence.Persistence;
+import somantic.library.wordnet.WordNetToolbox;
 import edu.mit.jwi.item.IWord;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import rita.RiTa;
+import somantic.persistence.Persistence;
 
 public class SomanticFacade {
 
