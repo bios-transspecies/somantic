@@ -11,6 +11,7 @@ public class Main {
 
     
     public static final int MAX_WORDS_IN_REPOSITORY = 20_000;
+    private static final String SOMANTIC_TITLE = "SOMANTIC :: first AFFECTIVE TRANSSPECIES TRANSLATOR by Michal Brzezinski";
     
     public static void main(String[] args) {
         try {
@@ -23,6 +24,8 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Controller controller = new Controller();
+        controller.setName(SOMANTIC_TITLE);
+        controller.setTitle(SOMANTIC_TITLE);
         controller.setVisible(true);
     }
 }

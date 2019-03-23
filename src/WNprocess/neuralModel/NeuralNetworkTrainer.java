@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JToggleButton;
 import org.neuroph.core.NeuralNetwork;
+import org.neuroph.core.Neuron;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
 import org.neuroph.core.events.LearningEvent;
@@ -39,14 +40,14 @@ public class NeuralNetworkTrainer {
 
     public NeuralNetworkTrainer() {
         if (new File(NEURAL_NETWORK_STORAGE_FILENAME).exists()) {
-            System.out.println("loading neural network from file: " + NEURAL_NETWORK_STORAGE_FILENAME);
+            // System.out.println("loading neural network from file: " + NEURAL_NETWORK_STORAGE_FILENAME);
             neuralNetwork = (MultiLayerPerceptron) NeuralNetwork.createFromFile(NEURAL_NETWORK_STORAGE_FILENAME);
         } else {
-            System.out.println(" ---------> NEW instance of neural network created - no storage found!");
+            // System.out.println(" ---------> NEW instance of neural network created - no storage found!");
             neuralNetwork = new MultiLayerPerceptron(
                     TransferFunctionType.GAUSSIAN, 100, 10, 50, MAX_WORDS_IN_REPOSITORY);
             neuralNetwork.randomizeWeights();
-            System.out.println("MAX_WORDS_IN_REPOSITORY: "+ MAX_WORDS_IN_REPOSITORY);
+            // System.out.println("MAX_WORDS_IN_REPOSITORY: "+ MAX_WORDS_IN_REPOSITORY);
         }
         listener = (e) -> listener(e);
         backPropagation = (BackPropagation) neuralNetwork.getLearningRule();
@@ -62,7 +63,7 @@ public class NeuralNetworkTrainer {
             while (b.isSelected()) {
                 if (!busy.get()) {
                     useSomanticLibraryToLearn();
-                    setText(" [repeat] ");
+                    setText("repeat");
                 }
                 try {
                     Thread.sleep(1000);
@@ -103,7 +104,6 @@ public class NeuralNetworkTrainer {
             trainExecutor.execute(() -> {
                 setText("learning");
                 neuralNetwork.learn(trainingSet, backPropagation);
-                backPropagation.learn(trainingSet);
                 trainingSet.clear();
                 setText("done");
                 Persistence.saveNeuralNetwork(neuralNetwork, NEURAL_NETWORK_STORAGE_FILENAME);
@@ -120,27 +120,35 @@ public class NeuralNetworkTrainer {
             Interface.setMessage("asking for: " + affect);
             neuralNetwork.setInput(stringToDoubleArray(affect));
             neuralNetwork.calculate();
-            Integer result = findWordId(neuralNetwork.getOutput());
+            Integer result = findWordId(neuralNetwork.getOutputNeurons());
             Interface.setMessage("found response: " + result);
             setText("response: " + result.toString());
-            System.out.println(result);
+            // System.out.println(result);
             return result;
         }).get();
     }
 
-    private Integer findWordId(double[] networkOutput) {
+    private Integer findWordId(Neuron[] networkOutput) {
         Integer result = null;
         double lastvalue = Integer.MIN_VALUE;
         for (int i = 0; i < networkOutput.length; i++) {
-            boolean yes = networkOutput[i] > lastvalue;
+            double value = networkOutput[i].getOutput();
+            boolean yes = value > lastvalue;
             result = yes ? i : result;
-            lastvalue = yes ? networkOutput[i] : lastvalue;
+            lastvalue = yes ? value : lastvalue;
+            if(value>0) 
+                 System.out.println(value);
         }
+        if(result>0)
+             System.out.println("the winner is: "+result);
         return result;
     }
 
     private void listener(LearningEvent e) {
         LearningEvent.Type t = e.getEventType();
+        // System.out.println(t);
+        if(t==LearningEvent.Type.LEARNING_STOPPED)
+            busy.set(false);
         setText(t.name().toLowerCase().replace("_", " "));
     }
 
@@ -152,7 +160,7 @@ public class NeuralNetworkTrainer {
 
     private void addRowToLearningDataset(String affect, Integer somanticWordId) {
         setText("adding row to learning dataset");
-        System.out.println("somanticWordId: " + somanticWordId + " / affect: " + affect);
+        // System.out.println("somanticWordId: " + somanticWordId + " / affect: " + affect);
         double[] affectToTrain = stringToDoubleArray(affect);
         double[] result = new double[MAX_WORDS_IN_REPOSITORY];
         Arrays.fill(result, 0);
@@ -197,7 +205,7 @@ public class NeuralNetworkTrainer {
                 Interface.getNnStateLabel().setText("");
                 return true;
             }).get();
-            if(res)
+           // if(res)
                 learn();
         } catch (InterruptedException ex) {
             Logger.getLogger(NeuralNetworkTrainer.class.getName()).log(Level.SEVERE, null, ex);
@@ -208,13 +216,14 @@ public class NeuralNetworkTrainer {
 
     private void setText(String text) {
         JLabel l = Interface.getNnStateLabel();
+        // System.out.println(text);
         String t = l.getText().concat(" [" + text + "]");
         if (l.getText().equals("[" + text + "]")) {
             t = "";
         } else if (l.getText().contains(text)) {
             t = "[" + text + "]";
         } else {
-           // System.out.println(t);
+           // // System.out.println(t);
         }
         if (t.length() > 40) {
             l.setText(text);
