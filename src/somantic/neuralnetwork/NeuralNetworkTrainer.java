@@ -1,7 +1,7 @@
 package somantic.neuralnetwork;
 
 import static somantic.Main.MAX_WORDS_IN_REPOSITORY;
-import somantic.processors.Interface;
+import somantic.state.State;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class NeuralNetworkTrainer {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Interface.setMessage(ex.getMessage());
+                    State.setMessage(ex.getMessage());
                 }
             }
         });
@@ -116,12 +116,12 @@ public class NeuralNetworkTrainer {
         stopLearning();
         return askExecutor.submit(() -> {
             setText("asking");
-            Interface.getNnStateLabel().setText("");
-            Interface.setMessage("asking for: " + affect);
+            State.getNnStateLabel().setText("");
+            State.setMessage("asking for: " + affect);
             neuralNetwork.setInput(stringToDoubleArray(affect));
             neuralNetwork.calculate();
             Integer result = findWordId(neuralNetwork.getOutputNeurons());
-            Interface.setMessage("found response: " + result);
+            State.setMessage("found response: " + result);
             setText("response: " + result.toString());
             // System.out.println(result);
             return result;
@@ -191,7 +191,7 @@ public class NeuralNetworkTrainer {
     private void useSomanticLibraryToLearn() {
         try {
             Boolean res = trainExecutor.submit(() -> {
-                Interface.getSomanticFacade()
+                State.getSomanticFacade()
                         .getSomanticRepo()
                         .entrySet()
                         .forEach(a -> a.getValue()
@@ -202,7 +202,7 @@ public class NeuralNetworkTrainer {
                                                 a.getValue().getId()
                                         )
                                 ));
-                Interface.getNnStateLabel().setText("");
+                State.getNnStateLabel().setText("");
                 return true;
             }).get();
            // if(res)
@@ -215,7 +215,7 @@ public class NeuralNetworkTrainer {
     }
 
     private void setText(String text) {
-        JLabel l = Interface.getNnStateLabel();
+        JLabel l = State.getNnStateLabel();
         // System.out.println(text);
         String t = l.getText().concat(" [" + text + "]");
         if (l.getText().equals("[" + text + "]")) {

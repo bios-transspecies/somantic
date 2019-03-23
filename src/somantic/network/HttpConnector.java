@@ -1,4 +1,4 @@
-package somantic.processors;
+package somantic.network;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

@@ -1,6 +1,6 @@
 package somantic.persistence;
 
-import somantic.processors.Interface;
+import somantic.state.State;
 import somantic.library.SomanticRepository;
 import somantic.library.SomanticWord;
 import java.io.File;
@@ -37,13 +37,13 @@ public class Persistence {
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         savingThread.execute(()
                 -> {
-            File f = new File(Interface.getLibraryFile());
+            File f = new File(State.getLibraryFile());
             if (!f.exists()) {
                 f.setWritable(true);
                 try {
                     f.createNewFile();
                 } catch (IOException ex) {
-                    Interface.setMessage(ex.getMessage());
+                    State.setMessage(ex.getMessage());
                 }
             }
             if (!savingRepository) {
@@ -55,31 +55,31 @@ public class Persistence {
                         ObjectOutputStream out = new ObjectOutputStream(tmp);
                         out.writeObject(repository.getRepositoryToSave());
                         out.close();
-                        Files.deleteIfExists(Paths.get(Interface.getLibraryFile()));
-                        Files.copy(tmpPath, Paths.get(Interface.getLibraryFile()));
+                        Files.deleteIfExists(Paths.get(State.getLibraryFile()));
+                        Files.copy(tmpPath, Paths.get(State.getLibraryFile()));
                         Files.delete(tmpPath);
-                        long filesize = Files.size(Paths.get(Interface.getLibraryFile()));
+                        long filesize = Files.size(Paths.get(State.getLibraryFile()));
                         out.close();
-                        Interface.setMessage("SAVED repo size " + filesize / 1024 + "kB with " + repository.size() + " words");
+                        State.setMessage("SAVED repo size " + filesize / 1024 + "kB with " + repository.size() + " words");
                     } catch (Exception e) {
-                        Interface.setMessage(e.getMessage());
+                        State.setMessage(e.getMessage());
                     } finally {
                         savingRepository = false;
                     }
                 }
             } else {
-                Interface.setMessage(" writting file in progress ");
+                State.setMessage(" writting file in progress ");
                 throw new IllegalArgumentException(" writting file in progress ");
             }
         });
     }
 
     public static SomanticRepository loadRepository() throws FileNotFoundException, IOException, ClassNotFoundException {
-        SomanticRepository somanticRepository = Interface.getSomanticFacade().getSomanticRepo();
-        File f = new File(Interface.getLibraryFile());
+        SomanticRepository somanticRepository = State.getSomanticFacade().getSomanticRepo();
+        File f = new File(State.getLibraryFile());
         if (f.exists()) {
-            Interface.setMessage(" loading SOMANTIC REPOSITORY ");
-            FileInputStream fileIn = new FileInputStream(Interface.getLibraryFile());
+            State.setMessage(" loading SOMANTIC REPOSITORY ");
+            FileInputStream fileIn = new FileInputStream(State.getLibraryFile());
             ObjectInputStream in = new ObjectInputStream(fileIn);
             if (in != null) {
                 ConcurrentHashMap<String, SomanticWord> repo = (ConcurrentHashMap<String, SomanticWord>) in.readObject();
@@ -89,8 +89,8 @@ public class Persistence {
             }
             in.close();
             fileIn.close();
-            String message = "loaded repo - number of words: " + somanticRepository.size() + " successfully from file" + Interface.getLibraryFile();
-            Interface.setMessage(message);
+            String message = "loaded repo - number of words: " + somanticRepository.size() + " successfully from file" + State.getLibraryFile();
+            State.setMessage(message);
         }
         return somanticRepository;
     }
@@ -98,17 +98,17 @@ public class Persistence {
     public static String loadLiteraure(String location) throws IOException {
         File f = new File(location);
         if (f.exists()) {
-            Interface.setMessage("loading file: " + f.getName().toLowerCase());
+            State.setMessage("loading file: " + f.getName().toLowerCase());
             if (f.getName().toLowerCase().contains(".pdf")) {
                 PDFTextStripper pdfStripper = new PDFTextStripper();
                 PDDocument pdDoc = PDDocument.load(f);
                 pdfStripper.setStartPage(0);
                 pdfStripper.setEndPage(pdDoc.getNumberOfPages());
                 String parsedText = pdfStripper.getText(pdDoc);
-                Interface.setMessage("ready...");
+                State.setMessage("ready...");
                 return parsedText;
             } else {
-                Interface.setMessage("ready...");
+                State.setMessage("ready...");
                 return Files.lines(f.toPath()).collect(Collectors.joining(" "));
             }
         }
@@ -118,13 +118,13 @@ public class Persistence {
     public static void saveNewSentence(String line) {
         savingThread.execute(()
                 -> {
-            Interface.setMessage(" saving sentence to file ");
+            State.setMessage(" saving sentence to file ");
             Path pathText = null;
             Charset encoding = Charset.forName("UTF-8");
             try {
-                pathText = Paths.get(Interface.getGeneratedSentencesFilePath());
+                pathText = Paths.get(State.getGeneratedSentencesFilePath());
             } catch (Exception e) {
-                Interface.setMessage(e.getMessage());
+                State.setMessage(e.getMessage());
             }
             if (pathText != null) {
                 List<String> newline = new ArrayList<>();
@@ -134,20 +134,20 @@ public class Persistence {
                         file.setWritable(true);
                         file.createNewFile();
                     } catch (IOException ex) {
-                        Interface.setMessage(ex.getMessage());
+                        State.setMessage(ex.getMessage());
                     }
                 } else {
                     try {
                         newline.addAll(Files.readAllLines(pathText, encoding));
                     } catch (IOException ex) {
-                        Interface.setMessage(ex.getMessage());
+                        State.setMessage(ex.getMessage());
                     }
                 }
                 newline.add(line);
                 try {
                     Files.write(pathText, newline, encoding);
                 } catch (IOException ex) {
-                    Interface.setMessage(ex.getMessage());
+                    State.setMessage(ex.getMessage());
                 }
             }
         });
@@ -156,7 +156,7 @@ public class Persistence {
     public static void saveNeuralNetwork(NeuralNetwork neuralNetwork, String PERCEPTRONNNET) {
         if (!savingNN.get()) {
             savingThread.execute(() -> {
-                // Interface.setMessage("saving Neural Network");
+                // State.setMessage("saving Neural Network");
                 savingNN.set(true);
                 try {
                     Path tmpPath = Paths.get(ZonedDateTime.now().toLocalDate() + "_" + PERCEPTRONNNET);
@@ -165,9 +165,9 @@ public class Persistence {
                     Files.deleteIfExists(Paths.get(PERCEPTRONNNET));
                     Files.copy(tmpPath, Paths.get(PERCEPTRONNNET));
                     Files.deleteIfExists(tmpPath);
-                    //    Interface.setMessage("saved Neural Network successfully!");
+                    //    State.setMessage("saved Neural Network successfully!");
                 } catch (IOException ex) {
-                    Interface.setMessage(ex.getMessage());
+                    State.setMessage(ex.getMessage());
                 } finally {
                     savingNN.set(false);
                 }

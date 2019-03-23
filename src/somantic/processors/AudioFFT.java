@@ -6,6 +6,7 @@ import ddf.minim.analysis.FFT;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JProgressBar;
+import somantic.state.State;
 
 /**
  * Object of this class audioInputStream able to deliver FFT results for sound,
@@ -16,13 +17,12 @@ public class AudioFFT {
     private final Minim m;
     private final AudioInput in;
     private final FFT fft;
-    private int band;
+    private Integer band = 0;
     private List<Integer> matrix;
     private final Algorytm flattenAlgo;
     private ArrayList<Integer> arrayOfAffects;
 
     public AudioFFT() {
-        this.band = 0;
         matrix = new ArrayList<Integer>();
         m = new Minim(this);
         //AudioStream audioInputStream = m.getInputStream(1, 8, 44.100f, 16);
@@ -38,7 +38,7 @@ public class AudioFFT {
      * the future purposes
      */
     public void analizuj(JProgressBar jp) {
-        Interface.setIsListening(true);
+        State.setIsListening(true);
         try {
             fft.forward(in.mix);
             band = (int) flattenAlgo.licz(fft.getBand(35) * 1000);
@@ -46,7 +46,7 @@ public class AudioFFT {
                 arrayOfAffects.add((int) (fft.getBand(i) * 1000));
             }
             jp.setValue(band);
-            Interface.setVolume(band);
+            State.setVolume(band);
             matrix.add(band);
             for (int i = 0; matrix.size() > 100; i++) {
                 matrix.remove(0);
@@ -54,7 +54,7 @@ public class AudioFFT {
         } catch (Exception e) {
             //System.err.println(e);
         }
-        Interface.setIsListening(false);
+        State.setIsListening(false);
     }
 
     public List<Integer> getMatrix() {

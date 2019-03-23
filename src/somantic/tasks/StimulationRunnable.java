@@ -1,4 +1,4 @@
-package somantic.processors.tasks;
+package somantic.tasks;
 
 import somantic.controller.Controller;
 import static somantic.controller.Controller.recording;
@@ -13,7 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import somantic.neuralnetwork.NeuralNetworkTrainer;
 import somantic.processors.AudioFFT;
-import somantic.processors.Interface;
+import somantic.state.State;
 
 public class StimulationRunnable implements Runnable {
 
@@ -23,7 +23,7 @@ public class StimulationRunnable implements Runnable {
     private final SomanticFacade somanticFactory;
     private final Object stimulationRunnableLock = new Object();
     private final JTextArea communicationBox;
-    private final NeuralNetworkTrainer networkTrainer = Interface.getNeuralNetworkTrainer();
+    private final NeuralNetworkTrainer networkTrainer = State.getNeuralNetworkTrainer();
     private static final String TO_PROCESS_STIMMULATION_PLEASE_IMPORT_TXT
             = "To process stimulation please import txt file or pdf or copy and paste some text below.";
     private static final String YOU_HAD_NOT_PROVIDED_TEST_TO_STIMULATE
@@ -42,27 +42,27 @@ public class StimulationRunnable implements Runnable {
 
     public void run() {
         synchronized (stimulationRunnableLock) {
-            String[] words = WordNetToolbox.tokenize(Interface.getBufferedText());
+            String[] words = WordNetToolbox.tokenize(State.getBufferedText());
             if (words.length < 1) {
                 words = collectWordsWithoutAffect();
                 if (words.length > 1) {
-                    // Interface.setBufferedText(Arrays.asList(words).stream().reduce((a, b) -> a + " " + b).get());
-                    Interface.setMessage(YOU_HAD_NOT_PROVIDED_TEST_TO_STIMULATE);
+                    // State.setBufferedText(Arrays.asList(words).stream().reduce((a, b) -> a + " " + b).get());
+                    State.setMessage(YOU_HAD_NOT_PROVIDED_TEST_TO_STIMULATE);
                 } else {
                     stimulateToggle.setSelected(false);
-                    Interface.setMessage(TO_PROCESS_STIMMULATION_PLEASE_IMPORT_TXT);
+                    State.setMessage(TO_PROCESS_STIMMULATION_PLEASE_IMPORT_TXT);
                 }
             }
             for (int i = 0; i < words.length && stimulateToggle.isSelected() && recording; i++) {
                 cutOffFromBuffer(words, i);
                 Speaker.start(words[i]);
                 if (!WordNetToolbox.explain(words[i]).isEmpty()) {
-                    Interface.setWord(somanticFactory.getOrCreateWord(words[i], null));
+                    State.setWord(somanticFactory.getOrCreateWord(words[i], null));
                     try {
                         stimulationRunnableLock.wait(2500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                        Interface.setMessage(ex.getMessage());
+                        State.setMessage(ex.getMessage());
                     }
                     List<Integer> affect = fft.getMatrix();
                     Integer wordId = somanticFactory.addAffectToWord(words[i], affect);
@@ -71,17 +71,17 @@ public class StimulationRunnable implements Runnable {
                         networkTrainer.learn();
                     }
                 }
-                if (Interface.getSaving() == false) {
+                if (State.getSaving() == false) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                Interface.setSaving(true);
+                                State.setSaving(true);
                                 somanticFactory.saveRepo();
                             } catch (Exception e) {
-                                Interface.setMessage(e.getMessage());
+                                State.setMessage(e.getMessage());
                             } finally {
-                                Interface.setSaving(false);
+                                State.setSaving(false);
                             }
                         }
                     }).start();
@@ -92,7 +92,7 @@ public class StimulationRunnable implements Runnable {
 
     private String[] collectWordsWithoutAffect() {
         String[] words;
-        words = Interface.getSomanticFacade().getSomanticRepo().entrySet().stream()
+        words = State.getSomanticFacade().getSomanticRepo().entrySet().stream()
                 .filter((w) -> w.getValue().getAffects().isEmpty())
                 .map(w -> w.getValue().getSentences())
                 .flatMap(w -> w.stream())
@@ -106,14 +106,14 @@ public class StimulationRunnable implements Runnable {
     }
 
     private void cutOffFromBuffer(String[] words, int i) {
-        Interface.setBufferedText(Interface.getBufferedText().replaceFirst(words[i], "").trim().replace("  ", " "));
-        if (Interface.getBufferedText().length() > 0 && Interface.getBufferedText().charAt(0) == '.') {
-            Interface.setBufferedText(Interface.getBufferedText().replaceFirst(".", "").trim());
+        State.setBufferedText(State.getBufferedText().replaceFirst(words[i], "").trim().replace("  ", " "));
+        if (State.getBufferedText().length() > 0 && State.getBufferedText().charAt(0) == '.') {
+            State.setBufferedText(State.getBufferedText().replaceFirst(".", "").trim());
         }
-        if (Interface.getBufferedText().length() > 10000) {
-            communicationBox.setText(Interface.getBufferedText().substring(0, Interface.getBufferedText().substring(0, 10000).lastIndexOf(".")));
+        if (State.getBufferedText().length() > 10000) {
+            communicationBox.setText(State.getBufferedText().substring(0, State.getBufferedText().substring(0, 10000).lastIndexOf(".")));
         } else {
-            communicationBox.setText(Interface.getBufferedText());
+            communicationBox.setText(State.getBufferedText());
         }
     }
 }

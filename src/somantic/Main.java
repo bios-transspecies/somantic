@@ -1,7 +1,7 @@
 package somantic;
 
 import somantic.controller.Controller;
-import somantic.processors.Interface;
+import somantic.state.State;
 import somantic.library.SomanticFacade;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,7 +17,7 @@ public class Main {
         try {
             SomanticFacade somanticFactory = SomanticFacade.getInstance();
             somanticFactory.loadRepo();
-            Interface.setSomanticFactory(somanticFactory);
+            State.setSomanticFactory(somanticFactory);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

@@ -1,9 +1,9 @@
-package somantic.processors;
+package somantic.state;
 
 import somantic.library.SomanticFacade;
 import somantic.library.SomanticWord;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
@@ -12,7 +12,7 @@ import somantic.controller.Controller;
 import somantic.neuralnetwork.NeuralNetworkTrainer;
 import somantic.persistence.Persistence;
 
-public class Interface {
+public class State {
 
     private static String affects = "";
     private static String words = "";
@@ -24,24 +24,24 @@ public class Interface {
     private static String libraryFile = "library.affect";
     private static String message = "";
     private static String sentences = "";
-    private static Boolean isVisualising = false;
+    private static AtomicBoolean isVisualising = new AtomicBoolean(false);
     private static float[] affectsArray = null;
     private static String login;
     private static String password;
     private static final String url = "https://art-hub.pl/webservice/tal";
     private static String bufferedText;
     private static final String generatedSentencesFilePath = "generated_sentences.txt";
-    private static boolean visualisation;
+    private static AtomicBoolean visualisation = new AtomicBoolean(false);
     private static SomanticFacade somanticFacade = SomanticFacade.getInstance();
     private static JProgressBar jProgressBar;
     private static Long minimalSimilarity = 0L;
-    private static Set<SomanticWord> sentence = new HashSet<>();
-    private static boolean saving;
+    private static Set<SomanticWord> sentence = new ConcurrentSkipListSet<>();
+    private static AtomicBoolean saving = new AtomicBoolean(false);
     private static String literatureLocation;
     private static NeuralNetworkTrainer neuralNetworkTrainer = new NeuralNetworkTrainer();
     private static Controller subscriber;
     private static JLabel nnStateLabel;
-    private static AtomicBoolean liveactIsOn = new AtomicBoolean();
+    private static AtomicBoolean liveactIsOn = new AtomicBoolean(false);
 
     public static String getMessage() {
         return message;
@@ -51,7 +51,7 @@ public class Interface {
         if (subscriber != null) {
             subscriber.setMessage(message);
         }
-        Interface.message = message;
+        State.message = message;
     }
 
     public static String getLibraryFile() {
@@ -59,7 +59,7 @@ public class Interface {
     }
 
     public static void setLibraryFile(String libraryFile) {
-        Interface.libraryFile = libraryFile;
+        State.libraryFile = libraryFile;
     }
 
     public static boolean isSpeaking() {
@@ -67,7 +67,7 @@ public class Interface {
     }
 
     public static void setIsSpeaking(boolean isSpeaking) {
-        Interface.isSpeaking = isSpeaking;
+        State.isSpeaking = isSpeaking;
     }
 
     public static String getAffects() {
@@ -75,7 +75,7 @@ public class Interface {
     }
 
     public static void setAffects(String affects) {
-        Interface.affects = affects;
+        State.affects = affects;
     }
 
     public static String getWords() {
@@ -83,7 +83,7 @@ public class Interface {
     }
 
     public static void setWords(String words) {
-        Interface.words = words.toLowerCase();
+        State.words = words.toLowerCase();
     }
 
     public static String getState() {
@@ -91,7 +91,7 @@ public class Interface {
     }
 
     public static void setState(String state) {
-        Interface.state = state;
+        State.state = state;
     }
 
     public static boolean isListening() {
@@ -111,11 +111,11 @@ public class Interface {
     }
 
     public static Boolean getIsVisualising() {
-        return isVisualising;
+        return isVisualising.get();
     }
 
     public static void setIsVisualising(Boolean aIsVisualising) {
-        isVisualising = aIsVisualising;
+        isVisualising.set(aIsVisualising);
     }
 
     public static float[] getAffectsArray() {
@@ -123,7 +123,7 @@ public class Interface {
     }
 
     public static void setAffectsArray(float[] affectsArray) {
-        Interface.affectsArray = affectsArray;
+        State.affectsArray = affectsArray;
     }
 
     public static SomanticWord getWord() {
@@ -131,7 +131,7 @@ public class Interface {
     }
 
     public static void setWord(SomanticWord word) {
-        Interface.word = word;
+        State.word = word;
     }
 
     public static String getLogin() {
@@ -154,7 +154,7 @@ public class Interface {
         return url;
     }
 
-    static String getDefaultWords() {
+    public static String getDefaultWords() {
         return bufferedText;
     }
 
@@ -175,25 +175,25 @@ public class Interface {
     }
 
     public static void setVisualisation(boolean selected) {
-        Interface.visualisation = selected;
+        State.visualisation.set(selected);
     }
 
     public static boolean isVisualisation() {
-        return visualisation;
+        return visualisation.get();
     }
 
     public static void setSomanticFactory(SomanticFacade riact) {
         if (somanticFacade == null) {
-            Interface.somanticFacade = riact;
+            State.somanticFacade = riact;
         }
     }
 
     public static SomanticFacade getSomanticFacade() {
-        return Interface.somanticFacade;
+        return State.somanticFacade;
     }
 
     public static void setProgressBar(JProgressBar jProgressBar) {
-        Interface.jProgressBar = jProgressBar;
+        State.jProgressBar = jProgressBar;
     }
 
     public static JProgressBar getProgressBar() {
@@ -217,7 +217,7 @@ public class Interface {
     }
 
     public static String getStringSentence() {
-        return Interface.getSentence().stream().map(w -> {
+        return State.getSentence().stream().map(w -> {
             String r = "";
             if (!w.getWords().isEmpty() && w.getWords().iterator().hasNext()) {
                 r = w.getWords().iterator().next();
@@ -229,28 +229,28 @@ public class Interface {
     public static void addSentence(String words) {
         words = words.trim();
         words = words.substring(0, 1).toUpperCase() + words.substring(1);
-        Interface.sentences += words + ". <br> ";
+        State.sentences += words + ". <br> ";
         Persistence.saveNewSentence(words.replace("  ", ", ") + ". ");
     }
 
-    static String getSentences() {
-        return Interface.sentences;
+    public static String getSentences() {
+        return State.sentences;
     }
 
     public static boolean getSaving() {
-        return Interface.saving;
+        return State.saving.get();
     }
 
     public static void setSaving(boolean b) {
-        Interface.saving = b;
+        State.saving.set(b);
     }
 
     public static String getLiteratureLocation() {
-        return Interface.literatureLocation;
+        return State.literatureLocation;
     }
 
     public static void setLiteratureLocation(String literatureLocation) {
-        Interface.literatureLocation = literatureLocation;
+        State.literatureLocation = literatureLocation;
     }
 
     public static NeuralNetworkTrainer getNeuralNetworkTrainer() {

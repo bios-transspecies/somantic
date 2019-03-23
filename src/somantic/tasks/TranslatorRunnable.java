@@ -1,4 +1,4 @@
-package somantic.processors.tasks;
+package somantic.tasks;
 
 import somantic.controller.Controller;
 import somantic.library.SomanticFacade;
@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import somantic.processors.AudioFFT;
-import somantic.processors.Interface;
+import somantic.state.State;
 
 public class TranslatorRunnable implements Runnable {
 
@@ -40,22 +40,22 @@ public class TranslatorRunnable implements Runnable {
             List<String> skip = new ArrayList<>();
             while (translateToggle.isSelected()) {
                 List<Integer> recentAffects = fft.getMatrix();
-                if (Interface.getWords().split(" ").length > 15) {
-                    Interface.addSentence(Interface.getStringSentence());
-                    Interface.setWords(" ");
+                if (State.getWords().split(" ").length > 15) {
+                    State.addSentence(State.getStringSentence());
+                    State.setWords(" ");
                 }
                 if (recentAffects.size() > 99) {
                     long stopienPokrewienstwaMax = 0L;
                     long stopienPokrewienstwaMin = 0L;
 
                     SomanticWord rezultat = null;
-                    Integer neuralResult = Interface.getNeuralNetworkTrainer().ask(recentAffects);
+                    Integer neuralResult = State.getNeuralNetworkTrainer().ask(recentAffects);
                     SomanticWord opt = somanticRepo.getWordById(neuralResult);
                     if (opt!=null) {
                         rezultat = opt;
-                        Interface.setMessage(SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH + rezultat);
+                        State.setMessage(SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH + rezultat);
                     } else {
-                        Interface.setMessage(NEED_TO_TRAIN_NN__TRYING_ALGORYTHMICAL_WA);
+                        State.setMessage(NEED_TO_TRAIN_NN__TRYING_ALGORYTHMICAL_WA);
                         SomanticRepository repo = somanticRepo.getSomanticRepo();
                         for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
                             long stopienPokrewienstwa = 0L;
@@ -86,13 +86,13 @@ public class TranslatorRunnable implements Runnable {
                     if (rezultat != null) {
                         stopienPokrewienstwaMin = stopienPokrewienstwaMax;
                         if (rezultat.getWords().iterator().hasNext()) {
-                            Interface.getNeuralNetworkTrainer().addToLearningDataset(recentAffects, rezultat.getId());
-                            Interface.getNeuralNetworkTrainer().learn();
-                            Interface.setWords(Interface.getWords() + " " + rezultat.getWords().iterator().next());
+                            State.getNeuralNetworkTrainer().addToLearningDataset(recentAffects, rezultat.getId());
+                            State.getNeuralNetworkTrainer().learn();
+                            State.setWords(State.getWords() + " " + rezultat.getWords().iterator().next());
                             Speaker.start(rezultat.getWords().iterator().next());
-                            Interface.setWord(rezultat);
-                            Interface.setSentence(somanticRepo.getArranger().rewrite(Interface.getWords()));
-                            communicationBox.setText(Interface.getStringSentence());
+                            State.setWord(rezultat);
+                            State.setSentence(somanticRepo.getArranger().rewrite(State.getWords()));
+                            communicationBox.setText(State.getStringSentence());
                         }
                         rezultat = null;
                     } else {

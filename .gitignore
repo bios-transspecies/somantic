@@ -50,5 +50,6 @@ Temporary Items
 out/
 /dist/
 /library.affect
-/library_1.affect
+/temporary**
+**neuralnetwork_state**
 /neuralnetwork_state.nnet

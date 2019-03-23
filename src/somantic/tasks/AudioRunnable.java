@@ -1,10 +1,10 @@
-package somantic.processors.tasks;
+package somantic.tasks;
 
 import somantic.controller.Controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import somantic.processors.AudioFFT;
-import somantic.processors.Interface;
+import somantic.state.State;
 
 public class AudioRunnable implements Runnable {
 
@@ -17,7 +17,7 @@ public class AudioRunnable implements Runnable {
     @Override
     public void run() {
         while (true) {
-            fft.analizuj(Interface.getProgressBar());
+            fft.analizuj(State.getProgressBar());
             synchronized (this) {
                 try {
                     this.wait(10);

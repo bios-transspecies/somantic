@@ -1,9 +1,9 @@
-package somantic.processors.tasks;
+package somantic.tasks;
 
 import somantic.controller.Controller;
 import java.time.ZonedDateTime;
 import javax.swing.JToggleButton;
-import somantic.processors.Interface;
+import somantic.state.State;
 
 public class LiveAct implements Runnable {
 
@@ -27,7 +27,7 @@ public class LiveAct implements Runnable {
         while (liveToggleButton.isSelected()) {
             if (ZonedDateTime.now().isAfter(then.plusSeconds(scheduler))) {
                 then = ZonedDateTime.now();
-                if (Interface.getWords().length() > 0) {
+                if (State.getWords().length() > 0) {
                     stimulateToggle.setSelected(!stimulateToggle.isSelected());
                     translateToggle.setSelected(!stimulateToggle.isSelected());
                 } else {
@@ -36,7 +36,7 @@ public class LiveAct implements Runnable {
                 if (translateToggle.isSelected()) {
                     controller.runTranslate();
                 } else if (stimulateToggle.isSelected()) {
-                    Interface.setWords("");
+                    State.setWords("");
                     controller.runStimulate();
                 }
             }

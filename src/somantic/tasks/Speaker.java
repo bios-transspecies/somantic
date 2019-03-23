@@ -1,4 +1,4 @@
-package somantic.processors.tasks;
+package somantic.tasks;
 
 import guru.ttslib.TTS;
 import java.util.Locale;
@@ -6,7 +6,7 @@ import javax.speech.Central;
 import javax.speech.EngineException;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
-import somantic.processors.Interface;
+import somantic.state.State;
 
 class Speaker {
 
@@ -17,9 +17,9 @@ class Speaker {
         Speaker.initiate();
         if (word != null && word.length() > 0) {
             //new Thread(() -> {
-            Interface.setIsSpeaking(true);
+            State.setIsSpeaking(true);
             synthesizer.speakPlainText(word, null);
-            Interface.setIsSpeaking(false);
+            State.setIsSpeaking(false);
             //}).start();
         }
     }

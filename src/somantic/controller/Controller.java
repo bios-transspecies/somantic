@@ -1,12 +1,12 @@
 package somantic.controller;
 
 import somantic.processors.AudioFFT;
-import somantic.processors.tasks.AudioRunnable;
-import somantic.processors.Interface;
-import somantic.processors.tasks.LiveAct;
-import somantic.processors.tasks.StimulationRunnable;
-import somantic.processors.tasks.TranslatorRunnable;
-import somantic.processors.View;
+import somantic.tasks.AudioRunnable;
+import somantic.state.State;
+import somantic.tasks.LiveAct;
+import somantic.tasks.StimulationRunnable;
+import somantic.tasks.TranslatorRunnable;
+import somantic.view.View;
 import somantic.library.SomanticFacade;
 import java.awt.Color;
 import java.awt.Component;
@@ -25,7 +25,7 @@ public class Controller extends javax.swing.JFrame {
     private final SomanticFacade somanticFactory;
 
     public Controller() {
-        somanticFactory = Interface.getSomanticFacade();
+        somanticFactory = State.getSomanticFacade();
         initComponents();
         libraryFileChooser = new JFileChooser();
         libraryFileChooser.addActionListener((java.awt.event.ActionEvent evt) -> {
@@ -39,10 +39,10 @@ public class Controller extends javax.swing.JFrame {
         view = new View();
         view.start(fft);
         messages.setBackground(Color.GRAY);
-        Interface.setBufferedText(communicationBox.getText());
-        Interface.setProgressBar(jProgressBar1);
-        Interface.subscribeMessages(this);
-        Interface.setNnStateLabel(nnStateLabel);
+        State.setBufferedText(communicationBox.getText());
+        State.setProgressBar(jProgressBar1);
+        State.subscribeMessages(this);
+        State.setNnStateLabel(nnStateLabel);
     }
 
     private void listen() {
@@ -59,10 +59,10 @@ public class Controller extends javax.swing.JFrame {
         boolean error = false;
         if (null != file && file.isFile()) {
             String res = file.getAbsolutePath();
-            Interface.setLiteratureLocation(res);
-            messages.setText("Trying to load file '" + Interface.getLiteratureLocation() + "' as a stimulation text.");
+            State.setLiteratureLocation(res);
+            messages.setText("Trying to load file '" + State.getLiteratureLocation() + "' as a stimulation text.");
             try {
-                communicationBox.setText(normalize(Persistence.loadLiteraure(Interface.getLiteratureLocation())));
+                communicationBox.setText(normalize(Persistence.loadLiteraure(State.getLiteratureLocation())));
             } catch (Exception e) {
                 error = true;
                 messages.setText("couldn't load any text... " + e);
@@ -313,14 +313,14 @@ public class Controller extends javax.swing.JFrame {
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         JToggleButton b = (JToggleButton) evt.getSource();
         if (!b.isSelected()) {
-            Interface.getNeuralNetworkTrainer().stopLearning();
+            State.getNeuralNetworkTrainer().stopLearning();
         } else {
-            Interface.getNeuralNetworkTrainer().useSomanticLibraryToLearn(b);
+            State.getNeuralNetworkTrainer().useSomanticLibraryToLearn(b);
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void visualiseToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualiseToggleActionPerformed
-        Interface.setVisualisation(visualiseToggle.isSelected());
+        State.setVisualisation(visualiseToggle.isSelected());
         view.setVisualiseToggle(visualiseToggle);
         messages.setText("Visuals are fine for fine art.");
     }//GEN-LAST:event_visualiseToggleActionPerformed
@@ -344,7 +344,7 @@ public class Controller extends javax.swing.JFrame {
     }//GEN-LAST:event_fileManagerToggleActionPerformed
 
     private void inputPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputPasswordActionPerformed
-        Interface.setPassword(String.copyValueOf(inputPassword.getPassword()));
+        State.setPassword(String.copyValueOf(inputPassword.getPassword()));
     }//GEN-LAST:event_inputPasswordActionPerformed
 
     private void translateToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_translateToggleActionPerformed
@@ -353,7 +353,7 @@ public class Controller extends javax.swing.JFrame {
         }
         stimulateToggle.setSelected(false);
         stimulateToggle.setText("Stimulate");
-        Interface.setWords("");
+        State.setWords("");
         if (translateToggle.isSelected()) {
             translate();
         } else {
@@ -379,21 +379,21 @@ public class Controller extends javax.swing.JFrame {
     }//GEN-LAST:event_speakAndStimulate
 
     private void inputLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputLoginActionPerformed
-        Interface.setLogin(inputLogin.getText());
+        State.setLogin(inputLogin.getText());
     }//GEN-LAST:event_inputLoginActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        Interface.setPassword(String.copyValueOf(inputPassword.getPassword()));
-        Interface.setLogin(inputLogin.getText());
+        State.setPassword(String.copyValueOf(inputPassword.getPassword()));
+        State.setLogin(inputLogin.getText());
     }//GEN-LAST:event_loginActionPerformed
 
     private void translated() {
         translateToggle.setText("Translate");
         communicationBox.setEditable(true);
         messages.setText("Maybe we should to expand vocabulary and stimulate more?");
-        Interface.setState("stopped");
+        State.setState("stopped");
         recording = false;
-        Interface.setIsVisualising(false);
+        State.setIsVisualising(false);
         communicationBox.setEditable(true);
     }
 
@@ -401,8 +401,8 @@ public class Controller extends javax.swing.JFrame {
         stimulated();
         translateToggle.setText("Translation");
         messages.setText("Translating the affests into words and trying to find some sentences.");
-        Interface.setIsVisualising(true);
-        Interface.setState("translate");
+        State.setIsVisualising(true);
+        State.setState("translate");
         recording = true;
         communicationBox.setText("");
         communicationBox.setEditable(false);
@@ -418,26 +418,26 @@ public class Controller extends javax.swing.JFrame {
         stimulateToggle.setText("Stimulate");
         if (somanticFactory.getSomanticRepo() != null) {
             messages.setText("OK! To try to translate some affects to English push TRANSLATE button.");
-            if (Interface.getNeuralNetworkTrainer().getSize() > 1) {
-                new Thread(() -> Interface.getNeuralNetworkTrainer().learn()).start();
+            if (State.getNeuralNetworkTrainer().getSize() > 1) {
+                new Thread(() -> State.getNeuralNetworkTrainer().learn()).start();
             }
         } else {
             messages.setText("Something went wrong. Library of affects still is empty. Try again!");
         }
-        Interface.setState("stopped");
+        State.setState("stopped");
         recording = false;
     }
 
     private void stimulate() {
         messages.setText("Building relations between words and affects in progress.");
         stimulateToggle.setText("Stimulation");
-        Interface.setState("Stimulate");
+        State.setState("Stimulate");
         recording = true;
-        Interface.setIsVisualising(visualiseToggle.isSelected());
-        Interface.setBufferedText(normalize(communicationBox.getText()));
+        State.setIsVisualising(visualiseToggle.isSelected());
+        State.setBufferedText(normalize(communicationBox.getText()));
         new Thread(() -> {
-            communicationBox.setText(normalize(Interface.getBufferedText()));
-            somanticFactory.addTextToRepo(normalize(Interface.getBufferedText()));
+            communicationBox.setText(normalize(State.getBufferedText()));
+            somanticFactory.addTextToRepo(normalize(State.getBufferedText()));
         }).start();
         communicationBox.setEditable(false);
         StimulationRunnable stimulationRunnable = new StimulationRunnable(somanticFactory, stimulateToggle, fft, communicationBox);
