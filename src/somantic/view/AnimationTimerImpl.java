@@ -31,7 +31,10 @@ public class AnimationTimerImpl extends AnimationTimer {
     private Canvas canvas;
     private final Group root;
     private final SomanticSynthesizer somanticSynthesizer = new SomanticSynthesizer();
-
+    private GraphicsContext gc;
+    private int height;
+    private int width;
+    
     public AnimationTimerImpl(AudioFFT fft, JFrame window, Group root) {
         this.fft = fft;
         this.window = window;
@@ -48,21 +51,32 @@ public class AnimationTimerImpl extends AnimationTimer {
     }
 
     private void visualise(ArrayList<Integer> arrayOfAffects) {
-        canvas = new Canvas(window.getWidth(), window.getHeight());
-        root.getChildren().clear();
+        //
         int h = window.getHeight();
         int w = window.getWidth();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        GraphicsContext gc = getGraphicContext(h, w);
         gc.setFill(Color.BLACK);
         gc.setGlobalAlpha(0.20);
         gc.setStroke(Color.WHITE);
-        root.getChildren().add(canvas);
         graphicsLineDrawer(arrayOfAffects, w, h, gc);
-        textWriter(gc, w, h, arrayOfAffects);
-        gc.restore();
+        textWriter(gc, w, h);
+        //gc.restore();
     }
 
-    private void textWriter(GraphicsContext gc, int w, int h, ArrayList<Integer> arrayOfAffects) {
+    private GraphicsContext getGraphicContext(int h, int w) {
+        if(h==height&&w==width)
+            return gc;
+        height = h;
+        width = w;
+        canvas = new Canvas(window.getWidth(), window.getHeight());
+        root.getChildren().clear();
+        root.getChildren().add(canvas);
+        gc = canvas.getGraphicsContext2D();
+        return gc;
+    }
+
+    private void textWriter(GraphicsContext gc, int w, int h) {
+        gc.fillRect(0, 0, w, h);
         gc.setGlobalAlpha(0.80);
         gc.setFill(Color.WHITE);
         gc.fillText("state: " + State.getState(), 100, 100);
@@ -79,16 +93,32 @@ public class AnimationTimerImpl extends AnimationTimer {
         String[] sentences = State.getSentences().split(" <br> ");
         gc.setGlobalAlpha(0.20);
         int line = 40;
+        generatedSentences(sentences, line, gc, w, h);
+        translatedWordsToCombine(gc);
+        actualSentence(gc);
+        cleanups();
+    }
+
+    private void cleanups() {
+        if (State.getWords().length() > 200) {
+            State.setWords(" ");
+        }
+    }
+
+    private void actualSentence(GraphicsContext gc) {
+        gc.fillText("sentence: " + State.getStringSentence().toLowerCase(), 100, 140);
+    }
+
+    private void translatedWordsToCombine(GraphicsContext gc) {
+        gc.fillText("words: " + State.getWords().toLowerCase().toLowerCase(), 100, 120);
+    }
+
+    private void generatedSentences(String[] sentences, int line, GraphicsContext gc, int w, int h) {
         for (String sentence : sentences) {
             line = line + 12;
             if (!sentence.isEmpty()) {
                 gc.fillText(sentence, w / 10, (h / 3) + line, w - w / 10);
             }
-        }
-        gc.fillText("words: " + State.getWords().toLowerCase().toLowerCase(), 100, 120);
-        gc.fillText("sentence: " + State.getStringSentence().toLowerCase(), 100, 140);
-        if (State.getWords().length() > 200) {
-            State.setWords(" ");
         }
     }
 
@@ -107,11 +137,15 @@ public class AnimationTimerImpl extends AnimationTimer {
         for (int i = 0; i < arrayOfAffects.size(); i++) {
             drawLines(i, arr, arrayOfAffects, w, h, gc);
             Integer zz = arrayOfAffects.get(i);
-            if(zz!=null){
-                somanticSynthesizer.setFrequency(i);
-                somanticSynthesizer.setVolume(zz);
-                somanticSynthesizer.update();
-            }
+            triggerSynthesizer(zz, i);
+        }
+    }
+
+    private void triggerSynthesizer(Integer zz, int i) {
+        if(zz!=null){
+            somanticSynthesizer.setFrequency(i);
+            somanticSynthesizer.setVolume(zz);
+            somanticSynthesizer.update();
         }
     }
 
