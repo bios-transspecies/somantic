@@ -237,6 +237,10 @@ public class State {
         return State.sentences;
     }
 
+    public static void resetSentences() {
+        State.sentences = " ";
+    }
+
     public static boolean getSaving() {
         return State.saving.get();
     }

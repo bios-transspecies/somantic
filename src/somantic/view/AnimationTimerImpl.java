@@ -1,15 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package somantic.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -28,13 +28,12 @@ public class AnimationTimerImpl extends AnimationTimer {
     private int doxA;
     private int odyA;
     private int odxA;
-    private Canvas canvas;
-    private final Group root;
-    private final SomanticSynthesizer somanticSynthesizer = new SomanticSynthesizer();
-    private GraphicsContext gc;
     private int height;
     private int width;
-    
+    private final Group root;
+    private final SomanticSynthesizer somanticSynthesizer = new SomanticSynthesizer();
+    private final Map<String, Canvas> canvasRepository = new HashMap<>();
+
     public AnimationTimerImpl(AudioFFT fft, JFrame window, Group root) {
         this.fft = fft;
         this.window = window;
@@ -45,45 +44,65 @@ public class AnimationTimerImpl extends AnimationTimer {
     public void handle(long now) {
         ArrayList<Integer> arrayOfAffects = fft.getArrayOfAffects();
         window.setVisible(State.isVisualisation());
+        height = window.getHeight();
+        width = window.getWidth();
         if (State.isVisualisation()) {
             visualise(arrayOfAffects);
         }
     }
 
     private void visualise(ArrayList<Integer> arrayOfAffects) {
-        //
-        int h = window.getHeight();
-        int w = window.getWidth();
-        GraphicsContext gc = getGraphicContext(h, w);
-        gc.setFill(Color.BLACK);
-        gc.setGlobalAlpha(0.20);
-        gc.setStroke(Color.WHITE);
-        graphicsLineDrawer(arrayOfAffects, w, h, gc);
-        textWriter(gc, w, h);
-        //gc.restore();
+        graphicsLineDrawer(arrayOfAffects);
+        textWriter();
     }
 
-    private GraphicsContext getGraphicContext(int h, int w) {
-        if(h==height&&w==width)
-            return gc;
-        height = h;
-        width = w;
-        canvas = new Canvas(window.getWidth(), window.getHeight());
-        root.getChildren().clear();
+    private GraphicsContext getGraphicContext(String element) {
+        Canvas canvas = null;
+        if (canvasRepository.containsKey(element)) {
+            canvas = canvasRepository.get(element);
+            if(canvas.getWidth() != width || canvas.getHeight() != height){
+                root.getChildren().remove(canvas);
+                canvas = newCanvas(canvas);
+            }
+        } else {
+            canvas = newCanvas(canvas);
+        }
+        canvasRepository.put(element, canvas);
+        return canvas.getGraphicsContext2D();
+    }
+
+    private Canvas newCanvas(Canvas canvas) {
+        canvas = new Canvas(width, height);
         root.getChildren().add(canvas);
-        gc = canvas.getGraphicsContext2D();
-        return gc;
+        return canvas;
     }
 
-    private void textWriter(GraphicsContext gc, int w, int h) {
-        gc.fillRect(0, 0, w, h);
+    private void graphicsLineDrawer(ArrayList<Integer> arrayOfAffects) {
+        GraphicsContext gc = getGraphicContext("line");
+        fadeOut(gc);
+        gc.setGlobalAlpha(0.20);
+        int[] arr = new int[4];
+        arrayOfAffects = prepareArrayOfAffects(arrayOfAffects);
+        for (int i = 0; i < arrayOfAffects.size(); i++) {
+            drawLines(i, arr, arrayOfAffects, gc);
+            triggerSynthesizer(arrayOfAffects.get(i), i);
+        }
+    }
+
+    private void textWriter() {
+        GraphicsContext gc = getGraphicContext("text");
+        fadeOut(gc);
         gc.setGlobalAlpha(0.80);
         gc.setFill(Color.WHITE);
         gc.fillText("state: " + State.getState(), 100, 100);
-        gc.setFont(Font.font("Impact", w / 30));
+        gc.setFont(Font.font("Impact", width / 30));
         if (State.getWord() != null) {
-            genrateWords(gc, w, h);
+            genrateWords(gc, width, height);
         }
+    }
+
+    private void fadeOut(GraphicsContext gc) {
+        gc.clearRect(0, 0, width, height);
     }
 
     private void genrateWords(GraphicsContext gc, int w, int h) {
@@ -92,7 +111,7 @@ public class AnimationTimerImpl extends AnimationTimer {
         gc.fillText(getDescription(), w / 4, (h / 3) + 30);
         String[] sentences = State.getSentences().split(" <br> ");
         gc.setGlobalAlpha(0.20);
-        int line = 40;
+        int line = 80;
         generatedSentences(sentences, line, gc, w, h);
         translatedWordsToCombine(gc);
         actualSentence(gc);
@@ -100,6 +119,9 @@ public class AnimationTimerImpl extends AnimationTimer {
     }
 
     private void cleanups() {
+        if (State.getSentences().split(" <br> ").length > 20) {
+            State.resetSentences();
+        }
         if (State.getWords().length() > 200) {
             State.setWords(" ");
         }
@@ -113,9 +135,12 @@ public class AnimationTimerImpl extends AnimationTimer {
         gc.fillText("words: " + State.getWords().toLowerCase().toLowerCase(), 100, 120);
     }
 
-    private void generatedSentences(String[] sentences, int line, GraphicsContext gc, int w, int h) {
-        for (String sentence : sentences) {
-            line = line + 12;
+    private void generatedSentences(String[] sentences,
+            int line, GraphicsContext gc, int w, int h) {
+        int first = sentences.length > 10 ? sentences.length - 10 : 0;
+        for (int i = first; i < sentences.length; i++) {
+            String sentence = sentences[i];
+            line = line + 18;
             if (!sentence.isEmpty()) {
                 gc.fillText(sentence, w / 10, (h / 3) + line, w - w / 10);
             }
@@ -123,33 +148,24 @@ public class AnimationTimerImpl extends AnimationTimer {
     }
 
     private static String getDescription() {
-        if(State.getWord()==null || State.getWord().getDescription() == null)
+        if (State.getWord() == null
+                || State.getWord().getDescription() == null) {
             return "";
+        }
         return State.getWord().getDescription().replaceAll(";", "\n");
     }
 
-    private void graphicsLineDrawer(ArrayList<Integer> arrayOfAffects, 
-            int w, int h, GraphicsContext gc) {
-        gc.setGlobalAlpha(0.20);
-        int k = 0;
-        int[] arr = new int[4];
-        arrayOfAffects = prepareArrayOfAffects(arrayOfAffects);
-        for (int i = 0; i < arrayOfAffects.size(); i++) {
-            drawLines(i, arr, arrayOfAffects, w, h, gc);
-            Integer zz = arrayOfAffects.get(i);
-            triggerSynthesizer(zz, i);
-        }
-    }
-
     private void triggerSynthesizer(Integer zz, int i) {
-        if(zz!=null){
+        if (zz != null) {
             somanticSynthesizer.setFrequency(i);
             somanticSynthesizer.setVolume(zz);
             somanticSynthesizer.update();
         }
     }
 
-    private void drawLines(int i, int[] arr, ArrayList<Integer> arrayOfAffects, int w, int h, GraphicsContext gc) {
+    private void drawLines(int i, int[] arr,
+            ArrayList<Integer> arrayOfAffects,
+            GraphicsContext gc) {
         int k;
         boolean even = isEven(i);
         int j = i % 4;
@@ -163,47 +179,47 @@ public class AnimationTimerImpl extends AnimationTimer {
             int odx, ody, dox, doy;
             if (j == 3) {
                 if (i % 3 == 0) {
-                    odx = (odxA == 0 ? w / 2 : odxA);
-                    ody = (odyA == 0 ? h / 2 : odyA);
-                    dox = ((arr[2] % (w / 2)) + (w / 2)) % w;
-                    doy = (h - arr[3] % h) % h;
+                    odx = (odxA == 0 ? width / 2 : odxA);
+                    ody = (odyA == 0 ? height / 2 : odyA);
+                    dox = ((arr[2] % (width / 2)) + (width / 2)) + width/2;
+                    doy = (height - arr[3] + height/2) % height;
                 } else {
-                    odx = (odxA == 0 ? w / 2 : odxA);
-                    ody = (odyA == 0 ? h / 2 : odyA);
-                    dox = (w / 2 - arr[2] % w) % w;
-                    doy = (h - arr[3] % h) % h;
+                    odx = (odxA == 0 ? width / 2 : odxA);
+                    ody = (odyA == 0 ? height / 2 : odyA);
+                    dox = (width / 2 - arr[2] % width) % width;
+                    doy = (height - arr[3] % height/2) + height/2;
                 }
                 if (even) {
-                    odxA = (odx + w / 2);
-                    odyA = (ody + h / 2);
+                    odxA = (odx + width / 2);
+                    odyA = (ody + height / 2);
                     doxA = ((doxA * 5 + dox) / 6);
                     doyA = ((doyA * 5 + doy) / 6);
                 }
-                
-                int middleWidth = w / 2;
-                
-                if (odx != middleWidth || dox != middleWidth) {
-                    gc.strokeLine(odxA % (w * middleWidth), odyA % (middleWidth), dox % (middleWidth), doy % (middleWidth));
+
+                int middleWidth = width / 2;
+
+                if (true) {
+                    gc.strokeLine(odxA % (width * middleWidth), odyA % (middleWidth), dox % (middleWidth), doy % (middleWidth));
                     dox = even ? dox : -dox;
                     doy = even ? doy : -doy;
                     doxA = even ? doxA : -doxA;
                     doyA = even ? doyA : -doyA;
-                    
+
                     Paint p = new Color(
-                            toColourValue(Math.abs(dox)), 
-                            toColourValue(Math.abs(doy)), 
-                            toColourValue(Math.abs(doxA)), 
+                            toColourValue(Math.abs(dox)),
+                            toColourValue(Math.abs(doy)),
+                            toColourValue(Math.abs(doxA)),
                             toColourValue(Math.abs(doyA)));
-                    
                     gc.setStroke(p);
                     gc.strokeLine(dox % (middleWidth), doy % (middleWidth), doxA % (middleWidth), doyA % (middleWidth));
+                    gc.strokeLine(dox + (middleWidth), doy + (middleWidth), doxA + (middleWidth), doyA + (middleWidth));
                 }
             }
         }
     }
 
     private static double toColourValue(int x) throws NumberFormatException {
-        double r = (Double.parseDouble(String.valueOf(x))%256D) / 256D;
+        double r = (Double.parseDouble(String.valueOf(x)) % 256D) / 256D;
         return r;
     }
 
