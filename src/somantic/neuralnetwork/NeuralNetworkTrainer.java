@@ -123,20 +123,19 @@ public class NeuralNetworkTrainer {
             Integer result = findWordId(neuralNetwork.getOutputNeurons());
             State.setMessage("found response: " + result);
             setText("response: " + result.toString());
-            // System.out.println(result);
             return result;
         }).get();
     }
 
     private Integer findWordId(Neuron[] networkOutput) {
-        Integer result = null;
+        Integer result = 0;
         double lastvalue = Integer.MIN_VALUE;
         for (int i = 0; i < networkOutput.length; i++) {
             double value = networkOutput[i].getOutput();
             boolean yes = value > lastvalue;
             result = yes ? i : result;
             lastvalue = yes ? value : lastvalue;
-            if(value>0) 
+            if (value>0)
                  System.out.println(value);
         }
         if(result>0)
