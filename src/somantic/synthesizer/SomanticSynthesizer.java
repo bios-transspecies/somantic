@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Reverb;
 import net.beadsproject.beads.ugens.WavePlayer;
 import somantic.processors.Algorytm;
 
@@ -19,12 +20,14 @@ public class SomanticSynthesizer {
     private final WavePlayer wp = new WavePlayer(ac, wave.get(), Buffer.SINE);
     private final Gain g = new Gain(ac, 1, 0.2f);
     private final Algorytm a = new Algorytm();
+    private final Reverb reverb = new Reverb(ac);
 
 
     public SomanticSynthesizer() {
         wp.start();
         g.addInput(wp);
-        ac.out.addInput(g);
+        reverb.addInput(g);
+        ac.out.addInput(reverb);
         ac.start();
     }
     
