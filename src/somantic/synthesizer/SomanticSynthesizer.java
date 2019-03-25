@@ -45,7 +45,9 @@ public class SomanticSynthesizer {
     }
 
     public void setVolume(Integer zz) {
-        g.setGain(a.licz(Float.valueOf(String.valueOf(zz)) / 100));
+        float in = Float.valueOf(String.valueOf(zz)) / 10;
+        if(in > 1) in = 1;
+        g.setGain(a.licz(in));
     }
 
     public void update() {   

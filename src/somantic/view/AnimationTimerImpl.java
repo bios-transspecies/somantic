@@ -166,6 +166,8 @@ public class AnimationTimerImpl extends AnimationTimer {
     private void drawLines(int i, int[] arr,
             ArrayList<Integer> arrayOfAffects,
             GraphicsContext gc) {
+        int width = (int) (this.width*2);
+        int height = (int) (this.height*1.3);
         int k;
         boolean even = isEven(i);
         int j = i % 4;
