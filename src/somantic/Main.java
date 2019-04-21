@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 public class Main {
 
     public static final int MAX_WORDS_IN_REPOSITORY = 20_000;
+    public static final int MILISECONDS_TO_WAIT_WHEN_STIMULATING = 2500;
+    public static final int MILISECONDS_TO_WAIT_WHEN_TRANSLATING = 1500;
     private static final String SOMANTIC_TITLE = "SOMANTIC :: first AFFECTIVE TRANSSPECIES TRANSLATOR by Michal Brzezinski";
 
     public static void main(String[] args) {
