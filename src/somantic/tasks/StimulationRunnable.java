@@ -98,7 +98,7 @@ public class StimulationRunnable implements Runnable {
                 .flatMap(w -> w.stream())
                 .collect(Collectors.toList()).stream()
                 .flatMap(w -> w.stream())
-                .map(w -> w!=null ? w.getWords() : new ArrayList<String>())
+                .map(w -> w != null ? w.getWords() : new ArrayList<String>())
                 .flatMap(w -> w.stream())
                 .collect(Collectors.joining(" "))
                 .split(" ");
