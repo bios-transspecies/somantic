@@ -21,7 +21,7 @@ public class View {
     private final Group root;
     private AnimationTimer timer;
     private JToggleButton visualiseToggle;
-    
+
     public View() {
         jfxPanel = new JFXPanel();
         window = new JFrame();

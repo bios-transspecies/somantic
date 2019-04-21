@@ -60,7 +60,7 @@ public class AnimationTimerImpl extends AnimationTimer {
         Canvas canvas = null;
         if (canvasRepository.containsKey(element)) {
             canvas = canvasRepository.get(element);
-            if(canvas.getWidth() != width || canvas.getHeight() != height){
+            if (canvas.getWidth() != width || canvas.getHeight() != height) {
                 root.getChildren().remove(canvas);
                 canvas = newCanvas(canvas);
             }
@@ -166,8 +166,8 @@ public class AnimationTimerImpl extends AnimationTimer {
     private void drawLines(int i, int[] arr,
             ArrayList<Integer> arrayOfAffects,
             GraphicsContext gc) {
-        int width = (int) (this.width*2);
-        int height = (int) (this.height*1.3);
+        int width = (int) (this.width * 2);
+        int height = (int) (this.height * 1.3);
         int k;
         boolean even = isEven(i);
         int j = i % 4;
@@ -183,13 +183,13 @@ public class AnimationTimerImpl extends AnimationTimer {
                 if (i % 3 == 0) {
                     odx = (odxA == 0 ? width / 2 : odxA);
                     ody = (odyA == 0 ? height / 2 : odyA);
-                    dox = ((arr[2] % (width / 2)) + (width / 2)) + width/2;
-                    doy = (height - arr[3] + height/2) % height;
+                    dox = ((arr[2] % (width / 2)) + (width / 2)) + width / 2;
+                    doy = (height - arr[3] + height / 2) % height;
                 } else {
                     odx = (odxA == 0 ? width / 2 : odxA);
                     ody = (odyA == 0 ? height / 2 : odyA);
                     dox = (width / 2 - arr[2] % width) % width;
-                    doy = (height - arr[3] % height/2) + height/2;
+                    doy = (height - arr[3] % height / 2) + height / 2;
                 }
                 if (even) {
                     odxA = (odx + width / 2);

@@ -68,8 +68,9 @@ public class SomanticFacade {
                 setContext(word, tagged, i, previous, sentence);
             } else if (words[i].contains(".") || words[i].contains("?") || words[i].contains("!") || words[i].contains(";")) {
                 for (SomanticWord somanticWord : sentence) {
-                    if(somanticWord!=null)
-                    somanticWord.addSentence(sentence);
+                    if (somanticWord != null) {
+                        somanticWord.addSentence(sentence);
+                    }
                 }
                 sentence = new SomanticSentence();
             } else {
@@ -119,12 +120,14 @@ public class SomanticFacade {
     }
 
     public SomanticWord getWordById(Integer id) {
-        if(id==null) return null;
+        if (id == null) {
+            return null;
+        }
         return repo.entrySet().stream()
                 .map(s -> s.getValue())
                 .filter(
                         (s) -> s.getId() == id
                         && s.getLemma().trim().length() > 0)
-                .findFirst().orElseGet(()->null);
+                .findFirst().orElseGet(() -> null);
     }
 }

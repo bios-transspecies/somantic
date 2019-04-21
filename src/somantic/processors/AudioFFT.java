@@ -34,8 +34,8 @@ public class AudioFFT {
     }
 
     /**
-     * method will prepare data based on FFT analyse of the audio signal for
-     * the future purposes
+     * method will prepare data based on FFT analyse of the audio signal for the
+     * future purposes
      */
     public void analizuj(JProgressBar jp) {
         State.setIsListening(true);

@@ -135,19 +135,22 @@ public class NeuralNetworkTrainer {
             boolean yes = value > lastvalue;
             result = yes ? i : result;
             lastvalue = yes ? value : lastvalue;
-            if (value>0)
-                 System.out.println(value);
+            if (value > 0) {
+                System.out.println(value);
+            }
         }
-        if(result>0)
-             System.out.println("the winner is: "+result);
+        if (result > 0) {
+            System.out.println("the winner is: " + result);
+        }
         return result;
     }
 
     private void listener(LearningEvent e) {
         LearningEvent.Type t = e.getEventType();
         // System.out.println(t);
-        if(t==LearningEvent.Type.LEARNING_STOPPED)
+        if (t == LearningEvent.Type.LEARNING_STOPPED) {
             busy.set(false);
+        }
         setText(t.name().toLowerCase().replace("_", " "));
     }
 
@@ -194,18 +197,17 @@ public class NeuralNetworkTrainer {
                         .getSomanticRepo()
                         .entrySet()
                         .forEach(a -> a.getValue()
-                                .getAffects()
-                                .forEach(
-                                        v -> addRowToLearningDataset(
-                                                stringify(v), 
-                                                a.getValue().getId()
-                                        )
-                                ));
+                        .getAffects()
+                        .forEach(
+                                v -> addRowToLearningDataset(
+                                        stringify(v),
+                                        a.getValue().getId()
+                                )
+                        ));
                 State.getNnStateLabel().setText("");
                 return true;
             }).get();
-           // if(res)
-                learn();
+            learn();
         } catch (InterruptedException ex) {
             Logger.getLogger(NeuralNetworkTrainer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
@@ -222,7 +224,7 @@ public class NeuralNetworkTrainer {
         } else if (l.getText().contains(text)) {
             t = "[" + text + "]";
         } else {
-           // // System.out.println(t);
+            // // System.out.println(t);
         }
         if (t.length() > 40) {
             l.setText(text);

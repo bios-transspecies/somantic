@@ -22,7 +22,6 @@ public class SomanticSynthesizer {
     private final Algorytm a = new Algorytm();
     private final Reverb reverb = new Reverb(ac);
 
-
     public SomanticSynthesizer() {
         wp.start();
         g.addInput(wp);
@@ -30,28 +29,30 @@ public class SomanticSynthesizer {
         ac.out.addInput(reverb);
         ac.start();
     }
-    
-    public void setFrequency(float s){
+
+    public void setFrequency(float s) {
         wave.set(s);
         wp.setFrequency(wave.get());
     }
-    
-    public float getFrequency(){
+
+    public float getFrequency() {
         return a.licz(wp.getFrequency());
     }
-    
-    public void stop(){
+
+    public void stop() {
         wp.kill();
     }
 
     public void setVolume(Integer zz) {
         float in = Float.valueOf(String.valueOf(zz)) / 10;
-        if(in > 1) in = 1;
+        if (in > 1) {
+            in = 1;
+        }
         g.setGain(a.licz(in));
     }
 
-    public void update() {   
+    public void update() {
         g.update();
     }
-    
+
 }

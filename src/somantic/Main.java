@@ -9,10 +9,9 @@ import java.util.logging.Logger;
 
 public class Main {
 
-    
     public static final int MAX_WORDS_IN_REPOSITORY = 20_000;
     private static final String SOMANTIC_TITLE = "SOMANTIC :: first AFFECTIVE TRANSSPECIES TRANSLATOR by Michal Brzezinski";
-    
+
     public static void main(String[] args) {
         try {
             SomanticFacade somanticFactory = SomanticFacade.getInstance();

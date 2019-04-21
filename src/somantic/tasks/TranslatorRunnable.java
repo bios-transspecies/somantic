@@ -51,7 +51,7 @@ public class TranslatorRunnable implements Runnable {
                     SomanticWord rezultat = null;
                     Integer neuralResult = State.getNeuralNetworkTrainer().ask(recentAffects);
                     SomanticWord opt = somanticRepo.getWordById(neuralResult);
-                    if (opt!=null) {
+                    if (opt != null) {
                         rezultat = opt;
                         State.setMessage(SUCCESS_NEURAL_NETWORK_HAD_FOUND_MATCH + rezultat);
                     } else {

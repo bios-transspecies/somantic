@@ -49,21 +49,20 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     }
 
     public Integer getId() {
-        if(id==null)
+        if (id == null) {
             id = generateId();
+        }
         return id;
     }
 
     public void setId(Integer id) {
         this.id = Math.abs(id);
     }
-    
-    
 
     private boolean placedIdInStore(Integer id) {
         id = Math.abs(id);
         String lem = idStore.get(id);
-        if (lem==null) {
+        if (lem == null) {
             idStore.put(id, lemma);
             return true;
         }
@@ -72,7 +71,7 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
         }
         return false;
     }
-    
+
     @Override
     public String toString() {
         return lemma;
@@ -82,14 +81,16 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     public int hashCode() {
         return Objects.hashCode(this.lemma);
     }
-    
-    public int generateId(){
+
+    public int generateId() {
         int hc = Math.abs(hashCode() % MAX_WORDS_IN_REPOSITORY);
-        if(placedIdInStore(hc))
+        if (placedIdInStore(hc)) {
             return hc;
+        }
         for (int i = ++lastKnownIndex; i < MAX_WORDS_IN_REPOSITORY; i++) {
-            if(placedIdInStore(i))
+            if (placedIdInStore(i)) {
                 return lastKnownIndex = i;
+            }
             System.out.println("------------->>>>>>>>>INDEX>>>>>" + i);
             System.out.println("------------->>>>>>>>MAX_WORDS_IN_REPOSITORY>>>>>>>>>>" + MAX_WORDS_IN_REPOSITORY);
         }
@@ -179,8 +180,9 @@ public class SomanticWord implements Serializable, Comparable<SomanticWord> {
     }
 
     synchronized public void addSentence(SomanticSentence sentence) {
-        if(sentence!=null)
-        this.sentences.add(sentence);
+        if (sentence != null) {
+            this.sentences.add(sentence);
+        }
     }
 
     synchronized void addTag(String tag) {
