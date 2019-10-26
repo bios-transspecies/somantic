@@ -77,7 +77,7 @@ public class TranslatorRunnable implements Runnable {
             SomanticRepository repo = somanticRepo.getSomanticRepo();
             rezultat = compreAllAffects(repo, recentAffects, stopienPokrewienstwaMin, skip, stopienPokrewienstwaMax, rezultat);
         }
-        finalize(rezultat, stopienPokrewienstwaMin, stopienPokrewienstwaMax, recentAffects);
+        countStopienPokrewienstwaMin(rezultat, stopienPokrewienstwaMin, stopienPokrewienstwaMax, recentAffects);
     }
 
     private SomanticWord compreAllAffects(
@@ -86,7 +86,7 @@ public class TranslatorRunnable implements Runnable {
             final AtomicLong stopienPokrewienstwaMin,
             final List<String> skip,
             final AtomicLong stopienPokrewienstwaMax,
-            final SomanticWord recentrezultat) {
+            SomanticWord recentrezultat) {
         SomanticWord rezultat = null;
         for (Map.Entry<String, SomanticWord> entry : repo.entrySet()) {
             final AtomicLong stopienPokrewienstwa = new AtomicLong(0);
@@ -95,6 +95,7 @@ public class TranslatorRunnable implements Runnable {
             }
             if (shouldConcider(stopienPokrewienstwa, stopienPokrewienstwaMin, skip, entry)) {
                 rezultat = setResult(stopienPokrewienstwaMin, stopienPokrewienstwa, stopienPokrewienstwaMax, entry, skip);
+                recentrezultat = rezultat;
             } else {
                 rezultat = recentrezultat;
             }
@@ -115,9 +116,9 @@ public class TranslatorRunnable implements Runnable {
         return rezultat;
     }
 
-    private static boolean shouldConcider(final AtomicLong stopienPokrewienstwa, final AtomicLong stopienPokrewienstwaMin, List<String> skip, Entry<String, SomanticWord> entry) {
+    private static boolean shouldConcider(final AtomicLong stopienPokrewienstwa, final AtomicLong stopienPokrewienstwaMin, List<String> usedWordsToSkip, Entry<String, SomanticWord> entry) {
         return stopienPokrewienstwa.get() > stopienPokrewienstwaMin.get()
-                && !skip.contains(entry.getKey());
+                && !usedWordsToSkip.contains(entry.getKey());
     }
 
     private SomanticWord result(
@@ -129,16 +130,13 @@ public class TranslatorRunnable implements Runnable {
         return rezultat;
     }
 
-    private void finalize(
+    private void countStopienPokrewienstwaMin(
             final SomanticWord rezultat,
             final AtomicLong stopienPokrewienstwaMin,
             final AtomicLong stopienPokrewienstwaMax,
             final List<Integer> recentAffects) {
 
         if (rezultat != null) {
-            System.out.println(stopienPokrewienstwaMin);
-            System.out.println(rezultat);
-            System.out.println(recentAffects);
             stopienPokrewienstwaMin.set(stopienPokrewienstwaMax.get());
             if (rezultat.getWords().iterator().hasNext()) {
                 setState(recentAffects, rezultat);

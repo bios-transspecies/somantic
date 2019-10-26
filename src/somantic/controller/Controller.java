@@ -332,8 +332,9 @@ public class Controller extends javax.swing.JFrame {
             liveActThread.setPriority(Thread.MIN_PRIORITY);
             liveActThread.start();
             messages.setText("Live mode auto-switch between stimulation and translation mode.");
-        }
-        messages.setText("Live mode is turned off. Manual action only.");
+        } 
+        else
+            messages.setText("Live mode is turned off. Manual action only.");
     }//GEN-LAST:event_liveToggleButtonActionPerformed
 
     private void fileManagerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileManagerToggleActionPerformed
