@@ -29,7 +29,7 @@ public class SomanticAranger {
     public Set<SomanticWord> rewrite(String sentence) {
         setSentence(sentence);
         if (riSentence.size() < 3) {
-            return new HashSet<SomanticWord>(riSentence);
+            return new HashSet<>(riSentence);
         }
         String reString = "";
         // generating various sentences by setting words in place co-related to other words
@@ -98,9 +98,7 @@ public class SomanticAranger {
             // context sentences make new variant
             contextSentences.stream().map(contextSentence ->
                     getSentenceMapper(somanticSentence, somanticWord, contextSentence)
-            ).forEachOrdered((sentenceMapper) -> {
-                sentencesMapped.add(sentenceMapper);
-            });
+            ).forEachOrdered((sentenceMapper) -> sentencesMapped.add(sentenceMapper));
         }
         Collections.sort(sentencesMapped);
         for (SentenceMapper sentenceMapped : sentencesMapped) {

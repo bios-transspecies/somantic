@@ -31,44 +31,54 @@ public class Persistence {
     private static final ExecutorService savingThread = Executors.newSingleThreadExecutor();
     private static ZonedDateTime retryStarted;
 
-    public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
+    public static void save(SomanticRepository repository) throws IllegalArgumentException {
         savingThread.execute(()
-                -> {
-            File f = new File(State.getLibraryFile());
-            if (!f.exists()) {
-                f.setWritable(true);
+                -> processSavingWrapper(repository));
+    }
+
+    private static void processSavingWrapper(SomanticRepository repository) {
+        File f = new File(State.getLibraryFile());
+        if (!f.exists()) {
+            prepareFile(f);
+        }
+        if (!savingRepository) {
+            synchronized (lock) {
                 try {
-                    f.createNewFile();
-                } catch (IOException ex) {
-                    State.setMessage(ex.getMessage());
+                    savingProcess(repository);
+                } catch (Exception e) {
+                    State.setMessage(e.getMessage());
+                } finally {
+                    savingRepository = false;
                 }
             }
-            if (!savingRepository) {
-                synchronized (lock) {
-                    try {
-                        savingRepository = true;
-                        Path tmpPath = Paths.get("temporary" + new Date().getTime());
-                        FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
-                        ObjectOutputStream out = new ObjectOutputStream(tmp);
-                        out.writeObject(repository.getRepositoryToSave());
-                        out.close();
-                        Files.deleteIfExists(Paths.get(State.getLibraryFile()));
-                        Files.copy(tmpPath, Paths.get(State.getLibraryFile()));
-                        Files.delete(tmpPath);
-                        long filesize = Files.size(Paths.get(State.getLibraryFile()));
-                        out.close();
-                        State.setMessage("SAVED repo size " + filesize / 1024 + "kB with " + repository.size() + " words");
-                    } catch (Exception e) {
-                        State.setMessage(e.getMessage());
-                    } finally {
-                        savingRepository = false;
-                    }
-                }
-            } else {
-                State.setMessage(" writting file in progress ");
-                throw new IllegalArgumentException(" writting file in progress ");
-            }
-        });
+        } else {
+            State.setMessage(" writting file in progress ");
+            throw new IllegalArgumentException(" writting file in progress ");
+        }
+    }
+
+    private static void savingProcess(SomanticRepository repository) throws IOException {
+        savingRepository = true;
+        Path tmpPath = Paths.get("temporary" + new Date().getTime());
+        FileOutputStream tmp = new FileOutputStream(tmpPath.toString());
+        ObjectOutputStream out = new ObjectOutputStream(tmp);
+        out.writeObject(repository.getRepositoryToSave());
+        out.close();
+        Files.deleteIfExists(Paths.get(State.getLibraryFile()));
+        Files.copy(tmpPath, Paths.get(State.getLibraryFile()));
+        Files.delete(tmpPath);
+        long filesize = Files.size(Paths.get(State.getLibraryFile()));
+        out.close();
+        State.setMessage("SAVED repo size " + filesize / 1024 + "kB with " + repository.size() + " words");
+    }
+
+    private static void prepareFile(File f) {
+        f.setWritable(true);
+        try {
+            f.createNewFile();
+        } catch (IOException ex) {
+            State.setMessage(ex.getMessage());
+        }
     }
 
     public static SomanticRepository loadRepository() throws IOException, ClassNotFoundException {
@@ -79,7 +89,7 @@ public class Persistence {
             FileInputStream fileIn = new FileInputStream(State.getLibraryFile());
             ObjectInputStream in = new ObjectInputStream(fileIn);
             if (in != null) {
-                ConcurrentHashMap<String, SomanticWord> repo = retryUntillSucceed(in, false);
+                ConcurrentHashMap<String, SomanticWord> repo = retryLoadingUntillSucceedOrTimeout(in, false);
                 if (repo != null && !repo.isEmpty()) {
                     somanticRepository.loadRepository(repo);
                 }
@@ -92,7 +102,7 @@ public class Persistence {
         return somanticRepository;
     }
 
-    private static ConcurrentHashMap<String, SomanticWord> retryUntillSucceed(ObjectInputStream in, Boolean recurrence) {
+    private static ConcurrentHashMap<String, SomanticWord> retryLoadingUntillSucceedOrTimeout(ObjectInputStream in, Boolean recurrence) {
         if (!recurrence)
             retryStarted = ZonedDateTime.now();
         if (recurrence) {
@@ -108,8 +118,9 @@ public class Persistence {
             return result;
         } catch (Exception e) {
             System.out.println("loadRepository :: retryUntillSucceed: ERROR " + e);
-            if (retryStarted.isBefore(ZonedDateTime.now().minusSeconds(1))) ;
-            return retryUntillSucceed(in, true);
+            if (retryStarted.isBefore(ZonedDateTime.now().minusSeconds(1)))
+                return retryLoadingUntillSucceedOrTimeout(in, true);
+            return new ConcurrentHashMap<>();
         }
     }
 

@@ -34,6 +34,7 @@ class Speaker {
                 synthesizer = Central.createSynthesizer(new SynthesizerModeDesc(Locale.US));
                 synthesizer.allocate();
             } catch (IllegalArgumentException | EngineException e) {
+                System.out.println(" ERROR: " + e.getMessage());
             }
         }
     }
