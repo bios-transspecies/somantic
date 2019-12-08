@@ -1,14 +1,13 @@
 package somantic.tasks;
 
 import guru.ttslib.TTS;
-import java.util.Locale;
+import somantic.state.State;
+
 import javax.speech.Central;
 import javax.speech.EngineException;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
-import javax.speech.Engine;
-import org.junit.Test;
-import somantic.state.State;
+import java.util.Locale;
 
 class Speaker {
 

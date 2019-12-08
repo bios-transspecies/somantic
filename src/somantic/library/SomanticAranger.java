@@ -1,11 +1,8 @@
 package somantic.library;
 
 import somantic.library.sentences.SentenceMapper;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 public class SomanticAranger {
 
@@ -38,6 +35,16 @@ public class SomanticAranger {
         // generating various sentences by setting words in place co-related to other words
         Set<SomanticWord> tmpReSentence = new HashSet<>();
         List<Set<SomanticWord>> tmpReSentences = new ArrayList<>();
+        generateVariousSentencesBySettingWordsInPlaceCorelatedToOtherWords(tmpReSentence, tmpReSentences);
+        Set<SomanticWord> r = tmpReSentences.get(tmpReSentences.size() - 1);
+        try {
+            return knownGrammarStructures(tmpReSentences.get(tmpReSentences.size() - 1));
+        } catch (Exception e) {
+            return r;
+        }
+    }
+
+    private void generateVariousSentencesBySettingWordsInPlaceCorelatedToOtherWords(Set<SomanticWord> tmpReSentence, List<Set<SomanticWord>> tmpReSentences) {
         for (int wariant = 0; wariant < riSentence.size(); wariant++) {
             wariantsProcessor(wariant, tmpReSentence);
             Boolean add = true;
@@ -45,12 +52,6 @@ public class SomanticAranger {
             if (add) {
                 tmpReSentences.add(tmpReSentence);
             }
-        }
-        Set<SomanticWord> r = tmpReSentences.get(tmpReSentences.size() - 1);
-        try {
-            return knownGrammarStructures(tmpReSentences.get(tmpReSentences.size() - 1));
-        } catch (Exception e) {
-            return r;
         }
     }
 
@@ -95,30 +96,9 @@ public class SomanticAranger {
         for (SomanticWord somanticWord : somanticSentence) {
             Set<SomanticSentence> contextSentences = somanticWord.getSentences();
             // context sentences make new variant
-            contextSentences.stream().map((List<SomanticWord> contextSentence) -> {
-                int counter = 0;
-                Set<SomanticWord> variantSentence = new HashSet<>();
-                SentenceMapper sentenceMapper = new SentenceMapper();
-                // context words
-                for (SomanticWord contextWord : contextSentence) {
-                    Set<String> contextPOSes = contextWord.getPOS();
-                    // context words POSes
-                    for (String contextPOS : contextPOSes) {
-                        // checksomanticWord
-                        if (somanticWord.getPOS().contains(contextPOS)) {
-                            if (somanticSentence.contains(contextWord)) {
-                                counter++;
-                            } else {
-                                counter--;
-                            }
-                            variantSentence.add(contextWord);
-                        }
-                    }
-                }
-                sentenceMapper.setCounter(counter);
-                sentenceMapper.setSentence(variantSentence);
-                return sentenceMapper;
-            }).forEachOrdered((sentenceMapper) -> {
+            contextSentences.stream().map(contextSentence ->
+                    getSentenceMapper(somanticSentence, somanticWord, contextSentence)
+            ).forEachOrdered((sentenceMapper) -> {
                 sentencesMapped.add(sentenceMapper);
             });
         }
@@ -129,5 +109,34 @@ public class SomanticAranger {
             }
         }
         return somanticSentence;
+    }
+
+    private SentenceMapper getSentenceMapper(Set<SomanticWord> somanticSentence, SomanticWord somanticWord, SomanticSentence contextSentence) {
+        Set<SomanticWord> variantSentence = new HashSet<>();
+        SentenceMapper sentenceMapper = new SentenceMapper();
+        sentenceMapper.setCounter(countAndSetContextSentence(somanticSentence, somanticWord, contextSentence, variantSentence));
+        sentenceMapper.setSentence(variantSentence);
+        return sentenceMapper;
+    }
+
+    private int countAndSetContextSentence(Set<SomanticWord> somanticSentence, SomanticWord somanticWord, SomanticSentence contextSentence, Set<SomanticWord> variantSentence) {
+        // context words
+        int counter = 0;
+        for (SomanticWord contextWord : contextSentence) {
+            Set<String> contextPOSes = contextWord.getPOS();
+            // context words POSes
+            for (String contextPOS : contextPOSes) {
+                // checksomanticWord
+                if (somanticWord.getPOS().contains(contextPOS)) {
+                    if (somanticSentence.contains(contextWord)) {
+                        counter++;
+                    } else {
+                        counter--;
+                    }
+                    variantSentence.add(contextWord);
+                }
+            }
+        }
+        return counter;
     }
 }

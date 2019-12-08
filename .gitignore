@@ -53,3 +53,6 @@ out/
 /temporary**
 **neuralnetwork_state**
 /neuralnetwork_state.nnet
+somantic.iml
+.idea
+nbproject

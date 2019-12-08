@@ -1,16 +1,15 @@
 package somantic.persistence;
 
-import somantic.state.State;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.neuroph.core.NeuralNetwork;
 import somantic.library.SomanticRepository;
 import somantic.library.SomanticWord;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import somantic.state.State;
+
+import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,9 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.neuroph.core.NeuralNetwork;
 
 public class Persistence {
 
@@ -33,6 +29,7 @@ public class Persistence {
     public static AtomicBoolean savingNN = new AtomicBoolean(false);
     private static final Object lock = new Object();
     private static final ExecutorService savingThread = Executors.newSingleThreadExecutor();
+    private static ZonedDateTime retryStarted;
 
     public static void save(SomanticRepository repository) throws IOException, IllegalArgumentException {
         savingThread.execute(()
@@ -74,7 +71,7 @@ public class Persistence {
         });
     }
 
-    public static SomanticRepository loadRepository() throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static SomanticRepository loadRepository() throws IOException, ClassNotFoundException {
         SomanticRepository somanticRepository = State.getSomanticFacade().getSomanticRepo();
         File f = new File(State.getLibraryFile());
         if (f.exists()) {
@@ -82,7 +79,7 @@ public class Persistence {
             FileInputStream fileIn = new FileInputStream(State.getLibraryFile());
             ObjectInputStream in = new ObjectInputStream(fileIn);
             if (in != null) {
-                ConcurrentHashMap<String, SomanticWord> repo = (ConcurrentHashMap<String, SomanticWord>) in.readObject();
+                ConcurrentHashMap<String, SomanticWord> repo = retryUntillSucceed(in, false);
                 if (repo != null && !repo.isEmpty()) {
                     somanticRepository.loadRepository(repo);
                 }
@@ -93,6 +90,27 @@ public class Persistence {
             State.setMessage(message);
         }
         return somanticRepository;
+    }
+
+    private static ConcurrentHashMap<String, SomanticWord> retryUntillSucceed(ObjectInputStream in, Boolean recurrence) {
+        if (!recurrence)
+            retryStarted = ZonedDateTime.now();
+        if (recurrence) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            ConcurrentHashMap<String, SomanticWord> result = (ConcurrentHashMap<String, SomanticWord>) in.readObject();
+            System.out.println("SomanticWordConcurrentHashMap: " + result.size());
+            return result;
+        } catch (Exception e) {
+            System.out.println("loadRepository :: retryUntillSucceed: ERROR " + e);
+            if (retryStarted.isBefore(ZonedDateTime.now().minusSeconds(1))) ;
+            return retryUntillSucceed(in, true);
+        }
     }
 
     public static String loadLiteraure(String location) throws IOException {
@@ -120,7 +138,7 @@ public class Persistence {
                 -> {
             State.setMessage(" saving sentence to file ");
             Path pathText = null;
-            Charset encoding = Charset.forName("UTF-8");
+            Charset encoding = StandardCharsets.UTF_8;
             try {
                 pathText = Paths.get(State.getGeneratedSentencesFilePath());
             } catch (Exception e) {

@@ -1,13 +1,12 @@
 package somantic.library;
 
-import somantic.library.wordnet.WordNetToolbox;
 import edu.mit.jwi.item.IWord;
-import java.io.FileNotFoundException;
+import rita.RiTa;
+import somantic.library.wordnet.WordNetToolbox;
+import somantic.persistence.Persistence;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import rita.RiTa;
-import somantic.persistence.Persistence;
 
 public class SomanticFacade {
 
@@ -45,11 +44,11 @@ public class SomanticFacade {
         return sw;
     }
 
-    public void saveRepo() throws IOException, Exception {
+    public void saveRepo() throws IOException {
         Persistence.save(repo);
     }
 
-    public void loadRepo() throws IOException, FileNotFoundException, ClassNotFoundException {
+    public void loadRepo() throws IOException, ClassNotFoundException {
         SomanticRepository r = Persistence.loadRepository();
         if (r != null) {
             repo = r;

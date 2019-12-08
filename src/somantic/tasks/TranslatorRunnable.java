@@ -1,5 +1,13 @@
 package somantic.tasks;
 
+import somantic.controller.Controller;
+import somantic.library.SomanticFacade;
+import somantic.library.SomanticRepository;
+import somantic.library.SomanticWord;
+import somantic.processors.AudioFFT;
+import somantic.state.State;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,15 +15,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JTextArea;
-import javax.swing.JToggleButton;
+
 import static somantic.Main.MILISECONDS_TO_WAIT_WHEN_TRANSLATING;
-import somantic.controller.Controller;
-import somantic.library.SomanticFacade;
-import somantic.library.SomanticRepository;
-import somantic.library.SomanticWord;
-import somantic.processors.AudioFFT;
-import somantic.state.State;
 
 public class TranslatorRunnable implements Runnable {
 
@@ -161,20 +162,20 @@ public class TranslatorRunnable implements Runnable {
             List<Integer> recentAffects,
             AtomicLong stopienPokrewienstwa) {
         for (List<Integer> affectInRepo : entry.getValue().getAffects()) {
-            Long last = new Long(0);
-            Long lastproportions = new Long(1);
-            countProportions(recentAffects, affectInRepo, last, stopienPokrewienstwa, lastproportions);
+            Long last = 0L;
+            Long lastProportions = 1L;
+            countProportions(recentAffects, affectInRepo, last, stopienPokrewienstwa, lastProportions);
         }
     }
 
     private void countProportions(List<Integer> recentAffects, List<Integer> affectInRepo, Long last, AtomicLong stopienPokrewienstwa, Long lastproportions) {
         for (int i = 0; i < recentAffects.size(); i++) {
             if (recentAffects.size() > i + 1 && affectInRepo.size() > i + 1) {
-                Long actual = new Long(Math.abs(recentAffects.get(i) - affectInRepo.get(i)));
-                Long actualproportions = new Long(last / (actual > 1 ? actual : 1));
+                Long actual = Long.valueOf(Math.abs(recentAffects.get(i) - affectInRepo.get(i)));
+                Long actualProportions = Long.valueOf(last / (actual > 1 ? actual : 1));
                 stopienPokrewienstwa.addAndGet((lastproportions * Math.abs(last - actual)) / 2);
                 last = actual;
-                lastproportions = actualproportions;
+                lastproportions = actualProportions;
             }
         }
     }

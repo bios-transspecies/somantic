@@ -1,22 +1,20 @@
 package somantic.view;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.Light;
-import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javax.swing.JFrame;
 import somantic.processors.AudioFFT;
 import somantic.state.State;
 import somantic.synthesizer.SomanticSynthesizer;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AnimationTimerImpl extends AnimationTimer {
 
@@ -166,8 +164,6 @@ public class AnimationTimerImpl extends AnimationTimer {
     private void drawLines(int i, int[] arr,
             ArrayList<Integer> arrayOfAffects,
             GraphicsContext gc) {
-        int width = (int) (this.width * 2);
-        int height = (int) (this.height * 1.3);
         int k;
         boolean even = isEven(i);
         int j = i % 4;
@@ -179,7 +175,6 @@ public class AnimationTimerImpl extends AnimationTimer {
             k = r + (i * j) / 10;
             prepareArrJ(arr, j, k, i);
             int odx, ody, dox, doy;
-            if (j == 3) {
                 if (i % 3 == 0) {
                     odx = (odxA == 0 ? width / 2 : odxA);
                     ody = (odyA == 0 ? height / 2 : odyA);
@@ -198,24 +193,24 @@ public class AnimationTimerImpl extends AnimationTimer {
                     doyA = ((doyA * 5 + doy) / 6);
                 }
 
-                int middleWidth = width / 2;
+            dox = even ? dox : -dox;
+            doy = even ? doy : -doy;
+            doxA = even ? doxA : -doxA;
+            doyA = even ? doyA : -doyA;
 
-                if (true) {
-                    gc.strokeLine(odxA % (width * middleWidth), odyA % (middleWidth), dox % (middleWidth), doy % (middleWidth));
-                    dox = even ? dox : -dox;
-                    doy = even ? doy : -doy;
-                    doxA = even ? doxA : -doxA;
-                    doyA = even ? doyA : -doyA;
+            int middleWidth = width / 2;
 
-                    Paint p = new Color(
-                            toColourValue(Math.abs(dox)),
-                            toColourValue(Math.abs(doy)),
-                            toColourValue(Math.abs(doxA)),
-                            toColourValue(Math.abs(doyA)));
-                    gc.setStroke(p);
-                    gc.strokeLine(dox % (middleWidth), doy % (middleWidth), doxA % (middleWidth), doyA % (middleWidth));
-                    gc.strokeLine(dox + (middleWidth), doy + (middleWidth), doxA + (middleWidth), doyA + (middleWidth));
-                }
+            if (true) {
+                gc.strokeLine(odxA % (width * middleWidth), odyA % (middleWidth), dox % (middleWidth), doy % (middleWidth));
+
+                Paint p = new Color(
+                        toColourValue(Math.abs(dox)),
+                        toColourValue(Math.abs(doy)),
+                        toColourValue(Math.abs(doxA)),
+                        toColourValue(Math.abs(doyA)));
+                gc.setStroke(p);
+                gc.strokeLine(dox % (middleWidth), doy % (middleWidth), doxA % (middleWidth), doyA % (middleWidth));
+                gc.strokeLine(dox + (middleWidth), doy + (middleWidth), doxA + (middleWidth), doyA + (middleWidth));
             }
         }
     }
