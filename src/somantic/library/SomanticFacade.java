@@ -5,7 +5,6 @@ import edu.mit.jwi.item.IWord;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import rita.RiTa;
 import somantic.persistence.Persistence;
 

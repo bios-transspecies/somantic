@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package somantic.synthesizer;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -40,7 +35,7 @@ public class SomanticSynthesizer {
     }
 
     public void stop() {
-        wp.kill();
+        wp.pause(true);
     }
 
     public void setVolume(Integer zz) {
@@ -53,6 +48,11 @@ public class SomanticSynthesizer {
 
     public void update() {
         g.update();
+    }
+
+    public void start() {
+        wp.start();
+        ac.start();
     }
 
 }

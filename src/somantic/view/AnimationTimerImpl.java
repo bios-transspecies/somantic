@@ -7,9 +7,6 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.Light;
-import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -48,6 +45,9 @@ public class AnimationTimerImpl extends AnimationTimer {
         width = window.getWidth();
         if (State.isVisualisation()) {
             visualise(arrayOfAffects);
+            somanticSynthesizer.start();
+        } else{
+            somanticSynthesizer.stop();
         }
     }
 

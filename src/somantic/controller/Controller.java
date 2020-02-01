@@ -333,8 +333,7 @@ public class Controller extends javax.swing.JFrame {
             liveActThread.start();
             messages.setText("Live mode auto-switch between stimulation and translation mode.");
         } 
-        else
-            messages.setText("Live mode is turned off. Manual action only.");
+        else messages.setText("Live mode is turned off. Manual action only.");
     }//GEN-LAST:event_liveToggleButtonActionPerformed
 
     private void fileManagerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileManagerToggleActionPerformed
@@ -368,12 +367,8 @@ public class Controller extends javax.swing.JFrame {
         }
         translateToggle.setSelected(false);
         translateToggle.setText("Translate");
-        if (stimulateToggle.isSelected() //                && communicationBox.getText().length() > 5
-                ) {
+        if (stimulateToggle.isSelected()) {
             stimulate();
-//        } else if (communicationBox.getText().length() < 5) {
-//            messages.setText("To process stimmulation please copy and paste some text below.");
-//            stimulateToggle.setSelected(false);
         } else {
             stimulated();
         }
