@@ -1,6 +1,8 @@
 # art project premiere 2015
-http://wro2015.wrocenter.pl/site/pl/works/polski-mowa-ciala-body-language/
-https://garagemca.org/en/news/2015-03-04-the-polytechnic-museum-in-partnership-with-garage-museum-of-contemporary-art-announces-the-launch-of-the-new-season-of-the-polytech-science-art-program
+
+- http://wro2015.wrocenter.pl/site/pl/works/polski-mowa-ciala-body-language/
+
+- https://garagemca.org/en/news/2015-03-04-the-polytechnic-museum-in-partnership-with-garage-museum-of-contemporary-art-announces-the-launch-of-the-new-season-of-the-polytech-science-art-program
 
 # Transspecies-Blogging
 Transspecies Affective Language For Biosemiotics And Zoecracy in Posthuman World
